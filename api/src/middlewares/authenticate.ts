@@ -1,0 +1,47 @@
+import { eq } from 'drizzle-orm';
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { decodeJwt } from 'jose';
+
+import config from '@config';
+import { db, user } from '@database';
+import { verifyJwt } from '@utilities';
+
+export const authenticate = async (
+  request: FastifyRequest,
+  reply: FastifyReply,
+) => {
+  const { authorization } = request.headers;
+
+  if (!authorization) {
+    return reply.code(401).send({ error: config.errorMessage.unauthorized });
+  }
+
+  const [, token] = authorization.split(' ');
+
+  if (!token) {
+    return reply.code(401).send({ error: config.errorMessage.unauthorized });
+  }
+
+  const payload = decodeJwt(token);
+
+  if (!payload || !payload.id) {
+    return reply.code(401).send({ error: config.errorMessage.unauthorized });
+  }
+
+  const account = await db.query.user.findFirst({
+    where: eq(user.id, payload.id as string),
+  });
+
+  if (!account || account.deletedAt) {
+    return reply.code(401).send({ error: config.errorMessage.unauthorized });
+  }
+
+  try {
+    await verifyJwt(token, account.jwtSecret);
+  } catch {
+    return reply.code(401).send({ error: config.errorMessage.unauthorized });
+  }
+
+  // @ts-expect-error: Attach user to request for downstream handlers
+  request.user = { id: account.id };
+};
