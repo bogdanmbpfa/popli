@@ -1,0 +1,66 @@
+{
+	"name": "popli",
+	"version": "1.0.0",
+	"description": "Popli.one - Pop your links",
+	"author": "Phantom Solutions SRL",
+	"license": "MIT",
+	"homepage": "https://popli.one",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/phantom-solutions/popli.one"
+	},
+	"keywords": [
+		"popli",
+		"popli.one"
+	],
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "nuxt build",
+		"dev": "nuxt dev",
+		"generate": "nuxt generate",
+		"preview": "nuxt preview",
+		"postinstall": "nuxt prepare"
+	},
+	"dependencies": {
+		"@nuxt/eslint": "1.7.1",
+		"@nuxt/fonts": "0.11.4",
+		"@nuxt/icon": "1.15.0",
+		"@nuxt/image": "1.11.0",
+		"@nuxt/scripts": "0.11.10",
+		"@nuxtjs/i18n": "^10.0.3",
+		"@nuxtjs/robots": "^5.4.0",
+		"@pinia/nuxt": "^0.11.2",
+		"@primeuix/themes": "^1.2.3",
+		"@primevue/core": "^4.3.7",
+		"@primevue/forms": "^4.3.7",
+		"@unhead/vue": "^2.0.13",
+		"@vee-validate/nuxt": "^4.15.1",
+		"@vee-validate/yup": "^4.15.1",
+		"eslint": "^9.32.0",
+		"lodash": "^4.17.21",
+		"luxon": "^3.7.1",
+		"nuxt": "^3.18.0",
+		"pinia": "^3.0.3",
+		"pinia-plugin-persistedstate": "^4.4.1",
+		"primeicons": "^7.0.0",
+		"primevue": "^4.3.7",
+		"vue": "^3.5.18",
+		"vue-router": "^4.5.1",
+		"yup": "^1.7.0"
+	},
+	"packageManager": "pnpm@10.14.0",
+	"devDependencies": {
+		"@iconify-json/akar-icons": "^1.2.2",
+		"@iconify-json/charm": "^1.2.3",
+		"@iconify-json/ic": "^1.2.2",
+		"@iconify-json/material-symbols": "^1.2.30",
+		"@iconify-json/mdi": "^1.2.3",
+		"@primevue/nuxt-module": "^4.3.7",
+		"@types/lodash": "^4.17.20",
+		"@types/luxon": "^3.7.1",
+		"autoprefixer": "^10.4.21",
+		"nuxt-qrcode": "^0.4.6",
+		"sass": "^1.89.2"
+	}
+}

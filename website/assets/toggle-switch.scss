@@ -1,0 +1,21 @@
+.p-toggleswitch {
+  &.default {
+    .p-toggleswitch-slider {
+      background: var(--switch-background);
+
+      .p-toggleswitch-handle {
+        background: var(--primary-foreground);
+      }
+    }
+
+    &:not(.p-disabled):has(.p-toggleswitch-input:hover) {
+      .p-toggleswitch-slider {
+        background: var(--switch-background);
+
+        .p-toggleswitch-handle {
+          background: var(--primary-foreground);
+        }
+      }
+    }
+  }
+}

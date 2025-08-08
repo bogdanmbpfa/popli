@@ -1,0 +1,38 @@
+h1 {
+	margin: 0;
+	font-size: 2.25rem;
+  width: fit-content;
+  text-align: center;
+  color: var(--primary);
+
+	&.primary {
+    color: transparent;
+    font-weight: 700;
+    background-clip: text;
+		background-image: linear-gradient(
+			to right in oklab,
+			var(--color-blue-600) 0%,
+			var(--color-purple-600) 50%,
+			var(--color-pink-600) 100%
+		);
+	}
+}
+
+h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+span {
+  &.primary {
+    color: transparent;
+    background-image: linear-gradient(
+      to right in oklab,
+      var(--color-blue-600) 0%,
+      var(--color-purple-600) 50%,
+      var(--color-pink-600) 100%
+    );
+    background-clip: text;
+  }
+}
