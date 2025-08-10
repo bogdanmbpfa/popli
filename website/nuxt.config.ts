@@ -27,6 +27,7 @@ export default defineNuxtConfig({
 		'@pinia/nuxt',
 		'pinia-plugin-persistedstate/nuxt',
 		'@vee-validate/nuxt',
+		'@nuxtjs/turnstile',
 	],
 
 	pinia: {
@@ -61,16 +62,33 @@ export default defineNuxtConfig({
 	},
 
 	runtimeConfig: {
+		apiBaseUrl: '',
 		public: {
+			cookies: {
+				auth: {
+					name: 'POPLI_AUTH',
+					expires: 60 * 60 * 24 * 30, // 30 days
+					httpOnly: true,
+				},
+			},
 			images: {
 				logo: 'https://storage.googleapis.com/popli-public/logo.png',
 			},
+			nodeEnv: '',
+		},
+		turnstile: {
+			secretKey: '0x4AAAAAABp8G-0uMV00c1MCculpWUjb5vo',
 		},
 	},
 
 	site: { indexable: true },
 
 	ssr: true,
+
+	turnstile: {
+		addValidateEndpoint: true,
+		siteKey: '0x4AAAAAABp8G9YAtc_mlZhJ',
+	},
 
 	vite: {
 		css: {

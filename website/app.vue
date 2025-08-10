@@ -4,22 +4,24 @@
 			<NuxtPage />
 		</NuxtLayout>
 	</div>
+
+	<PToast class="default" position="top-center" />
 </template>
 
 <script setup lang="ts">
+	import { configure } from 'vee-validate';
+
 	useHead({
 		title: 'Popli.one - Pop your links',
 		meta: [{ name: 'description', content: 'Popli.one - Pop your links' }],
 	});
+
 	const route = useRoute();
 
-	const theme = ref<'light' | 'dark'>('light');
-
-	onMounted(() => {
-		if (import.meta.client) {
-			const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-			theme.value = mediaQuery.matches ? 'dark' : 'light';
-		}
+	configure({
+		validateOnInput: false,
+		validateOnModelUpdate: false,
+		validateOnBlur: false,
+		validateOnChange: true,
 	});
 </script>

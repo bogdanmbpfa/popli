@@ -1,7 +1,13 @@
 @use './variables.scss';
 
 @use './button.scss';
+@use './form.scss';
+@use './icon-field.scss';
+@use './input-otp.scss';
+@use './input-text.scss';
+@use './tabs.scss';
 @use './tag.scss';
+@use './toast.scss';
 @use './toggle-switch.scss';
 @use './typography.scss';
 
@@ -25,6 +31,10 @@ html {
 			.wrapper {
 				min-height: 100svh;
 			}
+		}
+
+		a {
+			text-decoration: none;
 		}
 	}
 }

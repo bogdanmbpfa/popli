@@ -361,7 +361,6 @@ export default function (
   }>(
     '/check-handle',
     {
-      preHandler: [authenticate],
       schema: {
         body: AccountCheckHandle,
         response: {
@@ -393,7 +392,6 @@ export default function (
   }>(
     '/check-email',
     {
-      preHandler: [authenticate],
       schema: {
         body: AccountCheckEmail,
         response: {

@@ -23,9 +23,17 @@
 					:icon="darkMode ? 'pi pi-sun' : 'pi pi-moon'"
 					@click="handleThemeChange" />
 
-				<PButton class="default" as="a" variant="link" label="Log In" href="/login" />
+				<nuxt-link v-if="!user" to="/auth/sign-in">
+					<PButton class="default" as="a" variant="link" label="Sign In" />
+				</nuxt-link>
 
-				<PButton class="default" as="a" label="Get Started" href="/signup" />
+				<nuxt-link v-if="!user" to="/auth/sign-up">
+					<PButton class="default" as="a" label="Get Started" />
+				</nuxt-link>
+
+				<nuxt-link v-if="user" to="/account">
+					<PButton class="default" severity="contrast" icon="pi pi-user" label="Account" />
+				</nuxt-link>
 			</div>
 		</div>
 	</nav>
@@ -36,18 +44,17 @@
 	const {
 		public: { images },
 	} = useRuntimeConfig();
+	const userStore = useUserStore();
 
 	const darkMode = computed(() => globalStore.getDarkMode);
+	const user = computed(() => userStore.getUser);
 
-	onMounted(() => {
-		if (import.meta.client) {
-			const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-			mediaQuery.matches
-				? (document.documentElement.setAttribute('data-theme', 'dark'), globalStore.setDarkMode(true))
-				: (document.documentElement.setAttribute('data-theme', 'light'), globalStore.setDarkMode(false));
-		}
-	});
+	if (import.meta.client) {
+		darkMode.value
+			? (document.documentElement.setAttribute('data-theme', 'dark'), globalStore.setDarkMode(true))
+			: (document.documentElement.setAttribute('data-theme', 'light'),
+			  globalStore.setDarkMode(false));
+	}
 
 	const handleThemeChange = () => {
 		globalStore.toggleDarkMode();

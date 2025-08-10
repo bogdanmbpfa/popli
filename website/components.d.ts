@@ -9,7 +9,18 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     PButton: typeof import('primevue/button')['default']
+    PIconField: typeof import('primevue/iconfield')['default']
+    PInputIcon: typeof import('primevue/inputicon')['default']
+    PInputOtp: typeof import('primevue/inputotp')['default']
+    PInputText: typeof import('primevue/inputtext')['default']
+    PPassword: typeof import('primevue/password')['default']
+    PTab: typeof import('primevue/tab')['default']
+    PTabList: typeof import('primevue/tablist')['default']
+    PTabPanel: typeof import('primevue/tabpanel')['default']
+    PTabPanels: typeof import('primevue/tabpanels')['default']
+    PTabs: typeof import('primevue/tabs')['default']
     PTag: typeof import('primevue/tag')['default']
+    PToast: typeof import('primevue/toast')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

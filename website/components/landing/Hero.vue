@@ -1,6 +1,6 @@
 <template>
 	<div class="hero">
-		<div class="background" :class="{ dark: isDarkMode }" />
+		<div class="background" />
 
 		<div class="container">
 			<div class="heading">
@@ -37,16 +37,12 @@
 </template>
 
 <script setup lang="ts">
-	const globalStore = useGlobalStore();
-	
 	const features = ref([
 		{ icon: 'akar-icons:link-chain', name: 'Link-in-Bio' },
 		{ icon: 'charm:lightning-bolt', name: 'Shorten URLs' },
 		{ icon: 'ic:outline-qr-code-scanner', name: 'QR Codes' },
 		{ icon: 'material-symbols:shopping-bag-outline-sharp', name: 'Digital Products' },
 	]);
-
-	const isDarkMode = computed(() => globalStore.getDarkMode);
 </script>
 
 <style lang="scss" scoped>
@@ -69,15 +65,6 @@
 				var(--color-purple-50) 50%,
 				var(--color-pink-50) 100%
 			);
-
-			&.dark {
-				background-image: linear-gradient(
-					to bottom right in oklab,
-					color-mix(in oklab, var(--color-blue-950) 20%, transparent 100%) 0%,
-					color-mix(in oklab, var(--color-purple-950) 20%, transparent 100%) 50%,
-					color-mix(in oklab, var(--color-pink-950) 20%, transparent 100%) 100%
-				);
-			}
 		}
 
 		.container {
@@ -119,6 +106,17 @@
 						text-align: center;
 					}
 				}
+			}
+		}
+
+		:root[data-theme='dark'] & {
+			.background {
+				background-image: linear-gradient(
+					to bottom right in oklab,
+					color-mix(in oklab, var(--color-blue-950) 20%, transparent 100%) 0%,
+					color-mix(in oklab, var(--color-purple-950) 20%, transparent 100%) 50%,
+					color-mix(in oklab, var(--color-pink-950) 20%, transparent 100%) 100%
+				);
 			}
 		}
 	}
