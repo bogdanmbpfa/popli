@@ -125,6 +125,7 @@
 			.description {
 				font-size: 1.25rem;
 				font-weight: 400;
+				color: var(--text-300);
 			}
 		}
 
@@ -139,13 +140,13 @@
 				display: flex;
 				flex-direction: column;
 				gap: 2rem;
-				border: 1px solid var(--muted);
+				border: 1px solid var(--border-1);
 				border-radius: 1rem;
 				padding: 1.5rem;
 
 				&.featured {
 					transform: scale(1.05);
-					border-color: var(--primary);
+					border-color: var(--border-2);
 				}
 
 				:deep(.p-tag) {
@@ -165,12 +166,12 @@
 					.name {
 						font-size: 1.25rem;
 						font-weight: 600;
-						color: var(--primary);
+						color: var(--text-100);
 					}
 
 					.description {
 						font-size: 0.875rem;
-						color: var(--muted-foreground);
+						color: var(--text-300);
 					}
 				}
 
@@ -185,13 +186,13 @@
 					.price-value {
 						font-size: 2rem;
 						font-weight: 600;
-						color: var(--primary);
+						color: var(--text-100);
 					}
 
 					.period {
 						font-size: 1rem;
 						font-weight: 400;
-						color: var(--muted-foreground);
+						color: var(--text-300);
 					}
 				}
 
@@ -208,7 +209,7 @@
 
 						.name {
 							font-size: 0.875rem;
-							color: var(--primary);
+							color: var(--text-100);
 						}
 
 						.iconify {

@@ -27,6 +27,7 @@
 		"@nuxt/icon": "1.15.0",
 		"@nuxt/image": "1.11.0",
 		"@nuxt/scripts": "0.11.10",
+		"@nuxtjs/device": "3.2.4",
 		"@nuxtjs/i18n": "^10.0.3",
 		"@nuxtjs/robots": "^5.4.0",
 		"@nuxtjs/turnstile": "1.0.0",

@@ -1,0 +1,31 @@
+.p-textarea {
+	&.default {
+		border-radius: 0.5rem;
+		padding: 0.5rem;
+		font-size: 0.875rem;
+		background-color: var(--background-1);
+		border: 1px solid var(--border-1);
+		color: var(--text-100);
+
+		&::placeholder {
+			color: var(--text-300);
+		}
+
+		&.p-invalid {
+			border-color: var(--text-danger);
+		}
+
+		&:disabled {
+			opacity: 0.6;
+		}
+
+		&:focus,
+		&:enabled:focus,
+		&:hover,
+		&:enabled:hover {
+			background-color: var(--background-1);
+			border-color: var(--border-1);
+			outline: none;
+		}
+	}
+}

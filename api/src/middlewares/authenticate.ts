@@ -13,19 +13,19 @@ export const authenticate = async (
   const { authorization } = request.headers;
 
   if (!authorization) {
-    return reply.code(401).send({ error: config.errorMessage.unauthorized });
+    return reply.code(401).send({ message: config.errorMessage.unauthorized });
   }
 
   const [, token] = authorization.split(' ');
 
   if (!token) {
-    return reply.code(401).send({ error: config.errorMessage.unauthorized });
+    return reply.code(401).send({ message: config.errorMessage.unauthorized });
   }
 
   const payload = decodeJwt(token);
 
   if (!payload || !payload.id) {
-    return reply.code(401).send({ error: config.errorMessage.unauthorized });
+    return reply.code(401).send({ message: config.errorMessage.unauthorized });
   }
 
   const account = await db.query.user.findFirst({
@@ -33,13 +33,13 @@ export const authenticate = async (
   });
 
   if (!account || account.deletedAt) {
-    return reply.code(401).send({ error: config.errorMessage.unauthorized });
+    return reply.code(401).send({ message: config.errorMessage.unauthorized });
   }
 
   try {
     await verifyJwt(token, account.jwtSecret);
   } catch {
-    return reply.code(401).send({ error: config.errorMessage.unauthorized });
+    return reply.code(401).send({ message: config.errorMessage.unauthorized });
   }
 
   // @ts-expect-error: Attach user to request for downstream handlers

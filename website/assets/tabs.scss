@@ -19,12 +19,12 @@
 						flex-shrink: unset;
 						border-radius: 1.5rem;
 						border: none;
-            color: var(--foreground);
+            color: var(--text-100);
             font-weight: 500;
 
 						&.p-tab-active {
 							background-color: white;
-							box-shadow: 0 1px 3px 0 #0000001a, 0 1px 2px -1px #0000001a;
+							box-shadow: var(--box-shadow-1);
 						}
 					}
 

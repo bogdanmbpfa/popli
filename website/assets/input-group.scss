@@ -1,0 +1,111 @@
+.p-inputgroup {
+	&.default {
+		.p-inputgroupaddon {
+			border-top-left-radius: 0.5rem;
+			border-bottom-left-radius: 0.5rem;
+			padding: 0.5rem;
+			padding-right: 0;
+			font-size: 0.875rem;
+			background-color: var(--background-1);
+			border: 1px solid var(--border-1);
+			border-right: none;
+			color: var(--text-100);
+		}
+
+		.p-inputtext {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+			padding-left: 0;
+			border-left: none;
+		}
+
+		&:has(.p-inputtext:focus) {
+			.p-inputgroupaddon {
+				background-color: var(--background-1);
+				border-color: var(--border-1);
+        border-right: none;
+			}
+
+			.p-inputtext {
+				border-left: none;
+			}
+		}
+
+		&:has(.p-inputtext:hover) {
+			.p-inputgroupaddon {
+				background-color: var(--background-1);
+				border-color: var(--border-1);
+        border-right: none;
+			}
+
+			.p-inputtext {
+				border-left: none;
+			}
+		}
+
+		&:has(.p-inputtext.p-invalid) {
+			.p-inputgroupaddon {
+				border-color: var(--text-danger);
+        border-right: none;
+			}
+
+			.p-inputtext {
+				border-left: none;
+			}
+		}
+	}
+
+	:root[data-theme='dark'] & {
+		&.default {
+			.p-inputgroupaddon {
+				background-color: var(--background-1);
+				border-color: var(--border-1);
+        border-right: none;
+			}
+
+			&:has(.p-inputtext:focus) {
+				.p-inputgroupaddon {
+					background-color: var(--background-1);
+					border-color: var(--border-1);
+					border-right: none;
+				}
+
+				.p-inputtext {
+					border-left: none;
+				}
+			}
+
+			&:has(.p-inputtext:hover) {
+				.p-inputgroupaddon {
+					background-color: color-mix(in oklab, var(--background-1) 30%, transparent);
+				}
+
+				.p-inputtext {
+					border-left: none;
+				}
+			}
+
+			&:has(.p-inputtext:disabled) {
+				.p-inputgroupaddon {
+					background-color: color-mix(in oklab, var(--background-1) 30%, transparent);
+					color: var(--text-300);
+				}
+
+				.p-inputtext {
+					border-left: none;
+				}
+			}
+
+			&:has(.p-inputtext.p-invalid) {
+				.p-inputgroupaddon {
+					border-color: var(--text-danger);
+					border-right: none;
+				}
+
+				.p-inputtext {
+					border-left: none;
+				}
+			}
+		}
+	}
+}

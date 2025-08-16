@@ -1,0 +1,19 @@
+.p-message {
+  &.default {
+    background: none;
+    outline: none;
+    box-shadow: none;
+    border: none;
+
+    .p-message-content {
+      padding: 0;
+      
+      .p-message-text {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.75rem;
+      }
+    }
+  }
+}

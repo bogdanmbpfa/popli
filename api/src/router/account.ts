@@ -2,6 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { eq } from 'drizzle-orm';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import { randomBytes } from 'node:crypto';
+import randomstring from 'randomstring';
 import sharp from 'sharp';
 
 import config from '@config';
@@ -26,8 +27,17 @@ import {
   AccountUpdateProfileType,
   AccountUpdateEmailType,
   AccountUpdateEmail,
+  AccountProfileType,
+  AccountProfile,
+  AccountRequestEmailUpdateType,
 } from '@resources';
-import { hashPassword, StorageService, verifyPassword } from '@utilities';
+import { logger } from '@server';
+import {
+  EmailService,
+  hashPassword,
+  StorageService,
+  verifyPassword,
+} from '@utilities';
 
 export default function (
   fastify: FastifyInstance,
@@ -51,7 +61,7 @@ export default function (
       if (!requestUser || !requestUser.id) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
       const account = await db.query.user.findFirst({
@@ -61,15 +71,12 @@ export default function (
       if (!account) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
       return reply.send({
         id: account.id,
         email: account.email,
-        name: account.name,
-        handle: account.handle,
-        profileImage: account.profileImage,
         emailConfirmedAt: account.emailConfirmedAt
           ? account.emailConfirmedAt.toISOString()
           : null,
@@ -100,10 +107,10 @@ export default function (
       if (!requestUser || !requestUser.id) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
-      const { name, handle } = request.body;
+      const { name, handle, bio } = request.body;
 
       const account = await db.query.user.findFirst({
         where: eq(user.id, requestUser.id),
@@ -112,7 +119,19 @@ export default function (
       if (!account) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
+      }
+
+      if (handle && handle !== account.handle) {
+        const accountWithSameHandle = await db.query.user.findFirst({
+          where: eq(user.handle, handle),
+        });
+
+        if (accountWithSameHandle) {
+          return reply
+            .code(400)
+            .send({ message: config.errorMessage.handleAlreadyExists });
+        }
       }
 
       await db
@@ -120,8 +139,67 @@ export default function (
         .set({
           ...(name && { name }),
           ...(handle && { handle }),
+          ...(bio && { bio }),
         })
         .where(eq(user.id, requestUser.id));
+
+      return reply.send();
+    },
+  );
+
+  fastify.post<{
+    Reply: null | ErrorResponseType;
+  }>(
+    '/request-email-verify',
+    {
+      preHandler: [authenticate],
+      schema: {
+        response: {
+          200: Type.Null(),
+          401: ErrorResponse,
+        },
+      },
+    },
+    async (request, reply) => {
+      const { user: requestUser } = request as any;
+
+      if (!requestUser || !requestUser.id) {
+        return reply
+          .code(401)
+          .send({ message: config.errorMessage.accountNotFound });
+      }
+
+      const account = await db.query.user.findFirst({
+        where: eq(user.id, requestUser.id),
+      });
+
+      if (!account) {
+        return reply
+          .code(401)
+          .send({ message: config.errorMessage.accountNotFound });
+      }
+
+      if (account.emailConfirmedAt) {
+        return reply
+          .code(400)
+          .send({ message: config.errorMessage.emailAlreadyConfirmed });
+      }
+
+      const code = randomstring.generate({ length: 6, charset: 'numeric' });
+
+      await db
+        .update(user)
+        .set({
+          emailConfirmationCode: code,
+          emailConfirmationCodeExpiresAt: new Date(Date.now() + 1000 * 60 * 60),
+        })
+        .where(eq(user.id, requestUser.id));
+
+      await EmailService.send(
+        account.email,
+        `Email Verification Code - ${code}`,
+        `Your email verification code is ${code}`,
+      );
 
       return reply.send();
     },
@@ -148,7 +226,7 @@ export default function (
       if (!requestUser || !requestUser.id) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
       const { code } = request.body;
@@ -160,17 +238,29 @@ export default function (
       if (!account) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
       if (account.emailConfirmedAt) {
         return reply
           .code(400)
-          .send({ error: config.errorMessage.emailAlreadyConfirmed });
+          .send({ message: config.errorMessage.emailAlreadyConfirmed });
       }
 
       if (code !== account.emailConfirmationCode) {
-        return reply.code(400).send({ error: config.errorMessage.invalidCode });
+        return reply
+          .code(400)
+          .send({ message: config.errorMessage.invalidCode });
+      }
+
+      if (
+        account.emailConfirmationCodeExpiresAt &&
+        new Date(account.emailConfirmationCodeExpiresAt).getTime() <
+          new Date().getTime()
+      ) {
+        return reply
+          .code(400)
+          .send({ message: config.errorMessage.emailConfirmationCodeExpired });
       }
 
       await db
@@ -205,7 +295,7 @@ export default function (
       if (!requestUser || !requestUser.id) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
       const file = await request.file();
@@ -213,7 +303,7 @@ export default function (
       if (!file) {
         return reply
           .code(400)
-          .send({ error: config.errorMessage.fileRequired });
+          .send({ message: config.errorMessage.fileRequired });
       }
 
       const image = await sharp(await file.toBuffer())
@@ -254,17 +344,27 @@ export default function (
       const { user: requestUser } = request as any;
 
       if (!requestUser || !requestUser.id) {
+        logger.error(
+          { requestUser },
+          'Account not found while uploading cover image',
+        );
+
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
       const file = await request.file();
 
       if (!file) {
+        logger.error(
+          { requestUser },
+          'File not found while uploading cover image',
+        );
+
         return reply
           .code(400)
-          .send({ error: config.errorMessage.fileRequired });
+          .send({ message: config.errorMessage.fileRequired });
       }
 
       const image = await sharp(await file.toBuffer())
@@ -309,7 +409,7 @@ export default function (
       if (!requestUser || !requestUser.id) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
       const { currentPassword, newPassword } = request.body;
@@ -321,7 +421,7 @@ export default function (
       if (!account) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
       const isPasswordValid = await verifyPassword(
@@ -332,7 +432,7 @@ export default function (
       if (!isPasswordValid) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.invalidCredentials });
+          .send({ message: config.errorMessage.invalidCredentials });
       }
 
       const isSamePassword = await verifyPassword(
@@ -343,7 +443,7 @@ export default function (
       if (isSamePassword) {
         return reply
           .code(400)
-          .send({ error: config.errorMessage.passwordSameAsCurrent });
+          .send({ message: config.errorMessage.passwordSameAsCurrent });
       }
 
       await db
@@ -379,7 +479,7 @@ export default function (
       if (account) {
         return reply
           .code(400)
-          .send({ error: config.errorMessage.handleAlreadyExists });
+          .send({ message: config.errorMessage.handleAlreadyExists });
       }
 
       return reply.send();
@@ -410,7 +510,7 @@ export default function (
       if (account) {
         return reply
           .code(400)
-          .send({ error: config.errorMessage.userAlreadyExists });
+          .send({ message: config.errorMessage.userAlreadyExists });
       }
 
       return reply.send();
@@ -438,7 +538,7 @@ export default function (
       if (!requestUser || !requestUser.id) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
       const { name, bio } = request.body;
@@ -456,14 +556,15 @@ export default function (
   );
 
   fastify.post<{
-    Reply: AccountVerifyEmailType | ErrorResponseType;
+    Body: AccountRequestEmailUpdateType;
+    Reply: null | ErrorResponseType;
   }>(
     '/request-email-update',
     {
       preHandler: [authenticate],
       schema: {
         response: {
-          200: AccountVerifyEmail,
+          200: Type.Null(),
           401: ErrorResponse,
         },
       },
@@ -474,7 +575,7 @@ export default function (
       if (!requestUser || !requestUser.id) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
       const account = await db.query.user.findFirst({
@@ -484,20 +585,39 @@ export default function (
       if (!account) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
-      const code = randomBytes(3).toString('hex');
+      const accountWithSameEmail = await db.query.user.findFirst({
+        where: eq(user.email, request.body.email),
+      });
+
+      if (accountWithSameEmail) {
+        return reply
+          .code(400)
+          .send({ message: config.errorMessage.userAlreadyExists });
+      }
+
+      const code = randomstring.generate({
+        length: 6,
+        charset: 'numeric',
+      });
 
       await db
         .update(user)
         .set({
           emailConfirmationCode: code,
-          emailConfirmationCodeExpiresAt: new Date(Date.now() + 1000 * 60 * 5),
+          emailConfirmationCodeExpiresAt: new Date(Date.now() + 1000 * 60 * 60),
         })
         .where(eq(user.id, requestUser.id));
 
-      return reply.send({ code });
+      await EmailService.send(
+        request.body.email,
+        `Email Update Code - ${code}`,
+        `Your email update code is ${code}`,
+      );
+
+      return reply.send();
     },
   );
 
@@ -522,7 +642,7 @@ export default function (
       if (!requestUser || !requestUser.id) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
       const { email, code } = request.body;
@@ -534,17 +654,19 @@ export default function (
       if (!account) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
       if (account.email === email) {
         return reply
           .code(400)
-          .send({ error: config.errorMessage.emailSameAsCurrent });
+          .send({ message: config.errorMessage.emailSameAsCurrent });
       }
 
       if (code !== account.emailConfirmationCode) {
-        return reply.code(400).send({ error: config.errorMessage.invalidCode });
+        return reply
+          .code(400)
+          .send({ message: config.errorMessage.invalidCode });
       }
 
       if (
@@ -553,7 +675,7 @@ export default function (
       ) {
         return reply
           .code(400)
-          .send({ error: config.errorMessage.emailConfirmationCodeExpired });
+          .send({ message: config.errorMessage.emailConfirmationCodeExpired });
       }
 
       await db
@@ -573,7 +695,7 @@ export default function (
   fastify.delete<{
     Reply: null | ErrorResponseType;
   }>(
-    '/delete-account',
+    '/',
     {
       preHandler: [authenticate],
       schema: {
@@ -589,7 +711,7 @@ export default function (
       if (!requestUser || !requestUser.id) {
         return reply
           .code(401)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
       await db
@@ -598,6 +720,60 @@ export default function (
         .where(eq(user.id, requestUser.id));
 
       return reply.send();
+    },
+  );
+
+  fastify.get<{
+    Reply: AccountProfileType | ErrorResponseType;
+  }>(
+    '/profile',
+    {
+      preHandler: [authenticate],
+      schema: {
+        response: {
+          200: AccountProfile,
+          401: ErrorResponse,
+        },
+      },
+    },
+    async (request, reply) => {
+      const { user: requestUser } = request as any;
+
+      if (!requestUser || !requestUser.id) {
+        return reply
+          .code(401)
+          .send({ message: config.errorMessage.accountNotFound });
+      }
+
+      const account = await db.query.user.findFirst({
+        where: eq(user.id, requestUser.id),
+      });
+
+      if (!account) {
+        return reply
+          .code(401)
+          .send({ message: config.errorMessage.accountNotFound });
+      }
+
+      let profileImageUrl = null;
+
+      if (account.profileImage) {
+        profileImageUrl = await StorageService.getUrl(account.profileImage);
+      }
+
+      let coverImageUrl = null;
+
+      if (account.coverImage) {
+        coverImageUrl = await StorageService.getUrl(account.coverImage);
+      }
+
+      return reply.send({
+        name: account.name,
+        handle: account.handle,
+        profileImage: profileImageUrl,
+        coverImage: coverImageUrl,
+        bio: account.bio,
+      });
     },
   );
 

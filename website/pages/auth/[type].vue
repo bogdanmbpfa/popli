@@ -72,6 +72,7 @@
 								label="Sign In"
 								fluid
 								severity="contrast"
+								:loading="loginIsSubmitting"
 								:disabled="loginIsSubmitting || !turnstileToken" />
 
 							<NuxtTurnstile v-model="turnstileToken" element="div" class="turnstile" />
@@ -174,6 +175,7 @@
 								label="Sign Up"
 								fluid
 								severity="contrast"
+								:loading="registerIsSubmitting"
 								:disabled="registerIsSubmitting || !turnstileToken" />
 
 							<div class="disclaimer">
@@ -288,6 +290,7 @@
 				summary: 'Oops!',
 				detail: 'Please verify you are human',
 				life: 3000,
+				closable: false,
 			});
 		}
 
@@ -302,6 +305,7 @@
 				summary: 'Oops!',
 				detail: 'Please verify you are human',
 				life: 3000,
+				closable: false,
 			});
 		}
 
@@ -313,6 +317,7 @@
 				summary: 'Oops!',
 				detail: error.message,
 				life: 3000,
+				closable: false,
 			});
 		}
 
@@ -334,21 +339,34 @@
 				summary: 'Oops!',
 				detail: userError.message,
 				life: 3000,
+				closable: false,
 			});
 		}
 
+		const { data: profileData } = await useApiJson(
+			EApiEndpoint.ACCOUNT_PROFILE,
+			{},
+			{},
+			{},
+			{
+				Authorization: `Bearer ${data.token}`,
+			}
+		);
+
 		userStore.setUser(userData);
+		userStore.setProfile(profileData || null);
 
 		toast.add({
 			severity: 'success',
 			summary: 'Welcome back!',
 			detail: 'You have been logged in successfully',
 			life: 3000,
+			closable: false,
 		});
 
 		loginResetForm();
 
-		return navigateTo('/');
+		return navigateTo('/account');
 	});
 
 	const onHandleChange = debounce(async (value?: string) => {
@@ -386,6 +404,7 @@
 				summary: 'Oops!',
 				detail: 'Please verify you are human',
 				life: 3000,
+				closable: false,
 			});
 		}
 
@@ -400,6 +419,7 @@
 				summary: 'Oops!',
 				detail: 'Please verify you are human',
 				life: 3000,
+				closable: false,
 			});
 		}
 
@@ -411,6 +431,7 @@
 				summary: 'Oops!',
 				detail: error.message,
 				life: 3000,
+				closable: false,
 			});
 		}
 
@@ -432,10 +453,23 @@
 				summary: 'Oops!',
 				detail: userError.message,
 				life: 3000,
+				closable: false,
 			});
 		}
 
+		const { data: profileData } = await useApiJson(
+			EApiEndpoint.ACCOUNT_PROFILE,
+			{},
+			{},
+			{},
+			{
+				Authorization: `Bearer ${data.token}`,
+			}
+		);
+
 		userStore.setUser(userData);
+		userStore.setProfile(profileData || null);
+
 		registerResetForm();
 
 		toast.add({
@@ -443,9 +477,10 @@
 			summary: 'Welcome!',
 			detail: 'You have been registered successfully',
 			life: 3000,
+			closable: false,
 		});
 
-		return navigateTo('/');
+		return navigateTo('/account');
 	});
 </script>
 
@@ -496,14 +531,14 @@
 					span {
 						font-size: 1.5rem;
 						font-weight: 600;
-						color: var(--primary);
+						color: var(--text-100);
 					}
 				}
 
 				.description {
 					font-size: 0.875rem;
 					font-weight: 400;
-					color: var(--muted-foreground);
+					color: var(--text-300);
 					text-align: center;
 				}
 			}
@@ -515,14 +550,14 @@
 							.title {
 								font-size: 1.25rem;
 								font-weight: 600;
-								color: var(--primary);
+								color: var(--text-100);
 								text-align: center;
 							}
 
 							.description {
 								font-size: 0.875rem;
 								font-weight: 400;
-								color: var(--muted-foreground);
+								color: var(--text-300);
 								text-align: center;
 							}
 						}
@@ -531,11 +566,11 @@
 							.disclaimer {
 								font-size: 0.75rem;
 								font-weight: 400;
-								color: var(--muted-foreground);
+								color: var(--text-300);
 								text-align: center;
 
 								a {
-									color: var(--color-blue-600);
+									color: var(--text-100);
 									text-decoration: none;
 								}
 							}
@@ -548,7 +583,7 @@
 								a {
 									font-size: 0.75rem;
 									font-weight: 500;
-									color: var(--color-blue-600);
+									color: var(--text-100);
 									text-decoration: none;
 
 									&:hover {

@@ -23,15 +23,15 @@
 					:icon="darkMode ? 'pi pi-sun' : 'pi pi-moon'"
 					@click="handleThemeChange" />
 
-				<nuxt-link v-if="!user" to="/auth/sign-in">
+				<nuxt-link v-if="!profile" to="/auth/sign-in">
 					<PButton class="default" as="a" variant="link" label="Sign In" />
 				</nuxt-link>
 
-				<nuxt-link v-if="!user" to="/auth/sign-up">
+				<nuxt-link v-if="!profile" to="/auth/sign-up">
 					<PButton class="default" as="a" label="Get Started" />
 				</nuxt-link>
 
-				<nuxt-link v-if="user" to="/account">
+				<nuxt-link v-if="profile" to="/account">
 					<PButton class="default" severity="contrast" icon="pi pi-user" label="Account" />
 				</nuxt-link>
 			</div>
@@ -40,6 +40,8 @@
 </template>
 
 <script setup lang="ts">
+	import { EApiEndpoint } from '~/enums';
+
 	const globalStore = useGlobalStore();
 	const {
 		public: { images },
@@ -47,7 +49,7 @@
 	const userStore = useUserStore();
 
 	const darkMode = computed(() => globalStore.getDarkMode);
-	const user = computed(() => userStore.getUser);
+	const profile = computed(() => userStore.getProfile);
 
 	if (import.meta.client) {
 		darkMode.value
@@ -55,6 +57,14 @@
 			: (document.documentElement.setAttribute('data-theme', 'light'),
 			  globalStore.setDarkMode(false));
 	}
+
+	onMounted(async () => {
+		if (!profile.value) {
+			const { data: profileData } = await useApiJson(EApiEndpoint.ACCOUNT_PROFILE);
+
+			userStore.setProfile(profileData || null);
+		}
+	});
 
 	const handleThemeChange = () => {
 		globalStore.toggleDarkMode();
@@ -75,10 +85,10 @@
 		left: 0;
 		padding: 0 0.5rem;
 		backdrop-filter: blur(8px);
-		background-color: color-mix(in oklab, var(--background) 60%, transparent);
-		border-bottom: 1px solid var(--border);
-		outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
-		color: var(--foreground);
+		background-color: color-mix(in oklab, var(--background-primary) 60%, transparent);
+		border-bottom: 1px solid var(--border-1);
+		outline-color: color-mix(in oklab, var(--background-primary) 50%, transparent);
+		color: var(--text-100);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -110,7 +120,7 @@
 					span {
 						font-size: 1.25rem;
 						font-weight: 600;
-						color: var(--foreground);
+						color: var(--text-100);
 					}
 				}
 			}
@@ -122,7 +132,7 @@
 
 				a {
 					text-decoration: none;
-					color: var(--muted-foreground);
+					color: var(--text-300);
 				}
 			}
 

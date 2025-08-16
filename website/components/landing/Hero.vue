@@ -78,13 +78,13 @@
 				display: flex;
 				flex-direction: column;
 				align-items: center;
-				gap: 0.25rem;
+				// gap: 0.25rem;
 			}
 
 			span.subheading {
 				text-align: center;
 				font-size: 1.25rem;
-				color: var(--muted-foreground);
+				color: var(--text-300);
 				max-width: 40rem;
 			}
 
@@ -104,6 +104,7 @@
 						font-size: 0.875rem;
 						font-weight: 500;
 						text-align: center;
+						color: var(--text-300);
 					}
 				}
 			}

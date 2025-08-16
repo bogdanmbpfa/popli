@@ -59,7 +59,7 @@ export default function (
       if (existingUser) {
         return reply
           .code(400)
-          .send({ error: config.errorMessage.userAlreadyExists });
+          .send({ message: config.errorMessage.userAlreadyExists });
       }
 
       const password = await hashPassword(body.password);
@@ -115,7 +115,7 @@ export default function (
       if (!account) {
         return reply
           .code(400)
-          .send({ error: config.errorMessage.invalidCredentials });
+          .send({ message: config.errorMessage.invalidCredentials });
       }
 
       const isPasswordValid = await verifyPassword(password, account.password);
@@ -123,7 +123,7 @@ export default function (
       if (!isPasswordValid) {
         return reply
           .code(400)
-          .send({ error: config.errorMessage.invalidCredentials });
+          .send({ message: config.errorMessage.invalidCredentials });
       }
 
       const jwt = await signJwt({ id: account.id }, account.jwtSecret);
@@ -205,11 +205,13 @@ export default function (
       if (!account) {
         return reply
           .code(400)
-          .send({ error: config.errorMessage.accountNotFound });
+          .send({ message: config.errorMessage.accountNotFound });
       }
 
       if (account.passwordResetCode !== code) {
-        return reply.code(400).send({ error: config.errorMessage.invalidCode });
+        return reply
+          .code(400)
+          .send({ message: config.errorMessage.invalidCode });
       }
 
       if (
@@ -219,7 +221,7 @@ export default function (
       ) {
         return reply
           .code(400)
-          .send({ error: config.errorMessage.passwordResetCodeExpired });
+          .send({ message: config.errorMessage.passwordResetCodeExpired });
       }
 
       const hashedPassword = await hashPassword(password);

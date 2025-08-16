@@ -47,7 +47,7 @@ class FastifyServer {
       const responseTime = Math.round(reply.elapsedTime || 0);
 
       this.logger.info(
-        `Response Time: ${responseTime}ms - Status Code: ${reply.statusCode} - URL: ${request.url}`,
+        `Response Time: ${responseTime}ms - Status Code: ${reply.statusCode} - URL: ${request.method} ${request.url}`,
       );
       done();
     });

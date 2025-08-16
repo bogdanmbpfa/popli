@@ -1,5 +1,10 @@
 import { EApiEndpoint } from '~/enums';
-import type { IApiEndpoint, IAuthLoginResponse, IAccountUser } from '~/interfaces';
+import type {
+	IAccountProfile,
+	IAccountUser,
+	IApiEndpoint,
+	IAuthLoginResponse,
+} from '~/interfaces';
 
 export const apiEndpoints: Record<EApiEndpoint, IApiEndpoint> = {
 	// Auth API Endpoints
@@ -50,6 +55,50 @@ export const apiEndpoints: Record<EApiEndpoint, IApiEndpoint> = {
 		contentType: 'json',
 		auth: false,
 	},
+
+	[EApiEndpoint.ACCOUNT_PROFILE]: {
+		path: '/account/profile',
+		method: 'GET',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.ACCOUNT_UPLOAD_COVER_IMAGE]: {
+		path: '/account/upload-cover-image',
+		method: 'POST',
+		contentType: 'multipart',
+		auth: true,
+		filenames: ['file'],
+	},
+	[EApiEndpoint.ACCOUNT_UPDATE_PROFILE]: {
+		path: '/account',
+		method: 'PATCH',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.ACCOUNT_REQUEST_EMAIL_VERIFY]: {
+		path: '/account/request-email-verify',
+		method: 'POST',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.ACCOUNT_VERIFY_EMAIL]: {
+		path: '/account/verify-email',
+		method: 'POST',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.ACCOUNT_CHANGE_PASSWORD]: {
+		path: '/account/change-password',
+		method: 'POST',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.ACCOUNT_DELETE]: {
+		path: '/account',
+		method: 'DELETE',
+		contentType: 'json',
+		auth: true,
+	},
 };
 
 export type TApiEndpoint = {
@@ -63,4 +112,11 @@ export type TApiEndpoint = {
 	[EApiEndpoint.ACCOUNT_ME]: IAccountUser;
 	[EApiEndpoint.ACCOUNT_CHECK_HANDLE]: void;
 	[EApiEndpoint.ACCOUNT_CHECK_EMAIL]: void;
+	[EApiEndpoint.ACCOUNT_PROFILE]: IAccountProfile;
+	[EApiEndpoint.ACCOUNT_UPLOAD_COVER_IMAGE]: void;
+	[EApiEndpoint.ACCOUNT_UPDATE_PROFILE]: void;
+	[EApiEndpoint.ACCOUNT_REQUEST_EMAIL_VERIFY]: void;
+	[EApiEndpoint.ACCOUNT_VERIFY_EMAIL]: void;
+	[EApiEndpoint.ACCOUNT_CHANGE_PASSWORD]: void;
+	[EApiEndpoint.ACCOUNT_DELETE]: void;
 };

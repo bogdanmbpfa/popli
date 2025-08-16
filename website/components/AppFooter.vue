@@ -77,8 +77,8 @@
 		display: flex;
 		justify-content: center;
 		padding: 2rem 1rem;
-		background-color: color-mix(in oklab, var(--muted) 30%, transparent);
-    border-top: 1px solid var(--muted);
+		background-color: color-mix(in oklab, var(--background-2) 30%, transparent);
+    border-top: 1px solid var(--border-1);
 
 		.container {
 			display: flex;
@@ -116,13 +116,13 @@
 						.name {
 							font-size: 1.25rem;
 							font-weight: 600;
-							color: var(--primary);
+							color: var(--text-100);
 						}
 					}
 
 					.description {
 						font-size: 0.875rem;
-						color: var(--muted-foreground);
+						color: var(--text-300);
 					}
 				}
 
@@ -134,7 +134,7 @@
 					.title {
 						font-size: 0.875rem;
 						font-weight: 600;
-						color: var(--primary);
+						color: var(--text-100);
 					}
 
 					.link-list {
@@ -143,7 +143,7 @@
 						gap: 0.25rem;
 
 						a {
-							color: var(--muted-foreground);
+							color: var(--text-300);
 							text-decoration: none;
 							font-size: 0.875rem;
 						}
@@ -157,11 +157,11 @@
 				justify-content: space-between;
 				align-items: center;
 				padding-top: 1rem;
-				border-top: 1px solid var(--muted);
+				border-top: 1px solid var(--border-1);
 
 				.copyright, .message {
 					font-size: 0.875rem;
-					color: var(--muted-foreground);
+					color: var(--text-300);
 				}
 			}
 		}

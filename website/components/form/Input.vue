@@ -1,19 +1,19 @@
 <template>
-  <div class="form-input">
-    <label :for="id">{{ label }}</label>
+	<div class="form-input" :class="{ half: size === 'half' }">
+		<label :for="id">{{ label }}</label>
 
-    <slot />
+		<slot />
 
-    <span v-if="!required" class="optional">Optional</span>
+		<span v-if="!required" class="optional">Optional</span>
 
-    <span v-if="caption" class="caption">{{ caption }}</span>
+		<span v-if="caption" class="caption">{{ caption }}</span>
 
-    <div v-if="error" class="error">
-      <Icon name="mdi:alert-circle-outline" size="0.75rem" />
+		<div v-if="error" class="error">
+			<Icon name="mdi:alert-circle-outline" size="0.75rem" />
 
-      <span>{{ error }}</span>
-    </div>
-  </div>
+			<span>{{ error }}</span>
+		</div>
+	</div>
 </template>
 
 <script setup lang="ts">
@@ -41,49 +41,57 @@
 			default: '',
 			required: false,
 		},
+		size: {
+			type: String as PropType<'half' | 'full'>,
+			default: 'full',
+			required: false,
+		},
 	});
 </script>
 
 <style lang="scss" scoped>
-  .form-input {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+	.form-input {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		width: 100%;
+		max-width: 100%;
 
-    label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--primary);
-    }
+		&.half {
+			max-width: calc(50% - 0.5rem);
+		}
 
-    .optional, .caption {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--muted-foreground);
-    }
+		label {
+			font-size: 0.75rem;
+			font-weight: 500;
+			color: var(--text-100);
+		}
 
-    .error {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--color-red-600);
+		.optional,
+		.caption {
+			font-size: 0.75rem;
+			font-weight: 500;
+			color: var(--text-300);
+		}
 
-      .iconify {
-        width: 0.75rem;
-        height: 0.75rem;
-      }
+		.error {
+			display: flex;
+			align-items: center;
+			gap: 0.25rem;
+			font-size: 0.75rem;
+			font-weight: 500;
+			color: var(--text-danger);
 
-      span {
-        width: calc(100% - 0.75rem);
-      }
-    }
+			.iconify {
+				width: 0.75rem;
+				height: 0.75rem;
+				filter: brightness(0) saturate(100%) invert(9%) sepia(55%) saturate(5599%)
+					hue-rotate(348deg) brightness(101%) contrast(91%);
+			}
 
-    :root[data-theme='dark'] & {
-      .error {
-        color: var(--color-red-400);
-      }
-    }
-  }
+			span {
+				width: calc(100% - 0.75rem);
+			}
+		}
+	}
 </style>

@@ -4,7 +4,7 @@
 			<div class="heading">
 				<h1>Everything you need to <span class="primary">grow online</span></h1>
 
-				<span>
+				<span class="subheading">
 					Powerful tools designed to help creators, businesses, and influencers maximize their
 					online presence and turn their audience into customers.
 				</span>
@@ -478,11 +478,13 @@
 
 				h1 {
 					text-align: center;
+					color: var(--text-100);
 				}
 
-				span {
+				span.subheading {
 					text-align: center;
 					max-width: 40rem;
+					color: var(--text-300);
 				}
 			}
 
@@ -529,10 +531,19 @@
 						display: flex;
 						flex-direction: column;
 						gap: 0.25rem;
+
+						h2 {
+							color: var(--text-100);
+						}
+
+						span {
+							color: var(--text-300);
+						}
 					}
 
 					span {
 						text-align: left;
+						color: var(--text-300);
 					}
 
 					.key-features {
@@ -543,7 +554,7 @@
 						.title {
 							font-size: 1rem;
 							font-weight: 500;
-							color: var(--primary);
+							color: var(--text-100);
 						}
 
 						.key-feature {
@@ -593,7 +604,7 @@
 					& > .container {
 						width: 100%;
 						height: fit-content;
-						background-color: var(--background);
+						background-color: var(--background-1);
 						border-radius: 1rem;
 						overflow: hidden;
 						display: flex;
@@ -715,7 +726,7 @@
 									flex-direction: row;
 									align-items: center;
 									gap: 0.5rem;
-									background-color: var(--muted);
+									background-color: var(--background-2);
 									border-radius: 0.5rem;
 									overflow: hidden;
 									padding: 0 0.25rem;
@@ -734,7 +745,7 @@
 									.content {
 										flex: 1;
 										height: 0.75rem;
-										background-color: color-mix(in oklab, var(--muted-foreground) 20%, transparent);
+										background-color: color-mix(in oklab, var(--background-3) 20%, transparent);
 										border-radius: 0.3rem;
 									}
 
@@ -742,7 +753,7 @@
 										width: 1rem;
 										height: 1rem;
 										border-radius: 0.3rem;
-										background-color: color-mix(in oklab, var(--muted-foreground) 20%, transparent);
+										background-color: color-mix(in oklab, var(--background-3) 20%, transparent);
 									}
 								}
 							}
@@ -819,7 +830,7 @@
 							.title {
 								font-size: 1.25rem;
 								font-weight: 500;
-								color: var(--primary);
+								color: var(--text-100);
 							}
 
 							.original-url {
@@ -829,18 +840,18 @@
 								gap: 0.25rem;
 								padding: 0.5rem;
 								border-radius: 0.5rem;
-								background-color: var(--muted);
+								background-color: var(--background-2);
 
 								.label {
 									font-size: 0.75rem;
-									color: var(--muted-foreground);
+									color: var(--text-300);
 								}
 
 								.url-skeleton {
 									width: 100%;
 									height: 0.75rem;
 									border-radius: 0.3rem;
-									background-color: color-mix(in oklab, var(--muted-foreground) 20%, transparent);
+									background-color: color-mix(in oklab, var(--background-3) 20%, transparent);
 								}
 							}
 
@@ -875,7 +886,7 @@
 
 									.label {
 										font-size: 0.75rem;
-										color: var(--muted-foreground);
+										color: var(--text-300);
 									}
 
 									.url-skeleton {
@@ -914,17 +925,17 @@
 									gap: 0.25rem;
 									padding: 0.5rem;
 									border-radius: 0.5rem;
-									background-color: var(--muted);
+									background-color: var(--background-2);
 
 									.label {
 										font-size: 0.75rem;
-										color: var(--muted-foreground);
+										color: var(--text-300);
 									}
 
 									.value {
 										font-size: 1rem;
 										font-weight: 500;
-										color: var(--primary);
+										color: var(--text-100);
 									}
 								}
 							}
@@ -976,7 +987,7 @@
 							width: 100%;
 							height: fit-content;
 							padding: 1rem;
-							background-color: var(--background);
+							background-color: var(--background-1);
 							border-radius: 1rem;
 							overflow: hidden;
 							display: flex;
@@ -1007,7 +1018,7 @@
 							.title {
 								font-size: 1.25rem;
 								font-weight: 500;
-								color: var(--primary);
+								color: var(--text-100);
 							}
 
 							.qrcode-container {
@@ -1031,6 +1042,11 @@
 								align-items: center;
 								gap: 0.5rem;
 
+								.label {
+									font-size: 0.75rem;
+									color: var(--text-300);
+								}
+
 								.items {
 									width: 100%;
 									display: flex;
@@ -1043,19 +1059,19 @@
 										flex-direction: column;
 										align-items: center;
 										gap: 0.25rem;
-										background-color: var(--muted);
+										background-color: var(--background-2);
 										border-radius: 0.5rem;
 										padding: 0.5rem;
 
 										.label {
 											font-size: 0.75rem;
-											color: var(--muted-foreground);
+											color: var(--text-300);
 										}
 
 										.value {
 											font-size: 1rem;
 											font-weight: 500;
-											color: var(--primary);
+											color: var(--text-100);
 										}
 									}
 								}
@@ -1110,7 +1126,7 @@
 							width: 100%;
 							height: fit-content;
 							padding: 1rem;
-							background-color: var(--background);
+							background-color: var(--background-1);
 							border-radius: 1rem;
 							overflow: hidden;
 							display: flex;
@@ -1141,7 +1157,7 @@
 							.title {
 								font-size: 1.25rem;
 								font-weight: 500;
-								color: var(--primary);
+								color: var(--text-100);
 							}
 
 							.products {
@@ -1157,7 +1173,7 @@
 									flex-direction: row;
 									align-items: center;
 									gap: 1rem;
-									border: 1px solid var(--muted);
+									border: 1px solid var(--border-1);
 									border-radius: 0.5rem;
 									padding: 0.5rem;
 
@@ -1186,7 +1202,7 @@
 											border-radius: 0.3rem;
 											background-color: color-mix(
 												in oklab,
-												var(--muted-foreground) 20%,
+												var(--background-3) 20%,
 												transparent
 											);
 										}
@@ -1197,7 +1213,7 @@
 											border-radius: 0.3rem;
 											background-color: color-mix(
 												in oklab,
-												var(--muted-foreground) 10%,
+												var(--background-3) 10%,
 												transparent
 											);
 										}
@@ -1228,19 +1244,19 @@
 									flex-direction: column;
 									align-items: center;
 									gap: 0.25rem;
-									background-color: var(--muted);
+									background-color: var(--background-2);
 									border-radius: 0.5rem;
 									padding: 0.5rem;
 
 									.label {
 										font-size: 0.75rem;
-										color: var(--muted-foreground);
+										color: var(--text-300);
 									}
 
 									.value {
 										font-size: 1rem;
 										font-weight: 500;
-										color: var(--primary);
+										color: var(--text-100);
 									}
 								}
 							}
@@ -1265,12 +1281,12 @@
 						text-align: center;
 						font-size: 1.5rem;
 						font-weight: 500;
-						color: var(--primary);
+						color: var(--text-100);
 					}
 
 					span {
 						text-align: center;
-						color: var(--muted-foreground);
+						color: var(--text-300);
 					}
 				}
 
@@ -1291,8 +1307,8 @@
 						padding: 2rem;
 						background-image: linear-gradient(
 							to bottom right in oklab,
-							var(--background) 0%,
-							color-mix(in oklab, var(--muted) 50%, transparent) 100%
+							var(--background-1) 0%,
+							color-mix(in oklab, var(--background-2) 50%, transparent) 100%
 						);
 						border-radius: 1.5rem;
 						box-shadow: 0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, 0 10px 15px -3px #0000001a,
@@ -1312,19 +1328,19 @@
 							display: flex;
 							align-items: center;
 							justify-content: center;
-							background-color: var(--muted);
+							background-color: var(--background-2);
 						}
 
 						.title {
 							font-size: 1rem;
 							font-weight: 500;
-							color: var(--primary);
+							color: var(--text-100);
 							text-align: center;
 						}
 
 						.description {
 							font-size: 0.875rem;
-							color: var(--muted-foreground);
+							color: var(--text-300);
 							text-align: center;
 						}
 

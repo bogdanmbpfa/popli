@@ -15,9 +15,12 @@ class GoogleCloudStorage {
   private constructor() {
     this.storage = new Storage({
       projectId: config.googleCloud.projectId,
+      universeDomain: 'googleapis.com',
       credentials: {
+        type: 'service_account',
+        project_id: config.googleCloud.projectId,
         client_email: config.googleCloud.storage.serviceAccountEmail,
-        private_key: config.googleCloud.storage.serviceAccountKey!.replace(
+        private_key: config.googleCloud.storage.serviceAccountKey?.replace(
           /\\n/g,
           '\n',
         ),
@@ -72,7 +75,14 @@ class GoogleCloudStorage {
 
   public async getUrl(name: string): Promise<string> {
     try {
-      const [url] = await this.bucket.file(name).getSignedUrl({
+      const file = this.bucket.file(name);
+      const [exists] = await file.exists();
+
+      if (!exists) {
+        throw new Error(`File ${name} does not exist in bucket`);
+      }
+
+      const [url] = await file.getSignedUrl({
         version: 'v4',
         action: 'read',
         expires: Date.now() + 1000 * 60 * 60, // 1 hour

@@ -1,12 +1,16 @@
 @use './variables.scss';
 
 @use './button.scss';
+@use './drawer.scss';
 @use './form.scss';
 @use './icon-field.scss';
+@use './input-group.scss';
 @use './input-otp.scss';
 @use './input-text.scss';
+@use './message.scss';
 @use './tabs.scss';
 @use './tag.scss';
+@use './textarea.scss';
 @use './toast.scss';
 @use './toggle-switch.scss';
 @use './typography.scss';
@@ -16,13 +20,13 @@ html {
 	font-size: 16px;
 	font-family: 'Roboto', sans-serif;
 	line-height: 1.5;
-	
+
 	body {
 		min-height: 100svh;
 		position: relative;
 		margin: 0;
-		background-color: var(--background);
-		color: var(--muted-foreground);
+		background-color: var(--background-1);
+		color: var(--text-200);
 		overflow-x: hidden;
 
 		#__nuxt {
@@ -35,6 +39,24 @@ html {
 
 		a {
 			text-decoration: none;
+		}
+	}
+
+	&[data-theme='light'] {
+		body {
+			.iconify {
+				filter: brightness(0) saturate(100%) invert(49%) sepia(18%) saturate(300%)
+					hue-rotate(201deg) brightness(86%) contrast(86%);
+			}
+		}
+	}
+
+	&[data-theme='dark'] {
+		body {
+			.iconify {
+				filter: brightness(0) saturate(100%) invert(49%) sepia(8%) saturate(731%) hue-rotate(202deg)
+					brightness(88%) contrast(84%);
+			}
 		}
 	}
 }

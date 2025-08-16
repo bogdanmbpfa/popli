@@ -3,9 +3,6 @@ import { Static, Type } from '@sinclair/typebox';
 export const Account = Type.Object({
   id: Type.String({ format: 'uuid' }),
   email: Type.String({ format: 'email' }),
-  name: Type.String(),
-  handle: Type.String(),
-  profileImage: Type.Union([Type.String({ format: 'uri' }), Type.Null()]),
   emailConfirmedAt: Type.Union([
     Type.String({ format: 'date-time' }),
     Type.Null(),
@@ -15,8 +12,9 @@ export const Account = Type.Object({
 });
 
 export const AccountUpdate = Type.Object({
-  name: Type.Optional(Type.String()),
-  handle: Type.Optional(Type.String()),
+  name: Type.Optional(Type.String({ minLength: 3, maxLength: 255 })),
+  handle: Type.Optional(Type.String({ minLength: 3, maxLength: 255 })),
+  bio: Type.Optional(Type.String({ minLength: 0, maxLength: 255 })),
 });
 
 export const AccountVerifyEmail = Type.Object({
@@ -48,6 +46,10 @@ export const AccountCheckEmail = Type.Object({
   email: Type.String({ format: 'email' }),
 });
 
+export const AccountRequestEmailUpdate = Type.Object({
+  email: Type.String({ format: 'email' }),
+});
+
 export const AccountUpdateProfile = Type.Object({
   name: Type.Optional(
     Type.String({
@@ -68,6 +70,14 @@ export const AccountUpdateEmail = Type.Object({
   }),
 });
 
+export const AccountProfile = Type.Object({
+  name: Type.String(),
+  handle: Type.String(),
+  profileImage: Type.Union([Type.String({ format: 'uri' }), Type.Null()]),
+  coverImage: Type.Union([Type.String({ format: 'uri' }), Type.Null()]),
+  bio: Type.Union([Type.String(), Type.Null()]),
+});
+
 export type AccountType = Static<typeof Account>;
 export type AccountUpdateType = Static<typeof AccountUpdate>;
 export type AccountVerifyEmailType = Static<typeof AccountVerifyEmail>;
@@ -76,3 +86,7 @@ export type AccountCheckHandleType = Static<typeof AccountCheckHandle>;
 export type AccountCheckEmailType = Static<typeof AccountCheckEmail>;
 export type AccountUpdateProfileType = Static<typeof AccountUpdateProfile>;
 export type AccountUpdateEmailType = Static<typeof AccountUpdateEmail>;
+export type AccountRequestEmailUpdateType = Static<
+  typeof AccountRequestEmailUpdate
+>;
+export type AccountProfileType = Static<typeof AccountProfile>;
