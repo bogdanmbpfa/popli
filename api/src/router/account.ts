@@ -6,7 +6,7 @@ import randomstring from 'randomstring';
 import sharp from 'sharp';
 
 import config from '@config';
-import { db, user } from '@database';
+import { db, userModel } from '@database';
 import { authenticate } from '@middlewares';
 import {
   Account,
@@ -64,8 +64,8 @@ export default function (
           .send({ message: config.errorMessage.accountNotFound });
       }
 
-      const account = await db.query.user.findFirst({
-        where: eq(user.id, requestUser.id),
+      const account = await db.query.userModel.findFirst({
+        where: eq(userModel.id, requestUser.id),
       });
 
       if (!account) {
@@ -112,8 +112,8 @@ export default function (
 
       const { name, handle, bio } = request.body;
 
-      const account = await db.query.user.findFirst({
-        where: eq(user.id, requestUser.id),
+      const account = await db.query.userModel.findFirst({
+        where: eq(userModel.id, requestUser.id),
       });
 
       if (!account) {
@@ -123,8 +123,8 @@ export default function (
       }
 
       if (handle && handle !== account.handle) {
-        const accountWithSameHandle = await db.query.user.findFirst({
-          where: eq(user.handle, handle),
+        const accountWithSameHandle = await db.query.userModel.findFirst({
+          where: eq(userModel.handle, handle),
         });
 
         if (accountWithSameHandle) {
@@ -135,13 +135,13 @@ export default function (
       }
 
       await db
-        .update(user)
+        .update(userModel)
         .set({
           ...(name && { name }),
           ...(handle && { handle }),
           ...(bio && { bio }),
         })
-        .where(eq(user.id, requestUser.id));
+        .where(eq(userModel.id, requestUser.id));
 
       return reply.send();
     },
@@ -169,8 +169,8 @@ export default function (
           .send({ message: config.errorMessage.accountNotFound });
       }
 
-      const account = await db.query.user.findFirst({
-        where: eq(user.id, requestUser.id),
+      const account = await db.query.userModel.findFirst({
+        where: eq(userModel.id, requestUser.id),
       });
 
       if (!account) {
@@ -188,12 +188,12 @@ export default function (
       const code = randomstring.generate({ length: 6, charset: 'numeric' });
 
       await db
-        .update(user)
+        .update(userModel)
         .set({
           emailConfirmationCode: code,
           emailConfirmationCodeExpiresAt: new Date(Date.now() + 1000 * 60 * 60),
         })
-        .where(eq(user.id, requestUser.id));
+        .where(eq(userModel.id, requestUser.id));
 
       await EmailService.send(
         account.email,
@@ -231,8 +231,8 @@ export default function (
 
       const { code } = request.body;
 
-      const account = await db.query.user.findFirst({
-        where: eq(user.id, requestUser.id),
+      const account = await db.query.userModel.findFirst({
+        where: eq(userModel.id, requestUser.id),
       });
 
       if (!account) {
@@ -264,13 +264,13 @@ export default function (
       }
 
       await db
-        .update(user)
+        .update(userModel)
         .set({
           emailConfirmationCode: null,
           emailConfirmationCodeExpiresAt: null,
           emailConfirmedAt: new Date(),
         })
-        .where(eq(user.id, requestUser.id));
+        .where(eq(userModel.id, requestUser.id));
 
       return reply.send();
     },
@@ -319,9 +319,9 @@ export default function (
       );
 
       await db
-        .update(user)
+        .update(userModel)
         .set({ profileImage: imageUrl })
-        .where(eq(user.id, requestUser.id));
+        .where(eq(userModel.id, requestUser.id));
 
       return reply.send();
     },
@@ -380,9 +380,9 @@ export default function (
       );
 
       await db
-        .update(user)
+        .update(userModel)
         .set({ coverImage: imageUrl })
-        .where(eq(user.id, requestUser.id));
+        .where(eq(userModel.id, requestUser.id));
 
       return reply.send();
     },
@@ -414,8 +414,8 @@ export default function (
 
       const { currentPassword, newPassword } = request.body;
 
-      const account = await db.query.user.findFirst({
-        where: eq(user.id, requestUser.id),
+      const account = await db.query.userModel.findFirst({
+        where: eq(userModel.id, requestUser.id),
       });
 
       if (!account) {
@@ -447,9 +447,9 @@ export default function (
       }
 
       await db
-        .update(user)
+        .update(userModel)
         .set({ password: await hashPassword(newPassword) })
-        .where(eq(user.id, requestUser.id));
+        .where(eq(userModel.id, requestUser.id));
 
       return reply.send();
     },
@@ -472,8 +472,8 @@ export default function (
     async (request, reply) => {
       const { handle } = request.body;
 
-      const account = await db.query.user.findFirst({
-        where: eq(user.handle, handle),
+      const account = await db.query.userModel.findFirst({
+        where: eq(userModel.handle, handle),
       });
 
       if (account) {
@@ -503,8 +503,8 @@ export default function (
     async (request, reply) => {
       const { email } = request.body;
 
-      const account = await db.query.user.findFirst({
-        where: eq(user.email, email),
+      const account = await db.query.userModel.findFirst({
+        where: eq(userModel.email, email),
       });
 
       if (account) {
@@ -544,12 +544,12 @@ export default function (
       const { name, bio } = request.body;
 
       await db
-        .update(user)
+        .update(userModel)
         .set({
           ...(name && { name }),
           ...(bio && { bio }),
         })
-        .where(eq(user.id, requestUser.id));
+        .where(eq(userModel.id, requestUser.id));
 
       return reply.send();
     },
@@ -578,8 +578,8 @@ export default function (
           .send({ message: config.errorMessage.accountNotFound });
       }
 
-      const account = await db.query.user.findFirst({
-        where: eq(user.id, requestUser.id),
+      const account = await db.query.userModel.findFirst({
+        where: eq(userModel.id, requestUser.id),
       });
 
       if (!account) {
@@ -588,8 +588,8 @@ export default function (
           .send({ message: config.errorMessage.accountNotFound });
       }
 
-      const accountWithSameEmail = await db.query.user.findFirst({
-        where: eq(user.email, request.body.email),
+      const accountWithSameEmail = await db.query.userModel.findFirst({
+        where: eq(userModel.email, request.body.email),
       });
 
       if (accountWithSameEmail) {
@@ -604,12 +604,12 @@ export default function (
       });
 
       await db
-        .update(user)
+        .update(userModel)
         .set({
           emailConfirmationCode: code,
           emailConfirmationCodeExpiresAt: new Date(Date.now() + 1000 * 60 * 60),
         })
-        .where(eq(user.id, requestUser.id));
+        .where(eq(userModel.id, requestUser.id));
 
       await EmailService.send(
         request.body.email,
@@ -647,8 +647,8 @@ export default function (
 
       const { email, code } = request.body;
 
-      const account = await db.query.user.findFirst({
-        where: eq(user.id, requestUser.id),
+      const account = await db.query.userModel.findFirst({
+        where: eq(userModel.id, requestUser.id),
       });
 
       if (!account) {
@@ -679,14 +679,14 @@ export default function (
       }
 
       await db
-        .update(user)
+        .update(userModel)
         .set({
           email,
           emailConfirmedAt: new Date(),
           emailConfirmationCode: null,
           emailConfirmationCodeExpiresAt: null,
         })
-        .where(eq(user.id, requestUser.id));
+        .where(eq(userModel.id, requestUser.id));
 
       return reply.send();
     },
@@ -715,9 +715,9 @@ export default function (
       }
 
       await db
-        .update(user)
+        .update(userModel)
         .set({ deletedAt: new Date() })
-        .where(eq(user.id, requestUser.id));
+        .where(eq(userModel.id, requestUser.id));
 
       return reply.send();
     },
@@ -745,8 +745,8 @@ export default function (
           .send({ message: config.errorMessage.accountNotFound });
       }
 
-      const account = await db.query.user.findFirst({
-        where: eq(user.id, requestUser.id),
+      const account = await db.query.userModel.findFirst({
+        where: eq(userModel.id, requestUser.id),
       });
 
       if (!account) {

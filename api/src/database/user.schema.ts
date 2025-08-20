@@ -9,7 +9,7 @@ import {
 
 export const userManagementSchema = pgSchema('user_management');
 
-export const user = userManagementSchema.table(
+export const userModel = userManagementSchema.table(
   'users',
   {
     id: uuid('id').defaultRandom().primaryKey().unique().notNull(),

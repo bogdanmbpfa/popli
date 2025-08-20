@@ -4,6 +4,7 @@ import { withReplicas } from 'drizzle-orm/pg-core';
 import config from '@config';
 
 import * as userSchema from './user.schema';
+import * as urlSchema from './url.schema';
 
 export const db = withReplicas(
   drizzle({
@@ -17,6 +18,7 @@ export const db = withReplicas(
     },
     schema: {
       ...userSchema,
+      ...urlSchema,
     },
   }),
   [
@@ -31,9 +33,11 @@ export const db = withReplicas(
       },
       schema: {
         ...userSchema,
+        ...urlSchema,
       },
     }),
   ],
 );
 
+export * from './url.schema';
 export * from './user.schema';

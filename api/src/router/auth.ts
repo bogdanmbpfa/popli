@@ -4,7 +4,7 @@ import { eq, or } from 'drizzle-orm';
 import { randomBytes } from 'node:crypto';
 
 import config from '@config';
-import { db, user } from '@database';
+import { db, userModel } from '@database';
 import {
   AuthLogin,
   AuthLoginType,
@@ -52,8 +52,8 @@ export default function (
       const email = body.email.toLowerCase();
       const handle = body.handle.toLowerCase();
 
-      const existingUser = await db.query.user.findFirst({
-        where: or(eq(user.email, email), eq(user.handle, handle)),
+      const existingUser = await db.query.userModel.findFirst({
+        where: or(eq(userModel.email, email), eq(userModel.handle, handle)),
       });
 
       if (existingUser) {
@@ -67,7 +67,7 @@ export default function (
       const jwtSecret = randomBytes(20).toString('hex').toUpperCase();
 
       const [{ id }] = await db
-        .insert(user)
+        .insert(userModel)
         .values({
           email,
           password,
@@ -75,7 +75,7 @@ export default function (
           handle,
           jwtSecret,
         })
-        .returning({ id: user.id });
+        .returning({ id: userModel.id });
 
       const jwt = await signJwt({ id }, jwtSecret);
 
@@ -108,8 +108,8 @@ export default function (
     async (request, reply) => {
       const { email, password } = request.body;
 
-      const account = await db.query.user.findFirst({
-        where: eq(user.email, email.toLowerCase()),
+      const account = await db.query.userModel.findFirst({
+        where: eq(userModel.email, email.toLowerCase()),
       });
 
       if (!account) {
@@ -149,8 +149,8 @@ export default function (
     async (request, reply) => {
       const { email } = request.body;
 
-      const account = await db.query.user.findFirst({
-        where: eq(user.email, email.toLowerCase()),
+      const account = await db.query.userModel.findFirst({
+        where: eq(userModel.email, email.toLowerCase()),
       });
 
       if (!account) {
@@ -161,13 +161,13 @@ export default function (
       const jwtSecret = randomBytes(20).toString('hex').toUpperCase();
 
       await db
-        .update(user)
+        .update(userModel)
         .set({
           passwordResetCode: code,
           passwordResetCodeExpiresAt: new Date(Date.now() + 1000 * 60 * 30),
           jwtSecret,
         })
-        .where(eq(user.id, account.id));
+        .where(eq(userModel.id, account.id));
 
       EmailService.send(
         email,
@@ -198,8 +198,8 @@ export default function (
     async (request, reply) => {
       const { email, code, password } = request.body;
 
-      const account = await db.query.user.findFirst({
-        where: eq(user.email, email.toLowerCase()),
+      const account = await db.query.userModel.findFirst({
+        where: eq(userModel.email, email.toLowerCase()),
       });
 
       if (!account) {
@@ -227,13 +227,13 @@ export default function (
       const hashedPassword = await hashPassword(password);
 
       await db
-        .update(user)
+        .update(userModel)
         .set({
           password: hashedPassword,
           passwordResetCode: null,
           passwordResetCodeExpiresAt: null,
         })
-        .where(eq(user.id, account.id));
+        .where(eq(userModel.id, account.id));
 
       return reply.send();
     },

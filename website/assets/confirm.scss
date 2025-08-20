@@ -1,0 +1,25 @@
+.p-dialog {
+	&.default {
+		background-color: var(--background-1);
+		border: 1px solid var(--border-1);
+		box-shadow: var(--box-shadow-1);
+		border-radius: 1.5rem;
+		color: var(--text-100);
+
+    .p-dialog-header {
+      padding: 1rem;
+
+      .p-dialog-header-actions {
+        .p-dialog-close-button {
+          padding: 0;
+          height: fit-content;
+          color: var(--text-100);
+
+          &:hover {
+            background-color: transparent;
+          }
+        }
+      }
+    }
+	}
+}

@@ -65,6 +65,7 @@ a.p-button {
 			width: fit-content;
 			color: var(--text-100);
 			width: 1.5rem;
+			min-width: unset;
 			height: 1.5rem;
 
 			.p-button-icon {

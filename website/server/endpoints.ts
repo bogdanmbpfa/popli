@@ -4,6 +4,10 @@ import type {
 	IAccountUser,
 	IApiEndpoint,
 	IAuthLoginResponse,
+	IUrlShortUrl,
+	IUrlShortUrlCountryClicks,
+	IUrlShortUrlDailyClicks,
+	IUrlShortUrlRedirect,
 } from '~/interfaces';
 
 export const apiEndpoints: Record<EApiEndpoint, IApiEndpoint> = {
@@ -99,6 +103,63 @@ export const apiEndpoints: Record<EApiEndpoint, IApiEndpoint> = {
 		contentType: 'json',
 		auth: true,
 	},
+
+	// URL API Endpoints
+	[EApiEndpoint.URL_SHORT_URL_CREATE]: {
+		path: '/url/short-url',
+		method: 'POST',
+		contentType: 'json',
+		auth: true,
+	},
+
+	[EApiEndpoint.URL_SHORT_URL]: {
+		path: '/url/short-url',
+		method: 'GET',
+		contentType: 'json',
+		auth: true,
+	},
+
+	[EApiEndpoint.URL_SHORT_URL_TOGGLE]: {
+		path: '/url/short-url/{id}/toggle',
+		method: 'PATCH',
+		contentType: 'json',
+		auth: true,
+	},
+
+	[EApiEndpoint.URL_SHORT_URL_UPDATE]: {
+		path: '/url/short-url',
+		method: 'PATCH',
+		contentType: 'json',
+		auth: true,
+	},
+
+	[EApiEndpoint.URL_SHORT_URL_DELETE]: {
+		path: '/url/short-url/{id}',
+		method: 'DELETE',
+		contentType: 'json',
+		auth: true,
+	},
+
+	[EApiEndpoint.URL_SHORT_URL_REDIRECT]: {
+		path: '/url/short-url/{shortUrlCode}',
+		method: 'GET',
+		contentType: 'json',
+		auth: false,
+	},
+
+	[EApiEndpoint.URL_SHORT_URL_DAILY_CLICKS]: {
+		path: '/url/short-url/{id}/daily-clicks',
+		method: 'GET',
+		contentType: 'json',
+		auth: true,
+	},
+
+	[EApiEndpoint.URL_SHORT_URL_COUNTRY_CLICKS]: {
+		path: '/url/short-url/{id}/country-clicks',
+		method: 'GET',
+		contentType: 'json',
+		auth: true,
+	},
 };
 
 export type TApiEndpoint = {
@@ -119,4 +180,14 @@ export type TApiEndpoint = {
 	[EApiEndpoint.ACCOUNT_VERIFY_EMAIL]: void;
 	[EApiEndpoint.ACCOUNT_CHANGE_PASSWORD]: void;
 	[EApiEndpoint.ACCOUNT_DELETE]: void;
+
+	// URL API Endpoints
+	[EApiEndpoint.URL_SHORT_URL_CREATE]: void;
+	[EApiEndpoint.URL_SHORT_URL]: IUrlShortUrl[];
+	[EApiEndpoint.URL_SHORT_URL_UPDATE]: void;
+	[EApiEndpoint.URL_SHORT_URL_DELETE]: void;
+	[EApiEndpoint.URL_SHORT_URL_TOGGLE]: void;
+	[EApiEndpoint.URL_SHORT_URL_REDIRECT]: IUrlShortUrlRedirect;
+	[EApiEndpoint.URL_SHORT_URL_DAILY_CLICKS]: IUrlShortUrlDailyClicks[];
+	[EApiEndpoint.URL_SHORT_URL_COUNTRY_CLICKS]: IUrlShortUrlCountryClicks[];
 };

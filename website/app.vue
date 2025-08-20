@@ -5,6 +5,8 @@
 		</NuxtLayout>
 	</div>
 
+	<PConfirmDialog class="default" />
+	<PDynamicDialog class="default" />
 	<PToast class="default" position="top-center" />
 </template>
 

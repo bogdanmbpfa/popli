@@ -3,8 +3,7 @@
 		<PDrawer
 			v-model:visible="drawerVisible"
 			class="default"
-			:dismissable="isMobile"
-			:show-close-icon="isMobile"
+			:show-close-icon="false"
 			position="left">
 			<template #header>
 				<nuxt-img :src="images.logo" alt="Popli.one" loading="lazy" />
@@ -123,10 +122,9 @@
 			</template>
 		</PDrawer>
 
-		<div class="wrapper">
+		<div class="wrapper" :class="{ 'drawer-open': drawerVisible }">
 			<div class="top-bar">
 				<PButton
-					v-if="isMobile"
 					class="default"
 					as="a"
 					variant="link"
@@ -138,6 +136,11 @@
 
 					<span class="description">{{ heading.description }}</span>
 				</div>
+
+				<PButton
+					class="default"
+					:icon="darkMode ? 'pi pi-sun' : 'pi pi-moon'"
+					@click="handleThemeChange" />
 			</div>
 
 			<slot />
@@ -174,7 +177,7 @@
 			case '/account/settings':
 				return { name: 'Settings', description: 'Update your account settings.' };
 			case '/account/url-shortener':
-				return { name: 'URL Shortener', description: 'Create a URL shortener for your account.' };
+				return { name: 'URL Shortener', description: 'Create and manage short links.' };
 			case '/account/qr-code':
 				return { name: 'QR Code', description: 'Create a QR code for your account.' };
 			case '/account/digital-store':
@@ -200,6 +203,14 @@
 			return navigateTo('/');
 		}
 	});
+
+	const handleThemeChange = () => {
+		globalStore.toggleDarkMode();
+
+		if (import.meta.client) {
+			document.documentElement.setAttribute('data-theme', darkMode.value ? 'dark' : 'light');
+		}
+	};
 
 	const toggleDrawer = () => {
 		drawerVisible.value = !drawerVisible.value;
@@ -238,15 +249,26 @@
 			min-height: 100vh;
 			position: relative;
 			width: 100%;
-			padding-left: 20rem;
+			padding-left: 0;
 			padding-top: 5rem;
+			transition: padding-left 0.3s ease-in-out;
+
+			&.drawer-open {
+				padding-left: 20rem;
+
+				.top-bar {
+					left: 20rem;
+					width: calc(100% - 20rem);
+				}
+			}
 
 			.top-bar {
 				position: fixed;
 				top: 0;
-				left: 20rem;
+				left: 0;
+				transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
 				right: 0;
-				width: calc(100% - 20rem);
+				width: 100%;
 				height: 100%;
 				max-height: 5rem;
 				display: flex;
@@ -274,19 +296,6 @@
 						font-size: 0.875rem;
 						color: var(--text-300);
 					}
-				}
-			}
-		}
-	}
-
-	@media (max-width: 768px) {
-		.account-layout {
-			.wrapper {
-				padding-left: 0;
-
-				.top-bar {
-					left: 0;
-					width: 100%;
 				}
 			}
 		}

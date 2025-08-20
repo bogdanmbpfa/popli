@@ -3,7 +3,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { decodeJwt } from 'jose';
 
 import config from '@config';
-import { db, user } from '@database';
+import { db, userModel } from '@database';
 import { verifyJwt } from '@utilities';
 
 export const authenticate = async (
@@ -28,8 +28,8 @@ export const authenticate = async (
     return reply.code(401).send({ message: config.errorMessage.unauthorized });
   }
 
-  const account = await db.query.user.findFirst({
-    where: eq(user.id, payload.id as string),
+  const account = await db.query.userModel.findFirst({
+    where: eq(userModel.id, payload.id as string),
   });
 
   if (!account || account.deletedAt) {

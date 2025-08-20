@@ -1,0 +1,51 @@
+.p-accordion {
+  &.default {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .p-accordionpanel {
+      border: none;
+
+      .p-accordionheader {
+        border: none;
+        border-radius: 1.5rem;
+        padding: 1rem;
+        background-color: var(--background-1);
+        border: 1px solid var(--border-1);
+
+        &:hover {
+          background-color: var(--background-1);
+        }
+
+        .p-accordionheader-toggle-icon {
+          display: none;
+        }
+      }
+
+      &.p-accordionpanel-active {
+        .p-accordionheader {
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+      }
+
+      .p-accordioncontent {
+        border-left: 1px solid var(--border-1);
+        border-right: 1px solid var(--border-1);
+        border-bottom: 1px solid var(--border-1);
+        border-bottom-left-radius: 1.5rem;
+        border-bottom-right-radius: 1.5rem;
+        padding: 1rem;
+        background-color: var(--background-1);
+        transition-duration: 0.3s;
+
+        .p-accordioncontent-content {
+          padding: 0;
+          background: transparent;
+          border: none;
+        }
+      }
+    }
+  }
+}

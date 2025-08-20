@@ -38,6 +38,9 @@ export default {
     passwordSameAsCurrent: 'PASSWORD_SAME_AS_CURRENT',
     handleAlreadyExists: 'HANDLE_ALREADY_EXISTS',
     emailSameAsCurrent: 'EMAIL_SAME_AS_CURRENT',
+    aliasAlreadyExists: 'ALIAS_ALREADY_EXISTS',
+    shortUrlNotFound: 'SHORT_URL_NOT_FOUND',
+    ipProxy: 'IP_PROXY',
   },
 
   googleCloud: {
@@ -48,6 +51,10 @@ export default {
       serviceAccountKey: process.env.GOOGLE_CLOUD_STORAGE_SERVICE_ACCOUNT_KEY,
       bucket: process.env.GOOGLE_CLOUD_STORAGE_BUCKET,
     },
+  },
+
+  ipApi: {
+    baseUrl: 'https://free.freeipapi.com',
   },
 
   redis: {
