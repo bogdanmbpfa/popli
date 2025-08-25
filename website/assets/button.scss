@@ -38,6 +38,18 @@ a.p-button {
 			font-weight: 600;
 		}
 
+		.iconify {
+			filter: brightness(0) saturate(100%) invert(0%) sepia(2%) saturate(3475%) hue-rotate(11deg)
+				brightness(94%) contrast(92%);
+		}
+
+		:root[data-theme='dark'] & {
+			.iconify {
+				filter: brightness(0) saturate(100%) invert(100%) sepia(46%) saturate(51%)
+					hue-rotate(202deg) brightness(115%) contrast(96%);
+			}
+		}
+
 		&.p-button-fluid {
 			width: 100%;
 		}
@@ -93,6 +105,23 @@ a.p-button {
 			color: white;
 		}
 
+		&.p-button-secondary {
+			background-color: var(--background-2);
+			color: var(--text-100);
+			border: 1px solid var(--border-1);
+
+			&:hover {
+				background-color: var(--background-2);
+				color: var(--text-100);
+			}
+
+			&.active {
+				background-color: var(--background-3);
+				color: var(--text-100);
+				border: 1px solid var(--border-2);
+			}
+		}
+
 		&.p-button-danger {
 			background: var(--color-red-500);
 			color: white;
@@ -100,6 +129,16 @@ a.p-button {
 			&:hover {
 				background: var(--color-red-500);
 				color: white;
+			}
+
+			&.p-button-icon-only {
+				background: transparent;
+				color: var(--color-red-500);
+
+				&:hover {
+					background: transparent;
+					color: var(--color-red-500);
+				}
 			}
 		}
 	}

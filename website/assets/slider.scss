@@ -1,0 +1,24 @@
+.p-slider {
+  &.default {
+    background-color: var(--background-2);
+
+    .p-slider-range {
+      background-color: var(--background-4);
+    }
+
+    .p-slider-handle {
+      background: var(--background-1);
+      border: 1px solid var(--border-2);
+
+      &::before {
+        background: var(--background-4);
+      }
+
+      &:hover {
+        &::before {
+          background: var(--background-4);
+        }
+      }
+    }
+  }
+}

@@ -174,7 +174,6 @@
 </template>
 
 <script setup lang="ts">
-	import { DateTime } from 'luxon';
 	import * as yup from 'yup';
 
 	import { EApiEndpoint } from '~/enums';
