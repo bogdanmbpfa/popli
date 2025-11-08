@@ -10,14 +10,13 @@ spec:
     metadata:
       annotations:
         autoscaling.knative.dev/minScale: '0'
-        autoscaling.knative.dev/maxScale: '100'
-        run.googleapis.com/vpc-access-connector: 'projects/popli-465817/locations/europe-west1/connectors/development-vpc-connector'
+        autoscaling.knative.dev/maxScale: '1'
         run.googleapis.com/cpu-throttling: 'false'
         run.googleapis.com/container-concurrency: '80'
         run.googleapis.com/timeout-seconds: '300'
     spec:
       containers:
-        - image: europe-west1-docker.pkg.dev/wise-perception-404313/development/mymark-backend:IMAGE_TAG
+        - image: europe-west3-docker.pkg.dev/popli-465817/development/backend:IMAGE_TAG
           resources:
             limits:
               cpu: '1000m'
