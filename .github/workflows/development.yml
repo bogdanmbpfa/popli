@@ -37,7 +37,7 @@ jobs:
         run: |
           docker build \
             -t ${{ env.IMAGE_BACKEND_SHA_TAG }} \
-            -f ./docker/Dockerfile.gcp \
+            -f ./api/docker/Dockerfile.gcp \
             ./api
           docker build \
             -t ${{ env.IMAGE_FRONTEND_SHA_TAG }} \
