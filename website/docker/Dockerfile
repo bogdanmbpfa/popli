@@ -7,7 +7,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 RUN pnpm add -g typescript
 
-COPY package.json pnpm-lock.yaml./
+COPY package.json pnpm-lock.yaml ./
 
 RUN pnpm install
 
