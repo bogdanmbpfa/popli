@@ -24,8 +24,10 @@ spec:
           env:
             - name: NODE_ENV
               value: development
-            - name: PORT
+            - name: APP_PORT
               value: '8080'
+            - name: APP_HOST
+              value: '0.0.0.0'
             - name: WEBAPP_URL
               value: 'https://dev.popli.one'
             - name: DATABASE_READ_HOST

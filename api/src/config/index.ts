@@ -6,8 +6,8 @@ config();
 
 export default {
   nodeEnv: process.env.NODE_ENV as EEnvironment,
-  port: process.env.PORT ? Number(process.env.PORT) : 8000,
-  host: process.env.HOST || '0.0.0.0',
+  port: process.env.APP_PORT ? Number(process.env.APP_PORT) : 8000,
+  host: process.env.APP_HOST || '0.0.0.0',
 
   appName: 'Popli API',
 
