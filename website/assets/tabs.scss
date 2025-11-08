@@ -1,17 +1,21 @@
+@use './mixins.scss' as *;
+
 .p-tabs {
 	&.default {
 		width: 100%;
 		gap: 2rem;
 
 		.p-tablist {
+			background: none;
+
 			.p-tablist-content {
 				.p-tablist-tab-list {
-					background-color: var(--container-background);
-					border: 1px solid var(--border-3);
-					border-radius: 1.5rem;
+					@include squircle(1.5rem);
+					background-color: color-mix(in oklab, var(--color-gray-900) 40%, transparent);
+					border: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
 					padding: 0.25rem;
 					display: flex;
-					backdrop-filter: blur(0.5rem);
+					backdrop-filter: blur(1.5rem) saturate(150%);
 
 					.p-tab {
 						width: 100%;
@@ -20,26 +24,18 @@
 						align-items: center;
 						padding: 0.25rem;
 						flex-shrink: unset;
-						border-radius: 1.5rem;
+						@include squircle(1.5rem);
 						border: none;
 						color: var(--text-100);
 						font-weight: 500;
 
 						.iconify {
-							filter: brightness(0) saturate(100%) invert(0%) sepia(2%) saturate(3475%)
-								hue-rotate(11deg) brightness(94%) contrast(92%);
-						}
-
-						:root[data-theme='dark'] & {
-							.iconify {
-								filter: brightness(0) saturate(100%) invert(100%) sepia(46%) saturate(51%)
-									hue-rotate(202deg) brightness(115%) contrast(96%);
-							}
+							filter: brightness(0) saturate(100%) invert(100%) sepia(46%) saturate(51%)
+								hue-rotate(202deg) brightness(115%) contrast(96%);
 						}
 
 						&.p-tab-active {
-							background-color: var(--container-foreground);
-							box-shadow: var(--box-shadow-1);
+							background-image: var(--gradient-right-primary);
 						}
 					}
 
@@ -56,41 +52,16 @@
 			color: unset;
 
 			.p-tabpanel {
-				padding: 1.5rem;
-				border-radius: 1.5rem;
-				border: 1px solid var(--border-3);
-				background-color: var(--container-background);
-				box-shadow: var(--box-shadow-2);
-				backdrop-filter: blur(0.5rem);
+				padding: 0;
+				border-radius: 0;
+				border: none;
+				background-color: transparent;
+				box-shadow: none;
+				backdrop-filter: none;
+				outline: none;
 
 				&:focus-visible {
 					outline: none;
-				}
-			}
-		}
-
-		&.secondary {
-			.p-tablist {
-				.p-tablist-content {
-					.p-tablist-tab-list {
-						background-color: var(--background-1);
-						border: 1px solid var(--border-1);
-						
-						.p-tab {
-							&.p-tab-active {
-								box-shadow: none;
-								background-color: var(--background-3);
-							}
-						}
-					}
-				}
-			}
-
-			.p-tabpanels {
-				.p-tabpanel {
-					background-color: var(--background-1);
-					border: 1px solid var(--border-1);
-					box-shadow: none;
 				}
 			}
 		}

@@ -361,6 +361,8 @@
 </script>
 
 <style lang="scss" scoped>
+	@use '../../../assets/mixins.scss' as *;
+
 	.url-shortener-page {
 		display: flex;
 		flex-direction: row;
@@ -399,8 +401,9 @@
 						flex-direction: column;
 						gap: 1rem;
 						padding: 1rem;
-						border-radius: 1.5rem;
-						border: 1px solid var(--border-1);
+						@include squircle(1.5rem);
+						background-color: color-mix(in oklab, var(--color-gray-900) 40%, transparent);
+						border: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
 						transition: border-radius 0.3s ease-in-out;
 						z-index: 1;
 
@@ -419,7 +422,7 @@
 								.url-title {
 									font-size: 1.25rem;
 									font-weight: 500;
-									color: var(--text-100);
+									color: var(--color-neutral-100);
 								}
 							}
 
@@ -461,7 +464,7 @@
 
 							.original-url {
 								.url {
-									color: var(--text-300);
+									color: var(--color-neutral-400);
 								}
 							}
 						}
@@ -480,7 +483,7 @@
 								.value {
 									font-size: 0.75rem;
 									font-weight: 300;
-									color: var(--text-300);
+									color: var(--color-neutral-400);
 								}
 							}
 						}
@@ -492,7 +495,7 @@
 						gap: 1rem;
 						border-bottom-left-radius: 1.5rem;
 						border-bottom-right-radius: 1.5rem;
-						background-color: var(--background-1);
+						background-color: color-mix(in oklab, var(--color-gray-900) 40%, transparent);
 						padding: 0;
 						height: 0;
 						overflow: hidden;
@@ -509,9 +512,9 @@
 						.content {
 							padding: 1rem;
 							height: auto;
-							border-left: 1px solid var(--border-1);
-							border-right: 1px solid var(--border-1);
-							border-bottom: 1px solid var(--border-1);
+							border-left: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
+							border-right: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
+							border-bottom: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
 						}
 					}
 				}

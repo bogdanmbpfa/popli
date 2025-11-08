@@ -48,33 +48,34 @@
 			&.p-toast-message-success {
 				background-image: linear-gradient(
 					to bottom right in oklab,
-					var(--color-green-50) 0%,
-					var(--color-emerald-50) 100%
+					var(--color-green-950) 0%,
+					var(--color-emerald-950) 100%
 				);
-				border-color: var(--color-green-300);
+
+				border-color: var(--color-green-400);
 
 				.p-toast-message-content {
 					.p-toast-message-icon {
-						color: var(--color-green-800);
+						color: var(--color-green-400);
 					}
 
 					.p-toast-message-text {
-						color: var(--color-green-800);
+						color: var(--color-green-400);
 
 						.p-toast-detail {
-							color: var(--color-green-800);
+							color: var(--color-green-400);
 						}
 					}
 
 					div[data-pc-section='buttoncontainer'] {
 						.p-toast-close-button {
 							.p-toast-close-icon {
-								color: var(--color-green-800);
+								color: var(--color-green-400);
 							}
 
 							&:hover {
 								background: none;
-								color: var(--color-green-800);
+								color: var(--color-green-400);
 							}
 						}
 					}
@@ -84,29 +85,29 @@
 			&.p-toast-message-contrast {
 				background-image: linear-gradient(
 					to bottom right in oklab,
-					var(--color-blue-200) 0%,
-					var(--color-purple-100) 50%,
-					var(--color-pink-100) 100%
+					var(--color-blue-950) 0%,
+					var(--color-purple-950) 50%,
+					var(--color-pink-950) 100%
 				);
-				border-color: var(--color-blue-200);
+				border-color: var(--color-blue-400);
 
 				.p-toast-message-content {
 					.p-toast-message-icon {
-						color: black;
+						color: white;
 					}
 
 					.p-toast-message-text {
-						color: var(--color-purple-900);
+						color: white;
 
 						.p-toast-detail {
-							color: var(--color-purple-900);
+							color: white;
 						}
 					}
 
 					div[data-pc-section='buttoncontainer'] {
 						.p-toast-close-button {
 							.p-toast-close-icon {
-								color: var(--color-purple-900);
+								color: white;
 							}
 						}
 					}
@@ -115,131 +116,23 @@
 
 			&.p-toast-message-error {
 				background: linear-gradient(
-					135deg,
-					rgba(254, 242, 242, 0.9) 0%,
-					rgba(239, 68, 68, 0.1) 50%,
-					rgba(254, 202, 202, 0.85) 100%
+					to bottom right in oklab,
+					var(--color-red-950) 0%,
+					var(--color-orange-950) 50%,
+					var(--color-orange-900) 100%
 				);
 				border-color: var(--color-red-400);
 
 				.p-toast-message-content {
 					.p-toast-message-icon {
-						color: var(--color-red-800);
+						color: var(--color-red-400);
 					}
 
 					.p-toast-message-text {
-						color: var(--color-red-800);
+						color: var(--color-red-400);
 
 						.p-toast-detail {
-							color: var(--color-red-800);
-						}
-
-						div[data-pc-section='buttoncontainer'] {
-							.p-toast-close-button {
-								.p-toast-close-icon {
-									color: var(--color-red-800);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	:root[data-theme='dark'] & {
-		&.default {
-			.p-toast-message {
-				&.p-toast-message-success {
-					background-image: linear-gradient(
-						to bottom right in oklab,
-						var(--color-green-950) 0%,
-						var(--color-emerald-950) 100%
-					);
-
-					border-color: var(--color-green-400);
-
-					.p-toast-message-content {
-						.p-toast-message-icon {
-							color: var(--color-green-400);
-						}
-
-						.p-toast-message-text {
-							color: var(--color-green-400);
-
-							.p-toast-detail {
-								color: var(--color-green-400);
-							}
-						}
-
-						div[data-pc-section='buttoncontainer'] {
-							.p-toast-close-button {
-								.p-toast-close-icon {
-									color: var(--color-green-400);
-								}
-
-								&:hover {
-									background: none;
-									color: var(--color-green-400);
-								}
-							}
-						}
-					}
-				}
-
-				&.p-toast-message-contrast {
-					background-image: linear-gradient(
-						to bottom right in oklab,
-						var(--color-blue-950) 0%,
-						var(--color-purple-950) 50%,
-						var(--color-pink-950) 100%
-					);
-
-					border-color: var(--color-blue-400);
-
-					.p-toast-message-content {
-						.p-toast-message-icon {
-							color: white;
-						}
-
-						.p-toast-message-text {
-							color: white;
-						}
-
-						.p-toast-detail {
-							color: white;
-						}
-
-						div[data-pc-section='buttoncontainer'] {
-							.p-toast-close-button {
-								.p-toast-close-icon {
-									color: white;
-								}
-							}
-						}
-					}
-				}
-
-				&.p-toast-message-error {
-					background-image: linear-gradient(
-						to bottom right in oklab,
-						var(--color-red-950) 0%,
-						var(--color-orange-950) 50%,
-						var(--color-orange-900) 100%
-					);
-					border-color: var(--color-red-400);
-
-					.p-toast-message-content {
-						.p-toast-message-icon {
 							color: var(--color-red-400);
-						}
-
-						.p-toast-message-text {
-							color: var(--color-red-400);
-
-							.p-toast-detail {
-								color: var(--color-red-400);
-							}
 						}
 
 						div[data-pc-section='buttoncontainer'] {

@@ -95,7 +95,7 @@
 				</form>
 			</FormContainer>
 
-			<FormContainer title="Contact info" description="Your contact information.">
+			<FormContainer v-if="user" title="Contact info" description="Your contact information.">
 				<form @submit.prevent="onSubmitVerifyEmail">
 					<FormInput
 						id="email"

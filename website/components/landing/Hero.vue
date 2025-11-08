@@ -47,6 +47,7 @@
 
 <style lang="scss" scoped>
 	.hero {
+		width: 100%;
 		padding: 4rem;
 		display: flex;
 		justify-content: center;
@@ -61,9 +62,9 @@
 			z-index: -1;
 			background-image: linear-gradient(
 				to bottom right in oklab,
-				var(--color-blue-50) 0%,
-				var(--color-purple-50) 50%,
-				var(--color-pink-50) 100%
+				color-mix(in oklab, var(--color-blue-950) 20%, transparent 100%) 0%,
+				color-mix(in oklab, var(--color-purple-950) 20%, transparent 100%) 50%,
+				color-mix(in oklab, var(--color-pink-950) 20%, transparent 100%) 100%
 			);
 		}
 
@@ -107,17 +108,6 @@
 						color: var(--text-300);
 					}
 				}
-			}
-		}
-
-		:root[data-theme='dark'] & {
-			.background {
-				background-image: linear-gradient(
-					to bottom right in oklab,
-					color-mix(in oklab, var(--color-blue-950) 20%, transparent 100%) 0%,
-					color-mix(in oklab, var(--color-purple-950) 20%, transparent 100%) 50%,
-					color-mix(in oklab, var(--color-pink-950) 20%, transparent 100%) 100%
-				);
 			}
 		}
 	}

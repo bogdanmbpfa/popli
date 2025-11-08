@@ -1,25 +1,38 @@
 .p-dialog {
 	&.default {
-		background-color: var(--background-1);
-		border: 1px solid var(--border-1);
+		background-color: var(--color-gray-900);
+		border: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
 		box-shadow: var(--box-shadow-1);
 		border-radius: 1.5rem;
-		color: var(--text-100);
+		color: var(--color-neutral-100);
+    max-height: calc(100vh - 2rem);
+    max-width: calc(100vw - 1rem);
+    overflow: hidden;
+    overflow-y: auto;
 
-    .p-dialog-header {
-      padding: 1rem;
+		.p-dialog-header {
+			padding: 1rem;
 
-      .p-dialog-header-actions {
-        .p-dialog-close-button {
-          padding: 0;
-          height: fit-content;
-          color: var(--text-100);
+			.p-dialog-header-actions {
+				.p-dialog-close-button {
+					padding: 0;
+					height: fit-content;
+					color: var(--color-neutral-100);
 
-          &:hover {
-            background-color: transparent;
-          }
-        }
-      }
-    }
+					&:hover {
+						background-color: transparent;
+					}
+				}
+			}
+		}
+
+		.p-dialog-content {
+			/* Hide scrollbars in configuration dialog */
+			&::-webkit-scrollbar {
+				display: none;
+			}
+			-ms-overflow-style: none; /* IE and Edge */
+			scrollbar-width: none; /* Firefox */
+		}
 	}
 }

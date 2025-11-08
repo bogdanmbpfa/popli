@@ -4,6 +4,7 @@
 			v-model:visible="drawerVisible"
 			class="default"
 			:show-close-icon="false"
+			:close-on-escape="false"
 			position="left">
 			<template #header>
 				<nuxt-img :src="images.logo" alt="Popli.one" loading="lazy" />
@@ -136,11 +137,6 @@
 
 					<span class="description">{{ heading.description }}</span>
 				</div>
-
-				<PButton
-					class="default"
-					:icon="darkMode ? 'pi pi-sun' : 'pi pi-moon'"
-					@click="handleThemeChange" />
 			</div>
 
 			<slot />
@@ -161,7 +157,6 @@
 
 	const drawerVisible = ref(true);
 
-	const darkMode = computed(() => globalStore.getDarkMode);
 	const heading = computed(() => {
 		const { path } = useRoute();
 
@@ -189,13 +184,6 @@
 	const profile = computed(() => userStore.getProfile!);
 	const user = computed(() => userStore.getUser!);
 
-	if (import.meta.client) {
-		darkMode.value
-			? (document.documentElement.setAttribute('data-theme', 'dark'), globalStore.setDarkMode(true))
-			: (document.documentElement.setAttribute('data-theme', 'light'),
-			  globalStore.setDarkMode(false));
-	}
-
 	if (isMobile) drawerVisible.value = false;
 
 	onMounted(() => {
@@ -203,14 +191,6 @@
 			return navigateTo('/');
 		}
 	});
-
-	const handleThemeChange = () => {
-		globalStore.toggleDarkMode();
-
-		if (import.meta.client) {
-			document.documentElement.setAttribute('data-theme', darkMode.value ? 'dark' : 'light');
-		}
-	};
 
 	const toggleDrawer = () => {
 		drawerVisible.value = !drawerVisible.value;
@@ -277,8 +257,8 @@
 				justify-content: flex-start;
 				gap: 1rem;
 				padding: 1rem;
-				border-bottom: 1px solid var(--border-1);
-				background-color: var(--background-2);
+				border-bottom: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
+				background-color: color-mix(in oklab, var(--color-gray-900) 40%, transparent);
 				z-index: 10;
 
 				.title {
@@ -289,12 +269,12 @@
 					.name {
 						font-size: 1.25rem;
 						font-weight: 500;
-						color: var(--text-100);
+						color: var(--color-neutral-100);
 					}
 
 					.description {
 						font-size: 0.875rem;
-						color: var(--text-300);
+						color: var(--color-neutral-400);
 					}
 				}
 			}

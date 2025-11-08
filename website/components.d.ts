@@ -22,6 +22,7 @@ declare module 'vue' {
     PInputGroup: typeof import('primevue/inputgroup')['default']
     PInputGroupAddon: typeof import('primevue/inputgroupaddon')['default']
     PInputIcon: typeof import('primevue/inputicon')['default']
+    PInputNumber: typeof import('primevue/inputnumber')['default']
     PInputOtp: typeof import('primevue/inputotp')['default']
     PInputText: typeof import('primevue/inputtext')['default']
     PMessage: typeof import('primevue/message')['default']
@@ -37,6 +38,7 @@ declare module 'vue' {
     PTag: typeof import('primevue/tag')['default']
     PTextarea: typeof import('primevue/textarea')['default']
     PToast: typeof import('primevue/toast')['default']
+    PToggleSwitch: typeof import('primevue/toggleswitch')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

@@ -18,17 +18,12 @@
 			</div>
 
 			<div class="right">
-				<PButton
-					class="default"
-					:icon="darkMode ? 'pi pi-sun' : 'pi pi-moon'"
-					@click="handleThemeChange" />
-
 				<nuxt-link v-if="!profile" to="/auth/sign-in">
 					<PButton class="default" as="a" variant="link" label="Sign In" />
 				</nuxt-link>
 
 				<nuxt-link v-if="!profile" to="/auth/sign-up">
-					<PButton class="default" as="a" label="Get Started" />
+					<PButton class="default" severity="contrast" as="a" label="Get Started" />
 				</nuxt-link>
 
 				<nuxt-link v-if="profile" to="/account">
@@ -42,21 +37,12 @@
 <script setup lang="ts">
 	import { EApiEndpoint } from '~/enums';
 
-	const globalStore = useGlobalStore();
 	const {
 		public: { images },
 	} = useRuntimeConfig();
 	const userStore = useUserStore();
 
-	const darkMode = computed(() => globalStore.getDarkMode);
 	const profile = computed(() => userStore.getProfile);
-
-	if (import.meta.client) {
-		darkMode.value
-			? (document.documentElement.setAttribute('data-theme', 'dark'), globalStore.setDarkMode(true))
-			: (document.documentElement.setAttribute('data-theme', 'light'),
-			  globalStore.setDarkMode(false));
-	}
 
 	onMounted(async () => {
 		if (!profile.value) {
@@ -65,14 +51,6 @@
 			userStore.setProfile(profileData || null);
 		}
 	});
-
-	const handleThemeChange = () => {
-		globalStore.toggleDarkMode();
-
-		if (import.meta.client) {
-			document.documentElement.setAttribute('data-theme', darkMode.value ? 'dark' : 'light');
-		}
-	};
 </script>
 
 <style lang="scss" scoped>
@@ -133,6 +111,8 @@
 				a {
 					text-decoration: none;
 					color: var(--text-300);
+					padding: 0.5rem 1rem;
+					z-index: 1;
 				}
 			}
 

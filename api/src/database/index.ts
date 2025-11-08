@@ -3,8 +3,9 @@ import { withReplicas } from 'drizzle-orm/pg-core';
 
 import config from '@config';
 
-import * as userSchema from './user.schema';
+import * as qrCodeSchema from './qrcode.schema';
 import * as urlSchema from './url.schema';
+import * as userSchema from './user.schema';
 
 export const db = withReplicas(
   drizzle({
@@ -17,8 +18,9 @@ export const db = withReplicas(
       database: config.database.database,
     },
     schema: {
-      ...userSchema,
+      ...qrCodeSchema,
       ...urlSchema,
+      ...userSchema,
     },
   }),
   [
@@ -32,12 +34,14 @@ export const db = withReplicas(
         database: config.database.database,
       },
       schema: {
-        ...userSchema,
+        ...qrCodeSchema,
         ...urlSchema,
+        ...userSchema,
       },
     }),
   ],
 );
 
+export * from './qrcode.schema';
 export * from './url.schema';
 export * from './user.schema';

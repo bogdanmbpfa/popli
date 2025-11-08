@@ -4,18 +4,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-	const globalStore = useGlobalStore();
-
-	const darkMode = computed(() => globalStore.getDarkMode);
-
-	if (import.meta.client) {
-		darkMode.value
-			? (document.documentElement.setAttribute('data-theme', 'dark'), globalStore.setDarkMode(true))
-			: (document.documentElement.setAttribute('data-theme', 'light'),
-			  globalStore.setDarkMode(false));
-	}
-</script>
+<script setup lang="ts"></script>
 
 <style lang="scss" scoped>
 	.auth-layout {

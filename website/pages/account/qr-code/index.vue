@@ -1,7 +1,7 @@
 <template>
 	<div class="qr-code-page">
 		<div class="container">
-			<PTabs v-model:value="tab" class="default secondary">
+			<PTabs v-model:value="tab" class="default">
 				<PTabList>
 					<PTab value="generate"> <Icon name="mdi:plus" size="1rem" /> Create new </PTab>
 					<PTab value="manage"> <Icon name="mdi:qrcode" size="1rem" /> Manage QR Codes </PTab>

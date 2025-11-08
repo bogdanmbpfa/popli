@@ -1,7 +1,7 @@
 @use './variables.scss';
-
 @use './accordion.scss';
 @use './button.scss';
+@use './colorpicker.scss';
 @use './confirm.scss';
 @use './datepicker.scss';
 @use './drawer.scss';
@@ -21,6 +21,7 @@
 @use './toggle-switch.scss';
 @use './typography.scss';
 
+
 html {
 	min-height: 100svh;
 	font-size: 16px;
@@ -35,6 +36,11 @@ html {
 		color: var(--text-200);
 		overflow-x: hidden;
 
+		.iconify {
+			filter: brightness(0) saturate(100%) invert(49%) sepia(8%) saturate(731%) hue-rotate(202deg)
+				brightness(88%) contrast(84%);
+		}
+
 		#__nuxt {
 			min-height: 100svh;
 
@@ -45,24 +51,6 @@ html {
 
 		a {
 			text-decoration: none;
-		}
-	}
-
-	&[data-theme='light'] {
-		body {
-			.iconify {
-				filter: brightness(0) saturate(100%) invert(49%) sepia(18%) saturate(300%)
-					hue-rotate(201deg) brightness(86%) contrast(86%);
-			}
-		}
-	}
-
-	&[data-theme='dark'] {
-		body {
-			.iconify {
-				filter: brightness(0) saturate(100%) invert(49%) sepia(8%) saturate(731%) hue-rotate(202deg)
-					brightness(88%) contrast(84%);
-			}
 		}
 	}
 }

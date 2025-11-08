@@ -309,7 +309,7 @@
 							<Icon name="material-symbols:shopping-bag-outline-sharp" size="2rem" />
 						</div>
 
-						<PTag class="default" severity="secondary">New Feature</PTag>
+						<PTag class="default" severity="secondary">Coming soon</PTag>
 					</div>
 
 					<div class="heading">

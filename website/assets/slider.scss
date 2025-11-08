@@ -1,22 +1,23 @@
 .p-slider {
   &.default {
-    background-color: var(--background-2);
+    background-color: color-mix(in oklab, var(--color-gray-500) 40%, transparent);
+    height: 0.5rem;
 
     .p-slider-range {
-      background-color: var(--background-4);
+      background-color: color-mix(in oklab, var(--color-gray-800) 80%, transparent);
     }
 
     .p-slider-handle {
-      background: var(--background-1);
-      border: 1px solid var(--border-2);
+      background: color-mix(in oklab, var(--color-gray-900) 60%, transparent);
+      border: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
 
       &::before {
-        background: var(--background-4);
+        background: color-mix(in oklab, var(--color-gray-500) 80%, transparent);
       }
 
       &:hover {
         &::before {
-          background: var(--background-4);
+          background: color-mix(in oklab, var(--color-gray-800) 80%, transparent);
         }
       }
     }

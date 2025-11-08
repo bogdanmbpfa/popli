@@ -259,7 +259,7 @@
 	--gradient-right-secondary: linear-gradient(
 		to right in oklab,
 		oklch(54.6% 0.245 262.881) 0%,
-		oklch(55.8% 0.288 302.321) 100%,
+		oklch(55.8% 0.288 302.321) 100%
 	);
 	--gradient-bottom-right-secondary: linear-gradient(
 		to bottom right in oklab,
@@ -279,32 +279,7 @@
 
 	--box-shadow-1: 0 1px 3px 0 #0000001a, 0 1px 2px -1px #0000001a;
 	--box-shadow-2: 0 25px 50px -12px #00000040;
-}
 
-:root[data-theme='light'] {
-	--background-1: oklch(98.5% 0 0);
-	--background-2: oklch(94.42% 0.0053 286.3);
-	--background-3: oklch(87% 0 0);
-	--background-4: oklch(55.46% 0.0261 285.52);
-	--background-4: oklch(10.74% 0.0447 280.7);
-	--background-5: oklch(12.9% 0.042 264.695);
-
-	--container-foreground: white;
-	--container-background: color-mix(in srgb, white 60%, transparent);
-
-	--border-1: oklch(0 0 0 / 10.2%);
-	--border-2: oklch(10.74% 0.0447 280.7);
-	--border-3: color-mix(in srgb, white 20%, transparent);
-
-	--text-100: oklch(14.5% 0 0);
-	--text-200: oklch(94.42% 0.0053 286.3);
-	--text-300: oklch(55.46% 0.0261 285.52);
-	--text-400: oklch(1 0 0);
-
-	--text-danger: oklch(55.8% 0.2137 19.4);
-}
-
-:root[data-theme='dark'] {
 	--background-1: oklch(14.5% 0 0);
 	--background-2: oklch(20.5% 0 0);
 	--background-3: oklch(26.9% 0 0);

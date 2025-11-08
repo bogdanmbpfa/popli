@@ -48,7 +48,8 @@
 					as="a"
 					:severity="price.featured ? 'contrast' : 'secondary'"
 					:label="price.button.text"
-					:href="price.button.link" />
+					:href="price.button.link"
+					fluid />
 
 				<div class="features">
 					<div v-for="feature in price.features" :key="feature" class="feature">
@@ -73,7 +74,7 @@
 			price: 0,
 			currency: 'EUR',
 			period: 'forever',
-			features: ['Basic Link-in-Bio page', '3 short links', 'Basic QR codes', 'Basic analytics'],
+			features: ['Basic Link-in-Bio page', '3x short links', '3x QR codes', 'Basic analytics'],
 			button: {
 				text: 'Get Started',
 				link: '/signup',
@@ -87,13 +88,11 @@
 			currency: 'EUR',
 			period: 'month',
 			features: [
-				'Everything in Free',
 				'Advanced Link-in-Bio page',
 				'Unlimited short links',
 				'Unlimited QR codes',
 				'Custom themes',
 				'Advanced analytics',
-				'Digital assets',
 			],
 			button: {
 				text: 'Get Started',

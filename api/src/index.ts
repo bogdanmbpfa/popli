@@ -2,9 +2,9 @@ import 'reflect-metadata';
 import 'tsconfig-paths/register';
 
 import multipart from '@fastify/multipart';
-import rateLimit from '@fastify/rate-limit';
+// import rateLimit from '@fastify/rate-limit';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
-import { Redis } from 'ioredis';
+// import { Redis } from 'ioredis';
 
 import config from './config';
 import { db } from './database';
@@ -29,22 +29,22 @@ import { fastify, logger } from './server';
     },
   });
 
-  app.register(rateLimit, {
-    global: false,
-    ban: 10,
-    allowList: ['127.0.0.1', '192.168.1.200'],
-    redis: new Redis({
-      host: config.redis.host,
-      port: config.redis.port,
-    }),
-    skipOnError: true,
-    errorResponseBuilder: () => {
-      return {
-        message: config.errorMessage.rateLimitExceeded,
-        statusCode: 429,
-      };
-    },
-  });
+  // app.register(rateLimit, {
+  //   global: false,
+  //   ban: 10,
+  //   allowList: ['127.0.0.1', '192.168.1.200'],
+  //   redis: new Redis({
+  //     host: config.redis.host,
+  //     port: config.redis.port,
+  //   }),
+  //   skipOnError: true,
+  //   errorResponseBuilder: () => {
+  //     return {
+  //       message: config.errorMessage.rateLimitExceeded,
+  //       statusCode: 429,
+  //     };
+  //   },
+  // });
 
   app.addHook('onRequest', async (request, reply) => {
     const { method, url } = request;

@@ -19,173 +19,177 @@
 
 				<PTabPanels>
 					<PTabPanel value="sign-in">
-						<div class="heading">
-							<span class="title"> Welcome back </span>
+						<div class="card">
+							<div class="heading">
+								<span class="title"> Welcome back </span>
 
-							<span class="description"> Sign in to your account to continue </span>
-						</div>
-
-						<form @submit.prevent="onLoginSubmit">
-							<FormInput id="email" label="Email" :error="loginErrors.email" required>
-								<PIconField>
-									<PInputIcon class="pi pi-envelope" />
-
-									<PInputText
-										id="email"
-										v-model="email"
-										v-bind="emailAttributes"
-										class="default"
-										placeholder="Email"
-										fluid
-										autocomplete="username"
-										:invalid="!!loginErrors.email"
-										:disabled="loginIsSubmitting" />
-								</PIconField>
-							</FormInput>
-
-							<FormInput id="password" label="Password" :error="loginErrors.password" required>
-								<PIconField>
-									<PInputIcon class="pi pi-lock" />
-
-									<PPassword
-										v-model="password"
-										v-bind="passwordAttributes"
-										input-id="password"
-										input-class="default"
-										placeholder="Password"
-										fluid
-										:feedback="false"
-										toggle-mask
-										:input-props="{ autocomplete: 'current-password' }"
-										:invalid="!!loginErrors.password"
-										:disabled="loginIsSubmitting" />
-								</PIconField>
-							</FormInput>
-
-							<div class="forgot-password">
-								<nuxt-link to="/auth/forgot-password"> Forgot password? </nuxt-link>
+								<span class="description"> Sign in to your account to continue </span>
 							</div>
 
-							<PButton
-								class="default"
-								type="submit"
-								label="Sign In"
-								fluid
-								severity="contrast"
-								:loading="loginIsSubmitting"
-								:disabled="loginIsSubmitting || !turnstileToken" />
+							<form @submit.prevent="onLoginSubmit">
+								<FormInput id="email" label="Email" :error="loginErrors.email" required>
+									<PIconField>
+										<PInputIcon class="pi pi-envelope" />
 
-							<NuxtTurnstile v-model="turnstileToken" element="div" class="turnstile" />
-						</form>
+										<PInputText
+											id="email"
+											v-model="email"
+											v-bind="emailAttributes"
+											class="default"
+											placeholder="Email"
+											fluid
+											autocomplete="username"
+											:invalid="!!loginErrors.email"
+											:disabled="loginIsSubmitting" />
+									</PIconField>
+								</FormInput>
+
+								<FormInput id="password" label="Password" :error="loginErrors.password" required>
+									<PIconField>
+										<PInputIcon class="pi pi-lock" />
+
+										<PPassword
+											v-model="password"
+											v-bind="passwordAttributes"
+											input-id="password"
+											input-class="default"
+											placeholder="Password"
+											fluid
+											:feedback="false"
+											toggle-mask
+											:input-props="{ autocomplete: 'current-password' }"
+											:invalid="!!loginErrors.password"
+											:disabled="loginIsSubmitting" />
+									</PIconField>
+								</FormInput>
+
+								<div class="forgot-password">
+									<nuxt-link to="/auth/forgot-password"> Forgot password? </nuxt-link>
+								</div>
+
+								<PButton
+									class="default"
+									type="submit"
+									label="Sign In"
+									fluid
+									severity="contrast"
+									:loading="loginIsSubmitting"
+									:disabled="loginIsSubmitting || !turnstileToken" />
+
+								<NuxtTurnstile v-model="turnstileToken" element="div" class="turnstile" />
+							</form>
+						</div>
 					</PTabPanel>
 
 					<PTabPanel value="sign-up">
-						<div class="heading">
-							<span class="title"> Create your account </span>
+						<div class="card">
+							<div class="heading">
+								<span class="title"> Create your account </span>
 
-							<span class="description"> Sign up to Popli.one to continue </span>
-						</div>
-
-						<form @submit.prevent="onRegisterSubmit">
-							<FormInput id="name" label="Full Name" :error="registerErrors.name" required>
-								<PIconField>
-									<PInputIcon class="pi pi-user" />
-
-									<PInputText
-										id="name"
-										v-model="nameRegister"
-										v-bind="nameRegisterAttributes"
-										class="default"
-										placeholder="Enter your full name"
-										fluid
-										autocomplete="name"
-										:invalid="!!registerErrors.name"
-										:disabled="registerIsSubmitting" />
-								</PIconField>
-							</FormInput>
-
-							<FormInput
-								id="handle"
-								label="Handle"
-								:error="registerErrors.handle"
-								required
-								caption="This will be your popli.one/handle URL">
-								<PIconField>
-									<PInputIcon class="pi pi-at" />
-
-									<PInputText
-										id="handle"
-										v-model="handleRegister"
-										v-bind="handleRegisterAttributes"
-										class="default"
-										placeholder="Choose your unique handle"
-										fluid
-										autocomplete="handle"
-										:invalid="!!registerErrors.handle"
-										:disabled="registerIsSubmitting"
-										@value-change="onHandleChange" />
-								</PIconField>
-							</FormInput>
-
-							<FormInput id="register-email" label="Email" :error="registerErrors.email" required>
-								<PIconField>
-									<PInputIcon class="pi pi-envelope" />
-
-									<PInputText
-										id="register-email"
-										v-model="emailRegister"
-										v-bind="emailRegisterAttributes"
-										class="default"
-										placeholder="Enter your email address"
-										fluid
-										autocomplete="username"
-										:invalid="!!registerErrors.email"
-										:disabled="registerIsSubmitting"
-										@value-change="onEmailChange" />
-								</PIconField>
-							</FormInput>
-
-							<FormInput
-								id="register-password"
-								label="Password"
-								:error="registerErrors.password"
-								required
-								caption="Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character">
-								<PIconField>
-									<PInputIcon class="pi pi-lock" />
-
-									<PPassword
-										v-model="passwordRegister"
-										v-bind="passwordRegisterAttributes"
-										input-id="register-password"
-										input-class="default"
-										placeholder="Create a strong password"
-										fluid
-										:feedback="false"
-										toggle-mask
-										:input-props="{ autocomplete: 'new-password' }"
-										:invalid="!!registerErrors.password"
-										:disabled="registerIsSubmitting" />
-								</PIconField>
-							</FormInput>
-
-							<PButton
-								class="default"
-								type="submit"
-								label="Sign Up"
-								fluid
-								severity="contrast"
-								:loading="registerIsSubmitting"
-								:disabled="registerIsSubmitting || !turnstileToken" />
-
-							<div class="disclaimer">
-								By signing up, you agree to our
-								<nuxt-link to="/terms">Terms of Service</nuxt-link> and
-								<nuxt-link to="/privacy">Privacy Policy</nuxt-link>.
+								<span class="description"> Sign up to Popli.one to continue </span>
 							</div>
 
-							<NuxtTurnstile v-model="turnstileToken" element="div" class="turnstile" />
-						</form>
+							<form @submit.prevent="onRegisterSubmit">
+								<FormInput id="name" label="Full Name" :error="registerErrors.name" required>
+									<PIconField>
+										<PInputIcon class="pi pi-user" />
+
+										<PInputText
+											id="name"
+											v-model="nameRegister"
+											v-bind="nameRegisterAttributes"
+											class="default"
+											placeholder="Enter your full name"
+											fluid
+											autocomplete="name"
+											:invalid="!!registerErrors.name"
+											:disabled="registerIsSubmitting" />
+									</PIconField>
+								</FormInput>
+
+								<FormInput
+									id="handle"
+									label="Handle"
+									:error="registerErrors.handle"
+									required
+									caption="This will be your popli.one/handle URL">
+									<PIconField>
+										<PInputIcon class="pi pi-at" />
+
+										<PInputText
+											id="handle"
+											v-model="handleRegister"
+											v-bind="handleRegisterAttributes"
+											class="default"
+											placeholder="Choose your unique handle"
+											fluid
+											autocomplete="handle"
+											:invalid="!!registerErrors.handle"
+											:disabled="registerIsSubmitting"
+											@value-change="onHandleChange" />
+									</PIconField>
+								</FormInput>
+
+								<FormInput id="register-email" label="Email" :error="registerErrors.email" required>
+									<PIconField>
+										<PInputIcon class="pi pi-envelope" />
+
+										<PInputText
+											id="register-email"
+											v-model="emailRegister"
+											v-bind="emailRegisterAttributes"
+											class="default"
+											placeholder="Enter your email address"
+											fluid
+											autocomplete="username"
+											:invalid="!!registerErrors.email"
+											:disabled="registerIsSubmitting"
+											@value-change="onEmailChange" />
+									</PIconField>
+								</FormInput>
+
+								<FormInput
+									id="register-password"
+									label="Password"
+									:error="registerErrors.password"
+									required
+									caption="Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character">
+									<PIconField>
+										<PInputIcon class="pi pi-lock" />
+
+										<PPassword
+											v-model="passwordRegister"
+											v-bind="passwordRegisterAttributes"
+											input-id="register-password"
+											input-class="default"
+											placeholder="Create a strong password"
+											fluid
+											:feedback="false"
+											toggle-mask
+											:input-props="{ autocomplete: 'new-password' }"
+											:invalid="!!registerErrors.password"
+											:disabled="registerIsSubmitting" />
+									</PIconField>
+								</FormInput>
+
+								<PButton
+									class="default"
+									type="submit"
+									label="Sign Up"
+									fluid
+									severity="contrast"
+									:loading="registerIsSubmitting"
+									:disabled="registerIsSubmitting || !turnstileToken" />
+
+								<div class="disclaimer">
+									By signing up, you agree to our
+									<nuxt-link to="/terms">Terms of Service</nuxt-link> and
+									<nuxt-link to="/privacy">Privacy Policy</nuxt-link>.
+								</div>
+
+								<NuxtTurnstile v-model="turnstileToken" element="div" class="turnstile" />
+							</form>
+						</div>
 					</PTabPanel>
 				</PTabPanels>
 			</PTabs>
@@ -494,9 +498,9 @@
 		width: 100%;
 		background-image: linear-gradient(
 			to bottom right in oklab,
-			var(--color-blue-50) 0%,
-			var(--color-purple-50) 50%,
-			var(--color-pink-50) 100%
+			color-mix(in oklab, var(--color-blue-950) 20%, transparent) 0%,
+			color-mix(in oklab, var(--color-purple-950) 20%, transparent) 50%,
+			color-mix(in oklab, var(--color-pink-950) 20%, transparent) 100%
 		);
 		padding: 1rem;
 
@@ -546,80 +550,64 @@
 			:deep(.p-tabs) {
 				.p-tabpanels {
 					.p-tabpanel {
-						.heading {
-							.title {
-								font-size: 1.25rem;
-								font-weight: 600;
-								color: var(--text-100);
-								text-align: center;
-							}
+						.card {
+							background-color: color-mix(in oklab, var(--color-gray-900) 40%, transparent);
+							border: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
+							backdrop-filter: blur(1.5rem) saturate(150%);
+							box-shadow: 0 25px 50px -12px #00000040;
+							padding: 1rem;
+							@include squircle(1.5rem);
 
-							.description {
-								font-size: 0.875rem;
-								font-weight: 400;
-								color: var(--text-300);
-								text-align: center;
-							}
-						}
-
-						form {
-							.disclaimer {
-								font-size: 0.75rem;
-								font-weight: 400;
-								color: var(--text-300);
-								text-align: center;
-
-								a {
+							.heading {
+								.title {
+									font-size: 1.25rem;
+									font-weight: 600;
 									color: var(--text-100);
-									text-decoration: none;
+									text-align: center;
+								}
+
+								.description {
+									font-size: 0.875rem;
+									font-weight: 400;
+									color: var(--text-300);
+									text-align: center;
 								}
 							}
 
-							.forgot-password {
-								display: flex;
-								justify-content: flex-end;
-								width: 100%;
-
-								a {
-									font-size: 0.75rem;
-									font-weight: 500;
-									color: var(--text-100);
-									text-decoration: none;
-
-									&:hover {
-										text-decoration: underline;
-									}
-								}
-							}
-
-							.turnstile {
-								width: 100%;
-								display: flex;
-								justify-content: center;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		:root[data-theme='dark'] & {
-			background-image: linear-gradient(
-				to bottom right in oklab,
-				color-mix(in oklab, var(--color-blue-950) 20%, transparent) 0%,
-				color-mix(in oklab, var(--color-purple-950) 20%, transparent) 50%,
-				color-mix(in oklab, var(--color-pink-950) 20%, transparent) 100%
-			);
-
-			.container {
-				:deep(.p-tabs) {
-					.p-tabpanels {
-						.p-tabpanel {
 							form {
-								.forgot-password {
+								.disclaimer {
+									font-size: 0.75rem;
+									font-weight: 400;
+									color: var(--text-300);
+									text-align: center;
+
 									a {
-										color: var(--color-blue-400);
+										color: var(--text-100);
+										text-decoration: none;
 									}
+								}
+
+								.forgot-password {
+									display: flex;
+									justify-content: flex-end;
+									width: 100%;
+
+									a {
+										font-size: 0.75rem;
+										font-weight: 500;
+										color: var(--color-blue-400);
+										text-decoration: none;
+
+										&:hover {
+											text-decoration: underline;
+										}
+									}
+								}
+
+								.turnstile {
+									width: 100%;
+									display: flex;
+									justify-content: center;
 								}
 							}
 						}
