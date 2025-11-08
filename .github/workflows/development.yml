@@ -8,8 +8,10 @@ on:
 env:
   PROJECT_ID: popli-465817
   REGION: europe-west3
-  IMAGE_SHA_TAG: europe-west3-docker.pkg.dev/popli-465817/development/frontend:${{ github.sha }}
-  IMAGE_LATEST_TAG: europe-west3-docker.pkg.dev/popli-465817/development/frontend:latest
+  IMAGE_BACKEND_SHA_TAG: europe-west3-docker.pkg.dev/popli-465817/development/backend:${{ github.sha }}
+  IMAGE_BACKEND_LATEST_TAG: europe-west3-docker.pkg.dev/popli-465817/development/backend:latest
+  IMAGE_FRONTEND_SHA_TAG: europe-west3-docker.pkg.dev/popli-465817/development/frontend:${{ github.sha }}
+  IMAGE_FRONTEND_LATEST_TAG: europe-west3-docker.pkg.dev/popli-465817/development/frontend:latest
 
 jobs:
   deploy:
@@ -31,18 +33,24 @@ jobs:
           project_id: ${{ env.PROJECT_ID }}
           install_components: beta
 
-      - name: Build & Tag Docker image
+      - name: Build & Tag Docker images
         run: |
           docker build \
-            -t ${{ env.IMAGE_SHA_TAG }} \
-            -f ./docker/Dockerfile \
-            .
+            -t ${{ env.IMAGE_BACKEND_SHA_TAG }} \
+            -f ./docker/Dockerfile.gcp \
+            ./api
+          docker build \
+            -t ${{ env.IMAGE_FRONTEND_SHA_TAG }} \
+            -f ./website/docker/Dockerfile \
+            ./website
 
       - name: Configure Docker client for GCloud
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
       - name: Push Docker image
-        run: docker push ${{ env.IMAGE_SHA_TAG }}
+        run: |
+          docker push ${{ env.IMAGE_BACKEND_SHA_TAG }}
+          docker push ${{ env.IMAGE_FRONTEND_SHA_TAG }}
 
       # - name: Set Docker image tag in Cloud Run config
       #   run: sed -i "s|IMAGE_TAG|${{ github.sha }}|g" cloud-run/development.yml
