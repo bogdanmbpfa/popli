@@ -14,10 +14,10 @@ spec:
         run.googleapis.com/cpu-throttling: 'false'
         run.googleapis.com/container-concurrency: '80'
         run.googleapis.com/timeout-seconds: '300'
-        run.googleapis.com/vpc-access-connector: 'projects/popli-465817/locations/europe-west3/connectors/development-vpc-connector'
+        run.googleapis.com/vpc-access-connector: 'projects/popli-465817/locations/europe-west1/connectors/development-vpc-connector'
     spec:
       containers:
-        - image: europe-west3-docker.pkg.dev/popli-465817/development/backend:IMAGE_TAG
+        - image: europe-west1-docker.pkg.dev/popli-465817/development/backend:IMAGE_TAG
           resources:
             limits:
               cpu: '1000m'
@@ -32,9 +32,9 @@ spec:
             - name: WEBAPP_URL
               value: 'https://dev.popli.one'
             - name: DATABASE_READ_HOST
-              value: '10.42.240.3'
+              value: '10.42.241.3'
             - name: DATABASE_WRITE_HOST
-              value: '10.42.240.3'
+              value: '10.42.241.3'
             - name: DATABASE_PORT
               value: '5432'
             - name: DATABASE_NAME

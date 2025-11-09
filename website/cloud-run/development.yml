@@ -16,7 +16,7 @@ spec:
         run.googleapis.com/timeout-seconds: "300"
     spec:
       containers:
-      - image: europe-west3-docker.pkg.dev/popli-465817/development/frontend:IMAGE_TAG
+      - image: europe-west1-docker.pkg.dev/popli-465817/development/frontend:IMAGE_TAG
         resources:
           limits:
             cpu: "2"

@@ -7,11 +7,11 @@ on:
 
 env:
   PROJECT_ID: popli-465817
-  REGION: europe-west3
-  IMAGE_BACKEND_SHA_TAG: europe-west3-docker.pkg.dev/popli-465817/development/backend:${{ github.sha }}
-  IMAGE_BACKEND_LATEST_TAG: europe-west3-docker.pkg.dev/popli-465817/development/backend:latest
-  IMAGE_FRONTEND_SHA_TAG: europe-west3-docker.pkg.dev/popli-465817/development/frontend:${{ github.sha }}
-  IMAGE_FRONTEND_LATEST_TAG: europe-west3-docker.pkg.dev/popli-465817/development/frontend:latest
+  REGION: europe-west1
+  IMAGE_BACKEND_SHA_TAG: europe-west1-docker.pkg.dev/popli-465817/development/backend:${{ github.sha }}
+  IMAGE_BACKEND_LATEST_TAG: europe-west1-docker.pkg.dev/popli-465817/development/backend:latest
+  IMAGE_FRONTEND_SHA_TAG: europe-west1-docker.pkg.dev/popli-465817/development/frontend:${{ github.sha }}
+  IMAGE_FRONTEND_LATEST_TAG: europe-west1-docker.pkg.dev/popli-465817/development/frontend:latest
 
 jobs:
   deploy:
