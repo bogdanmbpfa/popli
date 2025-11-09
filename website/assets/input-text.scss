@@ -10,6 +10,10 @@
 		color: var(--color-neutral-100);
 		line-height: 1.5;
 
+		&.p-variant-filled {
+			background-color: color-mix(in oklab, var(--color-gray-900) 60%, transparent);
+		}
+
 		&::placeholder {
 			color: var(--color-neutral-400);
 		}
@@ -25,7 +29,8 @@
 		&:focus,
 		&:enabled:focus,
 		&:hover,
-		&:enabled:hover {
+		&:enabled:hover
+		&.p-variant-filled:enabled:hover {
 			background-color: color-mix(in oklab, var(--color-gray-900) 60%, transparent);
 			border-color: color-mix(in oklab, var(--color-gray-700) 30%, transparent);
 			outline: none;

@@ -102,6 +102,15 @@ a.p-button {
 		&.p-button-contrast {
 			background-image: var(--gradient-right-primary);
 			color: white;
+
+			&:not(.p-disabled):hover,
+			&:not(:disabled):hover {
+				background-image: var(--gradient-right-primary);
+				color: white;
+				outline: none;
+				border: none;
+				box-shadow: none;
+			}
 		}
 
 		&.p-button-secondary {

@@ -49,7 +49,11 @@ import { fastify, logger } from './server';
   app.addHook('onRequest', async (request, reply) => {
     const { method, url } = request;
 
-    if (method === 'OPTIONS') return applyCorsSecurityHeaders(reply);
+    applyCorsSecurityHeaders(reply);
+
+    if (method === 'OPTIONS') {
+      return reply.code(200).send();
+    }
 
     if (url.startsWith('/docs')) return applySwaggerSecurityHeaders(reply);
 
