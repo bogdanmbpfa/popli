@@ -12,6 +12,7 @@ export default defineConfig({
     user: config.database.username,
     password: config.database.password,
     database: config.database.database!,
+    ssl: 'allow',
   },
   migrations: {
     table: 'migrations',

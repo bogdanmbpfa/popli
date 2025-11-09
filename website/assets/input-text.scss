@@ -28,8 +28,11 @@
 
 		&:focus,
 		&:enabled:focus,
+		&.p-variant-filled:focus,
+		&.p-variant-filled:enabled:focus,
 		&:hover,
 		&:enabled:hover
+		&.p-variant-filled:hover,
 		&.p-variant-filled:enabled:hover {
 			background-color: color-mix(in oklab, var(--color-gray-900) 60%, transparent);
 			border-color: color-mix(in oklab, var(--color-gray-700) 30%, transparent);
