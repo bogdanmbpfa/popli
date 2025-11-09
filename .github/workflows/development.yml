@@ -61,3 +61,10 @@ jobs:
         run: |
           gcloud beta run services replace api/cloud-run/development.yml --region=${{ env.REGION }} --platform=managed
           gcloud beta run services replace website/cloud-run/development.yml --region=${{ env.REGION }} --platform=managed
+
+      - name: Allow public access to frontend
+        run: |
+          gcloud run services add-iam-policy-binding development-popli-frontend \
+            --region=${{ env.REGION }} \
+            --member=allUsers \
+            --role=roles/run.invoker

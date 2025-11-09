@@ -11,7 +11,7 @@ spec:
       annotations:
         autoscaling.knative.dev/minScale: "0"
         autoscaling.knative.dev/maxScale: "1"
-        run.googleapis.com/cpu-throttling: "false"
+        run.googleapis.com/cpu-throttling: "true"
         run.googleapis.com/container-concurrency: "80"
         run.googleapis.com/timeout-seconds: "300"
     spec:
