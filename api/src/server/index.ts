@@ -1,4 +1,8 @@
-import Fastify, { FastifyBaseLogger, FastifyInstance } from 'fastify';
+import Fastify, {
+  FastifyBaseLogger,
+  FastifyError,
+  FastifyInstance,
+} from 'fastify';
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 
 import config from '@config';
@@ -53,7 +57,7 @@ class FastifyServer {
     });
 
     // Custom error logging with stack trace on separate line
-    this.fastify.setErrorHandler((error, _request, reply) => {
+    this.fastify.setErrorHandler((error: FastifyError, _request, reply) => {
       if (!error.statusCode) {
         this.logger.error(error, error.message);
       }
