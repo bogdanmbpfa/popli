@@ -705,7 +705,6 @@
 
 	const setBackgroundGradientStopColor = debounce(
 		(event: ColorPickerChangeEvent, index: number) => {
-			console.log(event);
 			backgroundGradient.value.stops[index]!.color = event.value;
 			qrCodeOptions.value.backgroundOptions!.gradient!.colorStops[index]!.color = `#${event.value}`;
 		},

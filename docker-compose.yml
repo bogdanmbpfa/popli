@@ -1,21 +1,20 @@
 name: popli
 
 networks:
-  popli-network:
+  popli:
     driver: bridge
 
 volumes:
   popli-postgres-data:
-  redis-cache:
 
 services:
-  popli-database:
-    container_name: popli-database
+  database:
+    container_name: database
     image: postgres:16.1
     ports:
       - 5432:5432
     environment:
-      POSTGRES_HOST: popli-database
+      POSTGRES_HOST: database
       POSTGRES_USER: popli
       POSTGRES_PASSWORD: popli
       POSTGRES_DB: popli
@@ -23,33 +22,23 @@ services:
     volumes:
       - popli-postgres-data:/var/lib/postgresql/data
     networks:
-      - popli-network
+      - popli
 
-  redis-cache:
-    container_name: redis-cache
-    image: redis:7.4.1-alpine
-    restart: always
-    ports:
-      - 6379:6379
-    command: redis-server --save 20 1 --loglevel warning
-    volumes:
-      - redis-cache:/data
-    networks:
-      - popli-network
-
-  popli-api:
-    container_name: popli-api
+  backend:
+    container_name: backend
     build:
-      context: ./api
+      context: ./backend
       dockerfile: docker/Dockerfile
     env_file:
-      - ./api/.env
+      - ./backend/.env
+    environment:
+      MIGRATION_FLAG: RUN
     volumes:
-      - ./api/:/app
-      - ./api/node_modules:/app/node_modules
+      - ./backend/:/app
+      - ./backend/node_modules:/app/node_modules
     ports:
       - 8000:8000
     networks:
-      - popli-network
+      - popli
     depends_on:
-      - popli-database
+      - database

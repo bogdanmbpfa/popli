@@ -222,9 +222,9 @@
 		width: 100%;
 		background-image: linear-gradient(
 			to bottom right in oklab,
-			var(--color-blue-50) 0%,
-			var(--color-purple-50) 50%,
-			var(--color-pink-50) 100%
+			color-mix(in oklab, var(--color-blue-950) 20%, transparent) 0%,
+			color-mix(in oklab, var(--color-purple-950) 20%, transparent) 50%,
+			color-mix(in oklab, var(--color-pink-950) 20%, transparent) 100%
 		);
 		padding: 1rem;
 
@@ -259,58 +259,43 @@
 					span {
 						font-size: 1.5rem;
 						font-weight: 600;
-						color: var(--primary);
+						color: var(--text-100);
 					}
 				}
 
 				.description {
 					font-size: 0.875rem;
 					font-weight: 400;
-					color: var(--muted-foreground);
+					color: var(--text-300);
 					text-align: center;
 				}
 			}
 
 			form {
 				width: 100%;
-				background-color: color-mix(in srgb, white 60%, transparent);
-				border: 1px solid color-mix(in srgb, white 20%, transparent);
-				border-radius: 1.5rem;
+				background-color: color-mix(in oklab, var(--color-gray-900) 40%, transparent);
+				border: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
+				@include squircle(1.5rem);
+				backdrop-filter: blur(1.5rem) saturate(150%);
+				box-shadow: 0 25px 50px -12px #00000040;
 				padding: 2rem;
 				display: flex;
-				backdrop-filter: blur(0.5rem);
 				gap: 2rem;
 
 				.heading {
 					.title {
 						font-size: 1.25rem;
 						font-weight: 600;
-						color: var(--primary);
+						color: var(--text-100);
 						text-align: center;
 					}
 
 					.description {
 						font-size: 0.875rem;
 						font-weight: 400;
-						color: var(--muted-foreground);
+						color: var(--text-300);
 						text-align: center;
 					}
-				}
-			}
-		}
-
-		:root[data-theme='dark'] & {
-			background-image: linear-gradient(
-				to bottom right in oklab,
-				color-mix(in oklab, var(--color-blue-950) 20%, transparent) 0%,
-				color-mix(in oklab, var(--color-purple-950) 20%, transparent) 50%,
-				color-mix(in oklab, var(--color-pink-950) 20%, transparent) 100%
-			);
-
-			.container {
-				form {
-					background-color: color-mix(in oklab, var(--color-gray-800) 60%, transparent);
-					border-color: color-mix(in oklab, var(--color-gray-700) 50%, transparent);
 				}
 			}
 		}
