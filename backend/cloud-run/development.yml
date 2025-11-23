@@ -15,6 +15,7 @@ spec:
         run.googleapis.com/container-concurrency: '80'
         run.googleapis.com/timeout-seconds: '300'
         run.googleapis.com/vpc-access-connector: 'projects/popli-465817/locations/europe-west1/connectors/development-vpc-connector'
+        run.googleapis.com/invoker-iam-disabled: 'true'
     spec:
       containers:
         - image: europe-west1-docker.pkg.dev/popli-465817/development/backend:IMAGE_TAG

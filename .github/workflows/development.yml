@@ -68,3 +68,10 @@ jobs:
             --region=${{ env.REGION }} \
             --member=allUsers \
             --role=roles/run.invoker
+
+      - name: Allow public access to backend
+        run: |
+          gcloud run services add-iam-policy-binding development-backend \
+            --region=${{ env.REGION }} \
+            --member=allUsers \
+            --role=roles/run.invoker
