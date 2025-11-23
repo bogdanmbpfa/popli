@@ -1,0 +1,65 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: development-backend
+  namespace: 'popli-465817'
+  labels:
+    environment: development
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: '0'
+        autoscaling.knative.dev/maxScale: '1'
+        run.googleapis.com/cpu-throttling: 'false'
+        run.googleapis.com/container-concurrency: '80'
+        run.googleapis.com/timeout-seconds: '300'
+        run.googleapis.com/vpc-access-connector: 'projects/popli-465817/locations/europe-west1/connectors/development-vpc-connector'
+    spec:
+      containers:
+        - image: europe-west1-docker.pkg.dev/popli-465817/development/backend:IMAGE_TAG
+          resources:
+            limits:
+              cpu: '1000m'
+              memory: '1Gi'
+          env:
+            - name: NODE_ENV
+              value: development
+            - name: APP_PORT
+              value: '8080'
+            - name: APP_HOST
+              value: '0.0.0.0'
+            - name: WEBSITE_URL
+              value: 'https://dev.popli.one'
+            - name: DATABASE_READ_HOST
+              value: '10.42.241.3'
+            - name: DATABASE_WRITE_HOST
+              value: '10.42.241.3'
+            - name: DATABASE_PORT
+              value: '5432'
+            - name: DATABASE_NAME
+              value: 'popli'
+            - name: DATABASE_USERNAME
+              value: 'postgres'
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: DEVELOPMENT_DATABASE_PASSWORD
+                  key: latest
+            - name: GOOGLE_CLOUD_PROJECT_ID
+              value: 'popli-465817'
+            - name: GOOGLE_CLOUD_STORAGE_SERVICE_ACCOUNT_EMAIL
+              value: 'github-service-account@popli-465817.iam.gserviceaccount.com'
+            - name: GOOGLE_CLOUD_STORAGE_SERVICE_ACCOUNT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: STORAGE_SERVICE_ACCOUNT_KEY
+                  key: latest
+            - name: GOOGLE_CLOUD_STORAGE_BUCKET
+              value: 'popli-dev'
+            - name: BREVO_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: BREVO_API_KEY
+                  key: latest
+      serviceAccountName: github-service-account@popli-465817.iam.gserviceaccount.com

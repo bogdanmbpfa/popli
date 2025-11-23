@@ -71,12 +71,4 @@ export const config: IConfig = {
   ipApi: {
     baseUrl: 'https://free.freeipapi.com',
   },
-
-  sendgrid: {
-    apiKey: process.env.SENDGRID_API_KEY as string,
-    from: {
-      email: 'noreply@popli.one',
-      name: 'Popli',
-    },
-  },
 };

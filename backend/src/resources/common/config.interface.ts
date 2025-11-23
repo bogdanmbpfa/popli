@@ -42,11 +42,4 @@ export interface IConfig {
   ipApi: {
     baseUrl: string;
   };
-  sendgrid: {
-    apiKey: string;
-    from: {
-      email: string;
-      name: string;
-    };
-  };
 }
