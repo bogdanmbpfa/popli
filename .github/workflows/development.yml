@@ -37,8 +37,8 @@ jobs:
         run: |
           docker build \
             -t ${{ env.IMAGE_BACKEND_SHA_TAG }} \
-            -f ./api/docker/Dockerfile.gcp \
-            ./api
+            -f ./backend/docker/Dockerfile.gcp \
+            ./backend
           docker build \
             -t ${{ env.IMAGE_FRONTEND_SHA_TAG }} \
             -f ./website/docker/Dockerfile \
@@ -54,12 +54,12 @@ jobs:
 
       - name: Set Docker image tag in Cloud Run config
         run: |
-          sed -i "s|IMAGE_TAG|${{ github.sha }}|g" api/cloud-run/development.yml
+          sed -i "s|IMAGE_TAG|${{ github.sha }}|g" backend/cloud-run/development.yml
           sed -i "s|IMAGE_TAG|${{ github.sha }}|g" website/cloud-run/development.yml
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud beta run services replace api/cloud-run/development.yml --region=${{ env.REGION }} --platform=managed
+          gcloud beta run services replace backend/cloud-run/development.yml --region=${{ env.REGION }} --platform=managed
           gcloud beta run services replace website/cloud-run/development.yml --region=${{ env.REGION }} --platform=managed
 
       - name: Allow public access to frontend
