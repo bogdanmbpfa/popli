@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import {
   ApiBody,
   ApiConsumes,
@@ -6,8 +7,12 @@ import {
   ApiProduces,
   ApiResponse,
 } from '@nestjs/swagger';
+import type { Request } from 'express';
 
+import { DAccount } from '@decorators';
+import { AuthenticatedGuard, ValidRefreshTokenGuard } from '@guards';
 import {
+  AccountDTO,
   AuthLoginDTO,
   AuthRegisterDTO,
   AuthRequestPasswordResetDTO,
@@ -18,7 +23,10 @@ import { AuthService } from '@services';
 
 @Controller('/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Post('/register')
   @ApiOperation({ summary: 'Register a new account' })
@@ -30,8 +38,11 @@ export class AuthController {
     description: 'Account registered',
     type: () => AuthResponseDTO,
   })
-  async register(@Body() dto: AuthRegisterDTO): Promise<AuthResponseDTO> {
-    return this.authService.register(dto);
+  async register(
+    @Body() dto: AuthRegisterDTO,
+    @Req() request: Request,
+  ): Promise<AuthResponseDTO> {
+    return await this.authService.register(dto, request);
   }
 
   @Post('/login')
@@ -44,8 +55,38 @@ export class AuthController {
     description: 'Account logged in',
     type: () => AuthResponseDTO,
   })
-  async login(@Body() dto: AuthLoginDTO): Promise<AuthResponseDTO> {
-    return this.authService.login(dto);
+  async login(
+    @Body() dto: AuthLoginDTO,
+    @Req() request: Request,
+  ): Promise<AuthResponseDTO> {
+    return await this.authService.login(dto, request);
+  }
+
+  @Post('/logout')
+  @ApiOperation({ summary: 'Logout from the account' })
+  @ApiConsumes('application/json')
+  @ApiProduces('application/json')
+  @ApiResponse({ status: 200, description: 'Account logged out' })
+  @UseGuards(AuthenticatedGuard, ValidRefreshTokenGuard)
+  async logout(@DAccount() account: AccountDTO): Promise<void> {
+    return await this.authService.logout(account.sessionId!);
+  }
+
+  @Post('/refresh-token')
+  @ApiOperation({ summary: 'Refresh the token' })
+  @ApiConsumes('application/json')
+  @ApiProduces('application/json')
+  @ApiResponse({ status: 200, description: 'Token refreshed' })
+  @UseGuards(ValidRefreshTokenGuard)
+  async refreshToken(
+    @DAccount() account: AccountDTO,
+    @Req() request: Request,
+  ): Promise<AuthResponseDTO> {
+    return await this.authService.refreshToken(
+      account.id,
+      account.sessionId!,
+      request,
+    );
   }
 
   @Post('/request-password-reset')
@@ -57,7 +98,7 @@ export class AuthController {
   async requestPasswordReset(
     @Body() dto: AuthRequestPasswordResetDTO,
   ): Promise<void> {
-    return this.authService.requestPasswordReset(dto);
+    return await this.authService.requestPasswordReset(dto);
   }
 
   @Post('/reset-password')
@@ -67,6 +108,6 @@ export class AuthController {
   @ApiProduces('application/json')
   @ApiResponse({ status: 200, description: 'Password reset' })
   async resetPassword(@Body() dto: AuthResetPasswordDTO): Promise<void> {
-    return this.authService.resetPassword(dto);
+    return await this.authService.resetPassword(dto);
   }
 }

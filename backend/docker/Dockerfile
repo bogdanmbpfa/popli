@@ -1,17 +1,10 @@
-FROM node:24-alpine
+FROM oven/bun:alpine
 
 WORKDIR /app
 
-ENV PNPM_HOME=/usr/local/bin
-RUN corepack enable && corepack prepare pnpm@latest --activate
+COPY package.json bun.lock ./
 
-RUN pnpm add -g typescript
-
-COPY package.json pnpm-lock.yaml ./
-
-RUN pnpm install
-
-RUN pnpm install sharp --force
+RUN bun install --frozen-lockfile
 
 COPY . .
 

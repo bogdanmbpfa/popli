@@ -9,7 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { UAParser } from '@ua-parser-js/pro-business';
 import { and, asc, count, desc, eq, or, SQL, sql } from 'drizzle-orm';
 import { DateTime } from 'luxon';
-import { generate as generateRandomString } from 'randomstring';
+import { randomBytes } from 'node:crypto';
 
 import { db, shortUrlClickModel, shortUrlModel } from '@database';
 import {
@@ -49,10 +49,7 @@ export class UrlService {
       }
     }
 
-    let shortCode = generateRandomString({
-      length: 8,
-      charset: 'alphanumeric',
-    });
+    let shortCode = randomBytes(4).toString('hex');
     let shortCodeUnique = false;
 
     while (!shortCodeUnique) {
@@ -63,10 +60,7 @@ export class UrlService {
       if (!existingShortCode) {
         shortCodeUnique = true;
       } else {
-        shortCode = generateRandomString({
-          length: 8,
-          charset: 'alphanumeric',
-        });
+        shortCode = randomBytes(4).toString('hex');
       }
     }
 

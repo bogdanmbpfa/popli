@@ -45,6 +45,12 @@ export class AuthenticatedGuard implements CanActivate {
       throw new UnauthorizedException(this.errorMessage);
     }
 
+    if (payload.exp && payload.exp < Date.now() / 1000) {
+      throw new UnauthorizedException(
+        this.configService.get('errorMessages.tokenExpired'),
+      );
+    }
+
     const account = await db.query.userModel.findFirst({
       where: eq(userModel.id, payload.id as string),
     });

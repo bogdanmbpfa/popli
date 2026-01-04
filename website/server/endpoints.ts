@@ -1,4 +1,4 @@
-import { EApiEndpoint } from '~/enums';
+import { EApiEndpoint } from '~/../enums';
 import type {
 	IAccountProfile,
 	IAccountUser,
@@ -8,9 +8,9 @@ import type {
 	IUrlShortUrlCountryClicks,
 	IUrlShortUrlDailyClicks,
 	IUrlShortUrlRedirect,
-} from '~/interfaces';
+} from '~/../interfaces';
 
-export const apiEndpoints: Record<EApiEndpoint, IApiEndpoint> = {
+export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 	// Auth API Endpoints
 	[EApiEndpoint.AUTH_LOGIN]: {
 		path: '/auth/login',
@@ -18,26 +18,35 @@ export const apiEndpoints: Record<EApiEndpoint, IApiEndpoint> = {
 		contentType: 'json',
 		auth: false,
 	},
-
 	[EApiEndpoint.AUTH_REGISTER]: {
 		path: '/auth/register',
 		method: 'POST',
 		contentType: 'json',
 		auth: false,
 	},
-
 	[EApiEndpoint.AUTH_REQUEST_PASSWORD_RESET]: {
 		path: '/auth/request-password-reset',
 		method: 'POST',
 		contentType: 'json',
 		auth: false,
 	},
-
 	[EApiEndpoint.AUTH_RESET_PASSWORD]: {
 		path: '/auth/reset-password',
 		method: 'POST',
 		contentType: 'json',
 		auth: false,
+	},
+	[EApiEndpoint.AUTH_LOGOUT]: {
+		path: '/auth/logout',
+		method: 'POST',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.AUTH_REFRESH_TOKEN]: {
+		path: '/auth/refresh-token',
+		method: 'POST',
+		contentType: 'json',
+		auth: true,
 	},
 
 	// Account API Endpoints
@@ -168,6 +177,8 @@ export type TApiEndpoint = {
 	[EApiEndpoint.AUTH_REGISTER]: IAuthLoginResponse;
 	[EApiEndpoint.AUTH_REQUEST_PASSWORD_RESET]: void;
 	[EApiEndpoint.AUTH_RESET_PASSWORD]: void;
+	[EApiEndpoint.AUTH_LOGOUT]: void;
+	[EApiEndpoint.AUTH_REFRESH_TOKEN]: IAuthLoginResponse;
 
 	// Account API Endpoints
 	[EApiEndpoint.ACCOUNT_ME]: IAccountUser;

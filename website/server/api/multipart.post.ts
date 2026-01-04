@@ -1,7 +1,7 @@
-import type { NuxtError } from '#app';
+import type { NuxtError } from 'nuxt/app';
 
-import { EApiEndpoint } from '~/enums';
-import type { IApiError } from '~/interfaces';
+import { EApiEndpoint } from '~/../enums';
+import type { IApiError } from '~/../interfaces';
 
 import { apiEndpoints } from '../endpoints';
 
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
 	const queryParams = new URLSearchParams(query as Record<string, string>).toString();
 	const body = await readMultipartFormData(event);
 
-  const {
+	const {
 		apiBaseUrl,
 		public: { cookies },
 	} = useRuntimeConfig();
@@ -19,17 +19,18 @@ export default defineEventHandler(async (event) => {
 		throw createError({ statusCode: 400, message: 'No body provided' });
 	}
 
-	if (!key || !Object.values(EApiEndpoint).includes(key as EApiEndpoint)) {
+	if (!key || !Object.values(EApiEndpoint).includes(key as keyof typeof EApiEndpoint)) {
 		throw createError({ statusCode: 400, message: 'Invalid endpoint key' });
 	}
 
-	const endpoint = apiEndpoints[key as EApiEndpoint];
+	const endpoint = apiEndpoints[key as keyof typeof EApiEndpoint];
 
 	if (!endpoint) {
 		throw createError({ statusCode: 400, message: 'Invalid endpoint' });
 	}
 
 	const token = getCookie(event, cookies.auth.name);
+	const refreshToken = getCookie(event, cookies.auth.refreshTokenName);
 
 	let endpointPath = endpoint.path;
 
@@ -57,13 +58,17 @@ export default defineEventHandler(async (event) => {
 			}
 
 			if (endpoint.filenames && endpoint.filenames.includes(property.name!)) {
-				form.append(property.name!, new Blob([property.data]), property.filename);
+				form.append(
+					property.name!,
+					new Blob([property.data as unknown as ArrayBuffer], { type: property.type }),
+					property.filename
+				);
 
 				continue;
 			}
 
 			if (endpoint.stringArrays && endpoint.stringArrays.includes(property.name!)) {
-        const string = property.data.toString();
+				const string = property.data.toString();
 
 				const array = string ? JSON.parse(string) : [];
 
@@ -123,6 +128,7 @@ export default defineEventHandler(async (event) => {
 			body: form,
 			headers: {
 				...(endpoint.auth && token ? { Authorization: `Bearer ${token}` } : {}),
+				...(endpoint.auth && refreshToken ? { 'X-Refresh-Token': refreshToken } : {}),
 			},
 		});
 

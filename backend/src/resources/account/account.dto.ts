@@ -49,4 +49,12 @@ export class AccountDTO {
     example: '2021-01-01T00:00:00.000Z',
   })
   updatedAt: string;
+
+  @ApiProperty({
+    type: String,
+    description: 'The session ID of the account',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+    nullable: true,
+  })
+  sessionId: string | null;
 }

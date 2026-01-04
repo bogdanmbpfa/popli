@@ -11,7 +11,7 @@ const AppDataSource = new DataSource({
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
   migrationsTableName: 'migrations',
-  migrations: ['src/database/migrations/generated/*.js'],
+  migrations: ['src/database/migrations/*.ts'],
   synchronize: false,
 });
 

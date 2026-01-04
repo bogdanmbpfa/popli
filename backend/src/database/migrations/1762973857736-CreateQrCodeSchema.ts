@@ -1,18 +1,18 @@
 import {
-  MigrationInterface,
-  QueryRunner,
+  type MigrationInterface,
+  type QueryRunner,
   Table,
   TableForeignKey,
   TableIndex,
   TableUnique,
 } from 'typeorm';
 
-enum EQRCodeDataType {
-  TEXT = 'text',
-  URL = 'url',
-  EMAIL = 'email',
-  PHONE = 'phone',
-}
+const EQRCodeDataType = {
+  TEXT: 'text',
+  URL: 'url',
+  EMAIL: 'email',
+  PHONE: 'phone',
+} as const;
 
 export class CreateQrCodeSchema1762973857736 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {

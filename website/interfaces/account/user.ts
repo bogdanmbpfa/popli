@@ -4,6 +4,8 @@ export interface IAccountUser {
 	name: string;
 	handle: string;
 	profileImage: string | null;
+	coverImage: string | null;
+	bio: string | null;
 	emailConfirmedAt: string | null;
 	createdAt: string;
 	updatedAt: string;

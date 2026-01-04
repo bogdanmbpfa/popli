@@ -41,6 +41,8 @@ export const config: IConfig = {
   errorMessages: {
     userAlreadyExists: 'USER_ALREADY_EXISTS',
     invalidCredentials: 'INVALID_CREDENTIALS',
+    invalidRefreshToken: 'INVALID_REFRESH_TOKEN',
+    tokenExpired: 'TOKEN_EXPIRED',
     rateLimitExceeded: 'RATE_LIMIT_EXCEEDED',
     passwordResetCodeExpired: 'PASSWORD_RESET_CODE_EXPIRED',
     invalidCode: 'INVALID_CODE',

@@ -1,14 +1,13 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { hash, verify } from 'argon2';
 import { randomBytes } from 'crypto';
 import { eq } from 'drizzle-orm';
-import { generate as generateRandomString } from 'randomstring';
-import sharp from 'sharp';
 
 import { db, userModel } from '@database';
 import {
@@ -22,10 +21,17 @@ import {
   AccountVerifyEmailDTO,
   FileDTO,
 } from '@resources';
-import { EmailUtilityService, StorageUtility } from '@utilities';
+import {
+  EmailUtilityService,
+  generateRandomNumericString,
+  processImage,
+  StorageUtility,
+} from '@utilities';
 
 @Injectable()
 export class AccountService {
+  private readonly logger = new Logger(AccountService.name);
+
   constructor(
     private readonly configService: ConfigService,
     private readonly emailUtilityService: EmailUtilityService,
@@ -72,7 +78,7 @@ export class AccountService {
       );
     }
 
-    const code = generateRandomString({ length: 6, charset: 'numeric' });
+    const code = generateRandomNumericString(6);
 
     await db
       .update(userModel)
@@ -132,16 +138,22 @@ export class AccountService {
       );
     }
 
-    const image = await sharp(dto.buffer)
-      .rotate()
-      .resize(512, 512, { fit: 'inside' })
-      .webp({ quality: 100 })
-      .toBuffer();
+    let image: Buffer;
+
+    try {
+      image = await processImage(dto.buffer, { width: 512, height: 512 });
+    } catch (error) {
+      this.logger.error('Error processing image', error);
+
+      throw new BadRequestException(
+        this.configService.get('errorMessage.fileRequired'),
+      );
+    }
 
     const imageUrl = await this.storageUtility.upload(
       image,
       randomBytes(20).toString('hex'),
-      dto.mimetype,
+      'image/webp',
       'profile-images',
     );
 
@@ -158,16 +170,22 @@ export class AccountService {
       );
     }
 
-    const image = await sharp(dto.buffer)
-      .rotate()
-      .resize(1280, 720, { fit: 'inside' })
-      .webp({ quality: 100 })
-      .toBuffer();
+    let image: Buffer;
+
+    try {
+      image = await processImage(dto.buffer, { width: 1280, height: 720 });
+    } catch (error) {
+      this.logger.error('Error processing image', error);
+
+      throw new BadRequestException(
+        this.configService.get('errorMessage.fileRequired'),
+      );
+    }
 
     const imageUrl = await this.storageUtility.upload(
       image,
       randomBytes(20).toString('hex'),
-      dto.mimetype,
+      'image/webp',
       'cover-images',
     );
 
@@ -276,7 +294,7 @@ export class AccountService {
       );
     }
 
-    const code = generateRandomString({ length: 6, charset: 'numeric' });
+    const code = generateRandomNumericString(6);
 
     await db
       .update(userModel)

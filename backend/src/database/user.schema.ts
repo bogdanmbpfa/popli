@@ -5,7 +5,10 @@ import {
   uuid,
   varchar,
   text,
+  inet,
+  index,
 } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
 export const userManagementSchema = pgSchema('user_management');
 
@@ -17,8 +20,8 @@ export const userModel = userManagementSchema.table(
     password: varchar('password', { length: 255 }).notNull().unique(),
     name: varchar('name', { length: 255 }).notNull(),
     handle: varchar('handle', { length: 40 }).notNull().unique(),
-    profileImage: varchar('profile_image', { length: 40 }),
-    coverImage: varchar('cover_image', { length: 40 }),
+    profileImage: varchar('profile_image', { length: 255 }),
+    coverImage: varchar('cover_image', { length: 255 }),
     bio: text('bio'),
     emailConfirmationCode: varchar('email_confirmation_code', {
       length: 6,
@@ -32,6 +35,9 @@ export const userModel = userManagementSchema.table(
     }).unique(),
     passwordResetCodeExpiresAt: timestamp('password_reset_code_expires_at'),
     jwtSecret: varchar('jwt_secret', { length: 40 }).notNull().unique(),
+    refreshTokenSecret: varchar('refresh_token_secret', { length: 40 })
+      .notNull()
+      .unique(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at')
       .notNull()
@@ -43,4 +49,33 @@ export const userModel = userManagementSchema.table(
     uniqueIndex('idx_users_email').on(table.email),
     uniqueIndex('idx_users_handle').on(table.handle),
   ],
+);
+
+export const authSessionModel = userManagementSchema.table(
+  'auth_sessions',
+  {
+    id: uuid('id').defaultRandom().primaryKey().unique().notNull(),
+    userId: uuid('user_id').notNull(),
+    refreshToken: varchar('refresh_token', { length: 255 }).notNull(),
+    expiresAt: timestamp('expires_at').notNull(),
+    ipAddress: inet('ip_address').notNull(),
+    userAgent: varchar('user_agent', { length: 255 }).notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex('idx_auth_sessions_refresh_token').on(table.refreshToken),
+    uniqueIndex('idx_auth_sessions_ip_address').on(table.ipAddress),
+    index('idx_auth_sessions_user_id').on(table.userId),
+  ],
+);
+
+export const authSessionModelRelations = relations(
+  authSessionModel,
+  ({ one }) => ({
+    user: one(userModel, {
+      fields: [authSessionModel.userId],
+      references: [userModel.id],
+      relationName: 'user',
+    }),
+  }),
 );

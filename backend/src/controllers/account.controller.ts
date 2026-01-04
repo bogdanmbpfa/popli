@@ -7,7 +7,9 @@ import {
   Post,
   UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBody,
   ApiConsumes,
@@ -17,7 +19,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Multer } from 'multer'; // Import needed for file upload to be possible
+import type { Multer } from 'multer'; // Import needed for file upload to be possible
 
 import { DAccount } from '@decorators';
 import { AuthenticatedGuard } from '@guards';
@@ -131,6 +133,7 @@ export class AccountController {
   @ApiProduces('application/json')
   @ApiResponse({ status: 200, description: 'Profile image uploaded' })
   @UseGuards(AuthenticatedGuard)
+  @UseInterceptors(FileInterceptor('file'))
   async uploadProfileImage(
     @DAccount() account: AccountDTO,
     @UploadedFile() file: Express.Multer.File,
@@ -151,6 +154,7 @@ export class AccountController {
   @ApiProduces('application/json')
   @ApiResponse({ status: 200, description: 'Cover image uploaded' })
   @UseGuards(AuthenticatedGuard)
+  @UseInterceptors(FileInterceptor('file'))
   async uploadCoverImage(
     @DAccount() account: AccountDTO,
     @UploadedFile() file: Express.Multer.File,

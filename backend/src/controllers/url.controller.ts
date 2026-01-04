@@ -18,7 +18,7 @@ import {
   ApiProduces,
   ApiResponse,
 } from '@nestjs/swagger';
-import { Request } from 'express';
+import type { Request } from 'express';
 
 import { DAccount } from '@decorators';
 import { AuthenticatedGuard } from '@guards';

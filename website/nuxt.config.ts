@@ -67,8 +67,10 @@ export default defineNuxtConfig({
 		public: {
 			cookies: {
 				auth: {
-					name: 'POPLI_AUTH',
-					expires: 60 * 60 * 24 * 30, // 30 days
+					name: 'POPLI_AUTH_TOKEN',
+					refreshTokenName: 'POPLI_AUTH_REFRESH_TOKEN',
+					refreshTokenExpires: 60 * 60 * 24, // 1 day
+					expires: 60 * 60 * 2, // 2 hours
 					httpOnly: true,
 				},
 			},
@@ -95,7 +97,7 @@ export default defineNuxtConfig({
 		css: {
 			preprocessorOptions: {
 				scss: {
-					additionalData: '@use "@/assets/variables.scss" as *; @use "@/assets/mixins.scss" as *;',
+					additionalData: '@use "~/assets/variables.scss" as *; @use "~/assets/mixins.scss" as *;',
 				},
 			},
 		},
