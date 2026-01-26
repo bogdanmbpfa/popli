@@ -70,7 +70,7 @@
 		top: 5rem;
 		right: 0;
 		bottom: 0;
-		z-index: 100;
+		z-index: 20;
 		width: 100%;
 		max-width: 30rem;
 		height: calc(100% - 5rem);

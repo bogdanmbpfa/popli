@@ -1,9 +1,11 @@
-import { EApiEndpoint } from '~/../enums';
+import { EApiEndpoint } from '~~/enums';
 import type {
 	IAccountProfile,
 	IAccountUser,
 	IApiEndpoint,
 	IAuthLoginResponse,
+	IQrCode,
+	IQrCodeAnalytics,
 	IUrlShortUrl,
 	IUrlShortUrlCountryClicks,
 	IUrlShortUrlDailyClicks,
@@ -169,36 +171,69 @@ export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 		contentType: 'json',
 		auth: true,
 	},
+
+	// QR Code API Endpoints
+	[EApiEndpoint.QR_CODE_CREATE]: {
+		path: '/qr-code',
+		method: 'POST',
+		contentType: 'multipart',
+		auth: true,
+		filenames: ['image'],
+	},
+	[EApiEndpoint.QR_CODE_GET]: {
+		path: '/qr-code',
+		method: 'GET',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.QR_CODE_ANALYTICS]: {
+		path: '/qr-code/{id}/analytics',
+		method: 'GET',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.QR_CODE_DELETE]: {
+		path: '/qr-code/{id}',
+		method: 'DELETE',
+		contentType: 'json',
+		auth: true,
+	},
 };
 
 export type TApiEndpoint = {
 	// Auth API Endpoints
 	[EApiEndpoint.AUTH_LOGIN]: IAuthLoginResponse;
 	[EApiEndpoint.AUTH_REGISTER]: IAuthLoginResponse;
-	[EApiEndpoint.AUTH_REQUEST_PASSWORD_RESET]: void;
-	[EApiEndpoint.AUTH_RESET_PASSWORD]: void;
-	[EApiEndpoint.AUTH_LOGOUT]: void;
+	[EApiEndpoint.AUTH_REQUEST_PASSWORD_RESET]: undefined;
+	[EApiEndpoint.AUTH_RESET_PASSWORD]: undefined;
+	[EApiEndpoint.AUTH_LOGOUT]: undefined;
 	[EApiEndpoint.AUTH_REFRESH_TOKEN]: IAuthLoginResponse;
 
 	// Account API Endpoints
 	[EApiEndpoint.ACCOUNT_ME]: IAccountUser;
-	[EApiEndpoint.ACCOUNT_CHECK_HANDLE]: void;
-	[EApiEndpoint.ACCOUNT_CHECK_EMAIL]: void;
+	[EApiEndpoint.ACCOUNT_CHECK_HANDLE]: undefined;
+	[EApiEndpoint.ACCOUNT_CHECK_EMAIL]: undefined;
 	[EApiEndpoint.ACCOUNT_PROFILE]: IAccountProfile;
-	[EApiEndpoint.ACCOUNT_UPLOAD_COVER_IMAGE]: void;
-	[EApiEndpoint.ACCOUNT_UPDATE_PROFILE]: void;
-	[EApiEndpoint.ACCOUNT_REQUEST_EMAIL_VERIFY]: void;
-	[EApiEndpoint.ACCOUNT_VERIFY_EMAIL]: void;
-	[EApiEndpoint.ACCOUNT_CHANGE_PASSWORD]: void;
-	[EApiEndpoint.ACCOUNT_DELETE]: void;
+	[EApiEndpoint.ACCOUNT_UPLOAD_COVER_IMAGE]: undefined;
+	[EApiEndpoint.ACCOUNT_UPDATE_PROFILE]: undefined;
+	[EApiEndpoint.ACCOUNT_REQUEST_EMAIL_VERIFY]: undefined;
+	[EApiEndpoint.ACCOUNT_VERIFY_EMAIL]: undefined;
+	[EApiEndpoint.ACCOUNT_CHANGE_PASSWORD]: undefined;
+	[EApiEndpoint.ACCOUNT_DELETE]: undefined;
 
 	// URL API Endpoints
-	[EApiEndpoint.URL_SHORT_URL_CREATE]: void;
+	[EApiEndpoint.URL_SHORT_URL_CREATE]: undefined;
 	[EApiEndpoint.URL_SHORT_URL]: IUrlShortUrl[];
-	[EApiEndpoint.URL_SHORT_URL_UPDATE]: void;
-	[EApiEndpoint.URL_SHORT_URL_DELETE]: void;
-	[EApiEndpoint.URL_SHORT_URL_TOGGLE]: void;
+	[EApiEndpoint.URL_SHORT_URL_UPDATE]: undefined;
+	[EApiEndpoint.URL_SHORT_URL_DELETE]: undefined;
+	[EApiEndpoint.URL_SHORT_URL_TOGGLE]: undefined;
 	[EApiEndpoint.URL_SHORT_URL_REDIRECT]: IUrlShortUrlRedirect;
 	[EApiEndpoint.URL_SHORT_URL_DAILY_CLICKS]: IUrlShortUrlDailyClicks[];
 	[EApiEndpoint.URL_SHORT_URL_COUNTRY_CLICKS]: IUrlShortUrlCountryClicks[];
+
+	// QR Code API Endpoints
+	[EApiEndpoint.QR_CODE_CREATE]: undefined;
+	[EApiEndpoint.QR_CODE_GET]: IQrCode[];
+	[EApiEndpoint.QR_CODE_ANALYTICS]: IQrCodeAnalytics;
+	[EApiEndpoint.QR_CODE_DELETE]: undefined;
 };

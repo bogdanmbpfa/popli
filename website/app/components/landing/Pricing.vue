@@ -77,7 +77,7 @@
 			features: ['Basic Link-in-Bio page', '3x short links', '3x QR codes', 'Basic analytics'],
 			button: {
 				text: 'Get Started',
-				link: '/signup',
+				link: '/auth/sign-up',
 			},
 		},
 		{
@@ -96,7 +96,7 @@
 			],
 			button: {
 				text: 'Get Started',
-				link: '/signup',
+				link: '/auth/sign-up',
 			},
 		},
 	]);

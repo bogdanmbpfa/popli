@@ -1,11 +1,21 @@
-export default defineNuxtRouteMiddleware(async (to, from) => {
-	const {
-		public: { cookies },
-	} = useRuntimeConfig();
+export default defineNuxtRouteMiddleware(async () => {
+  const {
+    public: { cookies },
+  } = useRuntimeConfig();
 
-	const middlewareCookie = useCookie(cookies.auth.name);
+  const middlewareCookie = useCookie(cookies.auth.name);
+  const refreshTokenCookie = useCookie(cookies.auth.refreshTokenName);
 
-	if (!middlewareCookie?.value) {
-		return navigateTo('/auth/sign-in');
-	}
+  if (!middlewareCookie.value && !refreshTokenCookie.value) {
+    return navigateTo('/auth/sign-in');
+  }
+
+  if (!middlewareCookie?.value && refreshTokenCookie?.value) {
+    try {
+      const headers = useRequestHeaders();
+      await useRefreshToken(headers);
+    } catch {
+      return navigateTo('/auth/sign-in');
+    }
+  }
 });

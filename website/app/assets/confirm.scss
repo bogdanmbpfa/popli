@@ -5,9 +5,8 @@
 		box-shadow: var(--box-shadow-1);
 		border-radius: 1.5rem;
 		color: var(--color-neutral-100);
-    max-height: calc(100vh - 2rem);
+    max-height: calc(100vh - 1rem);
     max-width: calc(100vw - 1rem);
-    overflow: hidden;
     overflow-y: auto;
 
 		.p-dialog-header {
@@ -35,4 +34,8 @@
 			scrollbar-width: none; /* Firefox */
 		}
 	}
+}
+
+.p-dialog-mask {
+	padding: 1rem 0;
 }

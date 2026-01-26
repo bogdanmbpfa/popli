@@ -1,53 +1,62 @@
 import type { NuxtError } from '#app';
 
-import { EApiEndpoint } from '~~/enums';
+import type { EApiEndpoint } from '~~/enums';
 import type { IApiError, IApiFailure, IApiSuccess } from '~~/interfaces';
 import type { TApiEndpoint } from '~~/server/endpoints';
 
 const useApiJson = async <T, U extends keyof typeof EApiEndpoint>(
-	key: U,
-	body?: T,
-	query?: Record<string, unknown>,
-	params?: Record<string, unknown>,
-	headers?: HeadersInit
+  key: U,
+  body?: T,
+  query?: Record<string, unknown>,
+  params?: Record<string, unknown>,
+  headers?: HeadersInit,
 ): Promise<IApiSuccess<TApiEndpoint[U]> | IApiFailure> => {
-	const {
-		public: { cookies },
-	} = useRuntimeConfig();
-	const refreshToken = useCookie(cookies.auth.refreshTokenName);
+  const {
+    public: { cookies },
+  } = useRuntimeConfig();
+  const refreshToken = useCookie(cookies.auth.refreshTokenName);
 
-	try {
-		const response = await $fetch<TApiEndpoint[U]>('/api/json', {
-			method: 'POST',
-			headers: useRequestHeaders(),
-			body: {
-				key,
-				params,
-				body,
-				headers,
-			},
-			query,
-		});
+  const requestHeaders = useRequestHeaders();
 
-		return { data: response } as IApiSuccess<TApiEndpoint[U]>;
-	} catch (error) {
-		const errorResponse = error as NuxtError<IApiError>;
+  try {
+    const response = await $fetch<TApiEndpoint[U]>('/api/json', {
+      method: 'POST',
+      headers: requestHeaders,
+      body: {
+        key,
+        params,
+        body,
+        headers,
+      },
+      query,
+    });
 
-		if (errorResponse.data?.message === 'TOKEN_EXPIRED' && refreshToken.value) {
-			try {
-				await useRefreshToken();
+    return { data: response } as IApiSuccess<TApiEndpoint[U]>;
+  } catch (error) {
+    const errorResponse = error as NuxtError<IApiError>;
 
-				return await useApiJson(key, body, query, params, headers);
-			} catch {}
-		}
+    if (errorResponse.data?.message === 'TOKEN_EXPIRED' && refreshToken.value) {
+      try {
+        await useRefreshToken(requestHeaders);
 
-		return {
-			error: {
-				code: errorResponse.data?.code,
-				message: errorResponse.data?.message,
-			},
-		} as IApiFailure;
-	}
+        return await useApiJson(key, body, query, params, headers);
+      } catch {
+        return {
+          error: {
+            code: errorResponse.data?.code,
+            message: errorResponse.data?.message,
+          },
+        } as IApiFailure;
+      }
+    }
+
+    return {
+      error: {
+        code: errorResponse.data?.code,
+        message: errorResponse.data?.message,
+      },
+    } as IApiFailure;
+  }
 };
 
 export default useApiJson;

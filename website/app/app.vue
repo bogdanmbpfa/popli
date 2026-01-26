@@ -1,6 +1,6 @@
 <template>
 	<div class="wrapper">
-		<NuxtLayout :key="route.path">
+		<NuxtLayout>
 			<NuxtPage />
 		</NuxtLayout>
 	</div>
@@ -17,8 +17,6 @@
 		title: 'Popli.one - Pop your links',
 		meta: [{ name: 'description', content: 'Popli.one - Pop your links' }],
 	});
-
-	const route = useRoute();
 
 	configure({
 		validateOnInput: false,

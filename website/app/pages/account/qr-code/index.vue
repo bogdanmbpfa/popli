@@ -5,16 +5,14 @@
 				<PTabList>
 					<PTab value="generate"> <Icon name="mdi:plus" size="1rem" /> Create new </PTab>
 					<PTab value="manage"> <Icon name="mdi:qrcode" size="1rem" /> Manage QR Codes </PTab>
-					<PTab value="analytics"> <Icon name="lucide:bar-chart-3" size="1rem" /> Analytics </PTab>
 				</PTabList>
 
 				<PTabPanels>
 					<PTabPanel value="generate">
-						<QrcodeGenerate />
+						<QrcodeGenerate @refresh="refreshQrCodes" />
 					</PTabPanel>
 
-					<PTabPanel value="manage"> </PTabPanel>
-					<PTabPanel value="analytics"> </PTabPanel>
+					<PTabPanel value="manage"> <QrcodeManage ref="qrCodeManage" /> </PTabPanel>
 				</PTabPanels>
 			</PTabs>
 		</div>
@@ -22,12 +20,21 @@
 </template>
 
 <script setup lang="ts">
+	import type QrCodeManage from '~/components/qrcode/Manage.vue';
+
 	definePageMeta({
 		layout: 'account',
 		middleware: 'is-logged-in',
 	});
 
-	const tab = ref<'generate' | 'manage' | 'analytics'>('generate');
+	const tab = ref<'generate' | 'manage'>('generate');
+	const qrCodeManage = ref<InstanceType<typeof QrCodeManage> | null>(null);
+
+	const refreshQrCodes = async () => {
+		if (qrCodeManage.value) {
+			await qrCodeManage.value.getQrCodes();
+		}
+	};
 </script>
 
 <style lang="scss" scoped>

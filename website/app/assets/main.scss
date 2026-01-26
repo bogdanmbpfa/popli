@@ -8,6 +8,7 @@
 @use './form.scss';
 @use './icon-field.scss';
 @use './input-group.scss';
+@use './input-number.scss';
 @use './input-otp.scss';
 @use './input-text.scss';
 @use './message.scss';
@@ -20,7 +21,6 @@
 @use './toast.scss';
 @use './toggle-switch.scss';
 @use './typography.scss';
-
 
 html {
 	min-height: 100svh;

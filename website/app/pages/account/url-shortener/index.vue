@@ -104,6 +104,7 @@
 
 								<PButton
 									class="default"
+									severity="danger"
 									icon="pi pi-trash"
 									title="Delete"
 									:disabled="globalStore.actionInProgress"
@@ -176,8 +177,8 @@
 <script setup lang="ts">
 	import * as yup from 'yup';
 
-	import { EApiEndpoint } from '~/../enums';
-	import type { IUrlShortenUrl, IUrlShortUrl } from '~/../interfaces';
+	import { EApiEndpoint } from '~~/enums';
+	import type { IUrlShortenUrl, IUrlShortUrl } from '~~/interfaces';
 
 	const UpdateShortUrlDialog = defineAsyncComponent(
 		() => import('~/components/dialog/UpdateShortUrl.vue')

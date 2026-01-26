@@ -93,6 +93,7 @@
 
 .p-drawer-mask {
   width: fit-content !important;
+  z-index: 20 !important;
 }
 
 @media (max-width: 768px) {

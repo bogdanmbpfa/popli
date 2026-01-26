@@ -90,4 +90,23 @@ export class StorageUtility {
       throw error;
     }
   }
+
+  async getBuffer(name: string): Promise<Buffer> {
+    try {
+      const file = this.bucket.file(name);
+      const [exists] = await file.exists();
+
+      if (!exists) {
+        throw new Error(`File ${name} does not exist in bucket`);
+      }
+
+      const [buffer] = await file.download();
+
+      return buffer;
+    } catch (error) {
+      this.logger.error(error, `Error getting buffer for file: ${name}`);
+
+      throw error;
+    }
+  }
 }

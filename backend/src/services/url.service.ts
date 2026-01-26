@@ -165,8 +165,7 @@ export class UrlService {
 
     try {
       const { data } = await this.httpService.axiosRef.get<IUrlIpApiResponse>(
-        // `${this.configService.get('ipApi.baseUrl')}/api/json/${ipAddress}`,
-        `${this.configService.get('ipApi.baseUrl')}/api/json/82.78.167.157`,
+        `${this.configService.get('ipApi.baseUrl')}/api/json/${ipAddress}`,
         {
           transformResponse: (data) => {
             return JSON.parse(data);

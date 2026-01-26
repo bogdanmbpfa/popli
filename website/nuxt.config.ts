@@ -27,9 +27,12 @@ export default defineNuxtConfig({
 		'@pinia/nuxt',
 		'pinia-plugin-persistedstate/nuxt',
 		'@vee-validate/nuxt',
-		'@nuxtjs/turnstile',
 		'@nuxtjs/device',
 	],
+
+	nitro: {
+		preset: 'bun',
+	},
 
 	pinia: {
 		storesDirs: ['./stores/**'],
@@ -79,19 +82,11 @@ export default defineNuxtConfig({
 			},
 			nodeEnv: '',
 		},
-		turnstile: {
-			secretKey: '0x4AAAAAABp8G-0uMV00c1MCculpWUjb5vo',
-		},
 	},
 
 	site: { indexable: true },
 
 	ssr: true,
-
-	turnstile: {
-		addValidateEndpoint: true,
-		siteKey: '0x4AAAAAABp8G9YAtc_mlZhJ',
-	},
 
 	vite: {
 		css: {

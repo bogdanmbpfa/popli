@@ -40,8 +40,8 @@
 						<div class="radio-group">
 							<div class="radio-button-item">
 								<PRadioButton
-									input-id="background-color-type-solid"
 									v-model="backgroundColorType"
+									input-id="background-color-type-solid"
 									class="default"
 									name="backgroundColorType"
 									value="solid"
@@ -52,8 +52,8 @@
 
 							<div class="radio-button-item">
 								<PRadioButton
-									input-id="background-color-type-gradient"
 									v-model="backgroundColorType"
+									input-id="background-color-type-gradient"
 									name="backgroundColorType"
 									class="default"
 									value="gradient"
@@ -73,10 +73,7 @@
 								format="hex"
 								@change="setBackgroundColor" />
 
-							<PInputText
-								:value="`${backgroundColor ? `#${backgroundColor}` : ''}`"
-								class="default"
-								readonly />
+							<PInputText :value="`#${backgroundColor}`" class="default" readonly />
 						</div>
 
 						<div v-if="backgroundColorType === 'gradient'" class="gradient-controls">
@@ -145,8 +142,8 @@
 						<div class="radio-group">
 							<div class="radio-button-item">
 								<PRadioButton
-									input-id="foreground-color-type-solid"
 									v-model="foregroundColorType"
+									input-id="foreground-color-type-solid"
 									class="default"
 									name="foregroundColorType"
 									value="solid"
@@ -157,8 +154,8 @@
 
 							<div class="radio-button-item">
 								<PRadioButton
-									input-id="foreground-color-type-gradient"
 									v-model="foregroundColorType"
+									input-id="foreground-color-type-gradient"
 									name="foregroundColorType"
 									class="default"
 									value="gradient"
@@ -178,10 +175,7 @@
 								format="hex"
 								@change="setForegroundColor" />
 
-							<PInputText
-								:value="`${foregroundColor ? `#${foregroundColor}` : ''}`"
-								class="default"
-								readonly />
+							<PInputText :value="`#${foregroundColor}`" class="default" readonly />
 						</div>
 
 						<div v-if="foregroundColorType === 'gradient'" class="gradient-controls">
@@ -274,35 +268,32 @@
 
 					<hr />
 
-					<div
-						v-if="
-							qrCodeOptions.backgroundOptions && qrCodeOptions.backgroundOptions.round !== undefined
-						"
-						class="section">
+					<div class="section">
 						<div class="section-title">
-							<span>Background Border Radius: {{ qrCodeOptions.backgroundOptions.round }}</span>
+							<span>Background Border Radius: {{ backgroundBorderRadius }}</span>
 						</div>
 
 						<PSlider
 							id="background"
-							v-model="qrCodeOptions.backgroundOptions.round"
+							v-model="backgroundBorderRadius"
 							class="default"
 							fluid
 							:min="0"
 							:max="1"
-							:step="0.01" />
+							:step="0.01"
+							@value-change="setBackgroundBorderRadius" />
 					</div>
 
 					<hr />
 
-					<div v-if="qrCodeOptions.width !== undefined" class="section">
+					<div class="section">
 						<div class="section-title">
-							<span>QR Code Size: {{ qrCodeOptions.width }}px</span>
+							<span>QR Code Size: {{ width }}px</span>
 						</div>
 
 						<PSlider
 							id="size"
-							v-model="qrCodeOptions.width"
+							v-model="width"
 							class="default"
 							fluid
 							:min="128"
@@ -326,7 +317,7 @@
 									:key="shape.value"
 									type="button"
 									class="default"
-									:class="{ active: qrCodeOptions.dotsOptions!.type === shape.value }"
+									:class="{ active: dotsType === shape.value }"
 									severity="secondary"
 									:label="shape.label"
 									@click="setDotsShape(shape.value)" />
@@ -341,8 +332,8 @@
 							<div class="radio-group">
 								<div class="radio-button-item">
 									<PRadioButton
-										input-id="dots-color-type-solid"
 										v-model="dotsColorType"
+										input-id="dots-color-type-solid"
 										name="dotsColorType"
 										class="default"
 										value="solid"
@@ -353,8 +344,8 @@
 
 								<div class="radio-button-item">
 									<PRadioButton
-										input-id="dots-color-type-gradient"
 										v-model="dotsColorType"
+										input-id="dots-color-type-gradient"
 										name="dotsColorType"
 										class="default"
 										value="gradient"
@@ -367,12 +358,18 @@
 							<div v-if="dotsColorType === 'solid'" class="color-picker-container">
 								<PColorPicker
 									id="dots-color"
-									v-model="qrCodeOptions.dotsOptions!.color"
+									v-model="dotsColor"
 									class="default"
 									overlay-class="default"
 									fluid
 									format="hex"
 									@change="setDotsColor" />
+
+								<PInputText
+									class="default"
+									input-class="default"
+									readonly
+									:value="`#${dotsColor}`" />
 							</div>
 
 							<div v-if="dotsColorType === 'gradient'" class="gradient-controls">
@@ -431,11 +428,312 @@
 							</div>
 						</div>
 					</div>
+
+					<div class="section-container">
+						<span class="title"> Corner Dots </span>
+
+						<div class="subsection">
+							<div class="subsection-title">
+								<span>Shape</span>
+							</div>
+
+							<div class="subsection-items">
+								<PButton
+									v-for="shape in cornerDotsShapes"
+									:key="shape.value"
+									type="button"
+									class="default"
+									:class="{ active: cornerDotsType === shape.value }"
+									severity="secondary"
+									:label="shape.label"
+									@click="setCornerDotsShape(shape.value)" />
+							</div>
+						</div>
+
+						<div class="subsection">
+							<div class="subsection-title">
+								<span>Color</span>
+							</div>
+
+							<div class="radio-group">
+								<div class="radio-button-item">
+									<PRadioButton
+										v-model="cornerDotsColorType"
+										input-id="corner-dots-color-type-solid"
+										name="cornerDotsColorType"
+										class="default"
+										value="solid"
+										@value-change="setCornerDotsColorType" />
+
+									<label for="corner-dots-color-type-solid">Solid</label>
+								</div>
+
+								<div class="radio-button-item">
+									<PRadioButton
+										v-model="cornerDotsColorType"
+										input-id="corner-dots-color-type-gradient"
+										name="cornerDotsColorType"
+										class="default"
+										value="gradient"
+										@value-change="setCornerDotsColorType" />
+
+									<label for="corner-dots-color-type-gradient">Gradient</label>
+								</div>
+							</div>
+
+							<div v-if="cornerDotsColorType === 'solid'" class="color-picker-container">
+								<PColorPicker
+									id="corner-dots-color"
+									v-model="cornerDotsColor"
+									class="default"
+									overlay-class="default"
+									fluid
+									format="hex"
+									@change="setCornerDotsColor" />
+
+								<PInputText
+									class="default"
+									input-class="default"
+									readonly
+									:value="`#${cornerDotsColor}`" />
+							</div>
+
+							<div v-if="cornerDotsColorType === 'gradient'" class="gradient-controls">
+								<div class="angle">
+									<span class="title">Angle: </span>
+
+									<PInputNumber
+										v-model="cornerDotsGradient.rotation"
+										class="default"
+										input-class="default"
+										:min="0"
+										:max="360"
+										show-buttons
+										@value-change="setCornerDotsGradientAngle" />
+								</div>
+
+								<div class="gradient-stops">
+									<div class="gradient-stop">
+										<div class="color-picker-container">
+											<PColorPicker
+												id="corner-dots-color-gradient-0"
+												v-model="cornerDotsGradient.stops[0]!.color"
+												class="default"
+												overlay-class="default"
+												fluid
+												format="hex"
+												@change="setCornerDotsGradientStopColor($event, 0)" />
+										</div>
+
+										<PInputText
+											class="default"
+											input-class="default"
+											readonly
+											:value="`#${cornerDotsGradient.stops[0]!.color}`" />
+									</div>
+
+									<div class="gradient-stop">
+										<div class="color-picker-container">
+											<PColorPicker
+												id="corner-dots-color-gradient-1"
+												v-model="cornerDotsGradient.stops[1]!.color"
+												class="default"
+												overlay-class="default"
+												fluid
+												format="hex"
+												@change="setCornerDotsGradientStopColor($event, 1)" />
+										</div>
+
+										<PInputText
+											class="default"
+											input-class="default"
+											readonly
+											:value="`#${cornerDotsGradient.stops[1]!.color}`" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="section-container">
+						<span class="title"> Corner Squares </span>
+
+						<div class="subsection">
+							<div class="subsection-title">
+								<span>Shape</span>
+							</div>
+
+							<div class="subsection-items">
+								<PButton
+									v-for="shape in cornerSquaresShapes"
+									:key="shape.value"
+									type="button"
+									class="default"
+									:class="{ active: cornerSquaresType === shape.value }"
+									severity="secondary"
+									:label="shape.label"
+									@click="setCornerSquaresShape(shape.value)" />
+							</div>
+						</div>
+
+						<div class="subsection">
+							<div class="subsection-title">
+								<span>Color</span>
+							</div>
+
+							<div class="radio-group">
+								<div class="radio-button-item">
+									<PRadioButton
+										v-model="cornerSquaresColorType"
+										input-id="corner-squares-color-type-solid"
+										name="cornerSquaresColorType"
+										class="default"
+										value="solid"
+										@value-change="setCornerSquaresColorType" />
+
+									<label for="corner-squares-color-type-solid">Solid</label>
+								</div>
+
+								<div class="radio-button-item">
+									<PRadioButton
+										v-model="cornerSquaresColorType"
+										input-id="corner-squares-color-type-gradient"
+										name="cornerSquaresColorType"
+										class="default"
+										value="gradient"
+										@value-change="setCornerSquaresColorType" />
+
+									<label for="corner-squares-color-type-gradient">Gradient</label>
+								</div>
+							</div>
+
+							<div v-if="cornerSquaresColorType === 'solid'" class="color-picker-container">
+								<PColorPicker
+									id="corner-squares-color"
+									v-model="cornerSquaresColor"
+									class="default"
+									overlay-class="default"
+									fluid
+									format="hex"
+									@change="setCornerSquaresColor" />
+
+								<PInputText
+									class="default"
+									input-class="default"
+									readonly
+									:value="`#${cornerSquaresColor}`" />
+							</div>
+
+							<div v-if="cornerSquaresColorType === 'gradient'" class="gradient-controls">
+								<div class="angle">
+									<span class="title">Angle: </span>
+
+									<PInputNumber
+										v-model="cornerSquaresGradient.rotation"
+										class="default"
+										input-class="default"
+										:min="0"
+										:max="360"
+										show-buttons
+										@value-change="setCornerSquaresGradientAngle" />
+								</div>
+
+								<div class="gradient-stops">
+									<div class="gradient-stop">
+										<div class="color-picker-container">
+											<PColorPicker
+												id="corner-squares-color-gradient-0"
+												v-model="cornerSquaresGradient.stops[0]!.color"
+												class="default"
+												overlay-class="default"
+												fluid
+												format="hex"
+												@change="setCornerSquaresGradientStopColor($event, 0)" />
+										</div>
+
+										<PInputText
+											class="default"
+											input-class="default"
+											readonly
+											:value="`#${cornerSquaresGradient.stops[0]!.color}`" />
+									</div>
+
+									<div class="gradient-stop">
+										<div class="color-picker-container">
+											<PColorPicker
+												id="corner-squares-color-gradient-1"
+												v-model="cornerSquaresGradient.stops[1]!.color"
+												class="default"
+												overlay-class="default"
+												fluid
+												format="hex"
+												@change="setCornerSquaresGradientStopColor($event, 1)" />
+										</div>
+
+										<PInputText
+											class="default"
+											input-class="default"
+											readonly
+											:value="`#${cornerSquaresGradient.stops[1]!.color}`" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</PTabPanel>
 
 				<PTabPanel value="logo">
-					<div class="logo">
-						<div class="logo-picker"></div>
+					<div v-if="!image" class="file-upload-area" @click="imageInput?.click()">
+						<input
+							id="image"
+							ref="imageInput"
+							type="file"
+							accept="image/png, image/jpeg, image/jpg, image/webp, image/svg+xml"
+							@change="setImage" />
+
+						<Icon name="material-symbols:add-photo-alternate-outline-rounded" size="2rem" />
+
+						<span class="upload-text"> Click to upload a logo </span>
+
+						<span class="upload-description">
+							Upload a logo to be displayed in the center of the QR Code. PNG, JPEG, JPG, WEBP, SVG
+							are supported up to 5MB.
+						</span>
+					</div>
+
+					<div v-if="imageUrl" class="file-preview">
+						<div class="preview-content">
+							<div class="preview-info">
+								<nuxt-img :src="imageUrl" alt="Logo" width="50" height="50" fit="contain" />
+
+								<div class="info-text">
+									<span class="title"> Logo uploaded </span>
+
+									<span class="description"> Ready to use in QR Code </span>
+								</div>
+							</div>
+
+							<PButton
+								type="button"
+								class="default"
+								severity="danger"
+								icon="pi pi-times"
+								@click="removeImage" />
+						</div>
+
+						<div class="control-section">
+							<span class="title">Image Size: {{ imageSizePercentage }}%</span>
+
+							<PSlider
+								id="image-size"
+								v-model="imageSize"
+								class="default"
+								fluid
+								:min="0"
+								:max="0.4"
+								:step="0.01"
+								@value-change="setImageSize" />
+						</div>
 					</div>
 				</PTabPanel>
 			</PTabPanels>
@@ -458,7 +756,15 @@
 			</div>
 		</div>
 
-		<PButton class="default" severity="contrast" label="Save QR Code" fluid @click="saveQRCode" />
+		<div class="submit">
+			<PButton class="default" severity="contrast" label="Save QR Code" fluid @click="saveQRCode" />
+
+			<PMessage
+				class="default"
+				severity="contrast">
+				Use colors that are visible on the background to ensure the QR Code is readable.
+			</PMessage>
+		</div>
 	</div>
 </template>
 
@@ -473,9 +779,12 @@
 		type Options,
 	} from 'qr-code-styling';
 
+	const qrCodeStore = useQrCodeStore();
+
 	const dialogRef = inject<{ value: DynamicDialogInstance }>('dialogRef');
 
-	const backgroundColor = ref();
+	const backgroundBorderRadius = ref<number>(0);
+	const backgroundColor = ref<string>('ffffff');
 	const backgroundColorType = ref<'solid' | 'gradient'>('solid');
 	const backgroundGradient = ref<{
 		rotation: number;
@@ -542,6 +851,33 @@
 		{ label: 'Classy Rounded', value: 'classy-rounded' },
 		{ label: 'Extra Rounded', value: 'extra-rounded' },
 	]);
+	const cornerDotsColor = ref<string>('000000');
+	const cornerDotsColorType = ref<'solid' | 'gradient'>('solid');
+	const cornerDotsGradient = ref<{
+		rotation: number;
+		stops: { color: string; offset: number }[];
+	}>({
+		rotation: 0,
+		stops: [
+			{ color: 'ffffff', offset: 0 },
+			{ color: '000000', offset: 100 },
+		],
+	});
+	const cornerDotsType = ref<CornerDotType>('square');
+	const cornerSquaresColor = ref<string>('000000');
+	const cornerSquaresColorType = ref<'solid' | 'gradient'>('solid');
+	const cornerSquaresGradient = ref<{
+		rotation: number;
+		stops: { color: string; offset: number }[];
+	}>({
+		rotation: 0,
+		stops: [
+			{ color: 'ffffff', offset: 0 },
+			{ color: '000000', offset: 100 },
+		],
+	});
+	const cornerSquaresType = ref<CornerSquareType>('square');
+	const dotsColor = ref<string>('000000');
 	const dotsColorType = ref<'solid' | 'gradient'>('solid');
 	const dotsGradient = ref<{
 		rotation: number;
@@ -561,8 +897,9 @@
 		{ label: 'Classy Rounded', value: 'classy-rounded' },
 		{ label: 'Extra Rounded', value: 'extra-rounded' },
 	]);
+	const dotsType = ref<DotType>('square');
 	const foregroundColorType = ref<'solid' | 'gradient'>('solid');
-	const foregroundColor = ref();
+	const foregroundColor = ref<string>('000000');
 	const foregroundGradient = ref<{
 		rotation: number;
 		stops: { color: string; offset: number }[];
@@ -575,12 +912,47 @@
 	});
 	const qrCode = ref<QRCodeStyling | null>(null);
 	const qrCodeOptions = ref<Options>({});
-	const tab = ref<'colors' | 'shapes' | 'logo'>('shapes');
+	const image = ref<File | null>(null);
+	const imageInput = ref<HTMLInputElement | null>(null);
+	const imageSize = ref<number>(0.4);
+	const imageUrl = ref<string | null>(null);
+	const tab = ref<'colors' | 'shapes' | 'logo'>('colors');
+	const width = ref<number>(128);
+
+	const data = computed(() => qrCodeStore.getData);
+	const imageSizePercentage = computed(() => Math.floor((imageSize.value * 100) / 0.4));
 
 	onMounted(() => {
 		qrCodeOptions.value = dialogRef?.value.data;
-
 		qrCode.value = new QRCodeStyling(qrCodeOptions.value);
+
+		if (data.value) {
+			backgroundBorderRadius.value = data.value.backgroundBorderRadius;
+			backgroundColor.value = data.value.backgroundColor;
+			backgroundColorType.value = data.value.backgroundColorType;
+			backgroundGradient.value = data.value.backgroundGradient;
+			colorPreset.value = data.value.colorPreset;
+			cornerDotsColor.value = data.value.cornerDotsColor;
+			cornerDotsColorType.value = data.value.cornerDotsColorType;
+			cornerDotsGradient.value = data.value.cornerDotsGradient;
+			cornerDotsType.value = data.value.cornerDotsType;
+			cornerSquaresColor.value = data.value.cornerSquaresColor;
+			cornerSquaresColorType.value = data.value.cornerSquaresColorType;
+			cornerSquaresGradient.value = data.value.cornerSquaresGradient;
+			cornerSquaresType.value = data.value.cornerSquaresType;
+			dotsColor.value = data.value.dotsColor;
+			dotsColorType.value = data.value.dotsColorType;
+			dotsGradient.value = data.value.dotsGradient;
+			dotsType.value = data.value.dotsType;
+			foregroundColor.value = data.value.foregroundColor;
+			foregroundColorType.value = data.value.foregroundColorType;
+			foregroundGradient.value = data.value.foregroundGradient;
+			image.value = data.value.image;
+			imageSize.value = data.value.imageSize;
+			imageUrl.value = data.value.imageUrl;
+			width.value = data.value.width;
+		}
+
 		setTimeout(() => {
 			qrCode.value?.append(document.getElementById('qr-code-advanced-canvas') as HTMLElement);
 		}, 300);
@@ -684,7 +1056,7 @@
 		} else {
 			qrCodeOptions.value.backgroundOptions!.gradient = {
 				type: 'linear',
-				rotation: backgroundGradient.value.rotation / 180 * Math.PI,
+				rotation: (backgroundGradient.value.rotation / 180) * Math.PI,
 				colorStops: backgroundGradient.value.stops.map((stop) => ({
 					offset: stop.offset,
 					color: `#${stop.color}`,
@@ -700,7 +1072,7 @@
 	};
 
 	const setBackgroundGradientAngle = debounce((value: number | number[]) => {
-		qrCodeOptions.value.backgroundOptions!.gradient!.rotation = (value as number) / 180 * Math.PI;
+		qrCodeOptions.value.backgroundOptions!.gradient!.rotation = ((value as number) / 180) * Math.PI;
 	}, 100);
 
 	const setBackgroundGradientStopColor = debounce(
@@ -718,7 +1090,7 @@
 		} else {
 			qrCodeOptions.value.dotsOptions!.gradient = {
 				type: 'linear',
-				rotation: foregroundGradient.value.rotation / 180 * Math.PI,
+				rotation: (foregroundGradient.value.rotation / 180) * Math.PI,
 				colorStops: foregroundGradient.value.stops.map((stop) => ({
 					offset: stop.offset,
 					color: `#${stop.color}`,
@@ -734,7 +1106,7 @@
 	};
 
 	const setForegroundGradientAngle = debounce((value: number | number[]) => {
-		qrCodeOptions.value.dotsOptions!.gradient!.rotation = (value as number) / 180 * Math.PI;
+		qrCodeOptions.value.dotsOptions!.gradient!.rotation = ((value as number) / 180) * Math.PI;
 	}, 100);
 
 	const setForegroundGradientStopColor = debounce(
@@ -749,21 +1121,28 @@
 		qrCodeOptions.value.shape = shape;
 	};
 
-	const setSize = (value: number | number[]) => {
+	const setSize = debounce((value: number | number[]) => {
 		qrCodeOptions.value.width = value as number;
 		qrCodeOptions.value.height = value as number;
-	};
+	}, 300);
+
+	const setBackgroundBorderRadius = debounce((value: number | number[]) => {
+		qrCodeOptions.value.backgroundOptions!.round = value as number;
+	}, 300);
 
 	const setDotsShape = (shape: DotType) => {
 		qrCodeOptions.value.dotsOptions!.type = shape;
+		dotsType.value = shape;
 	};
 
 	const setCornerDotsShape = (shape: CornerDotType) => {
 		qrCodeOptions.value.cornersDotOptions!.type = shape;
+		cornerDotsType.value = shape;
 	};
 
 	const setCornerSquaresShape = (shape: CornerSquareType) => {
 		qrCodeOptions.value.cornersSquareOptions!.type = shape;
+		cornerSquaresType.value = shape;
 	};
 
 	const setDotsColorType = (value: 'solid' | 'gradient') => {
@@ -788,15 +1167,132 @@
 	};
 
 	const setDotsGradientAngle = debounce((value: number | number[]) => {
-		qrCodeOptions.value.dotsOptions!.gradient!.rotation = (value as number) / 180 * Math.PI;
+		qrCodeOptions.value.dotsOptions!.gradient!.rotation = ((value as number) / 180) * Math.PI;
 	}, 100);
 
 	const setDotsGradientStopColor = debounce((event: ColorPickerChangeEvent, index: number) => {
 		qrCodeOptions.value.dotsOptions!.gradient!.colorStops[index]!.color = `#${event.value}`;
 	}, 100);
 
+	const setCornerDotsColorType = (value: 'solid' | 'gradient') => {
+		if (value === 'solid') {
+			qrCodeOptions.value.cornersDotOptions!.gradient = undefined;
+			qrCodeOptions.value.cornersDotOptions!.color = '#000000';
+		} else {
+			qrCodeOptions.value.cornersDotOptions!.color = undefined;
+			qrCodeOptions.value.cornersDotOptions!.gradient = {
+				type: 'linear',
+				rotation: 0,
+				colorStops: [
+					{ offset: 0, color: '#ffffff' },
+					{ offset: 100, color: '#000000' },
+				],
+			};
+		}
+	};
+
+	const setCornerDotsColor = (event: ColorPickerChangeEvent) => {
+		qrCodeOptions.value.cornersDotOptions!.color = `#${event.value}`;
+	};
+
+	const setCornerDotsGradientAngle = debounce((value: number | number[]) => {
+		qrCodeOptions.value.cornersDotOptions!.gradient!.rotation = ((value as number) / 180) * Math.PI;
+	}, 100);
+
+	const setCornerDotsGradientStopColor = debounce(
+		(event: ColorPickerChangeEvent, index: number) => {
+			cornerDotsGradient.value.stops[index]!.color = event.value;
+			qrCodeOptions.value.cornersDotOptions!.gradient!.colorStops[index]!.color = `#${event.value}`;
+		},
+		100
+	);
+
+	const setCornerSquaresColorType = (value: 'solid' | 'gradient') => {
+		if (value === 'solid') {
+			qrCodeOptions.value.cornersSquareOptions!.gradient = undefined;
+			qrCodeOptions.value.cornersSquareOptions!.color = '#000000';
+		} else {
+			qrCodeOptions.value.cornersSquareOptions!.color = undefined;
+			qrCodeOptions.value.cornersSquareOptions!.gradient = {
+				type: 'linear',
+				rotation: 0,
+				colorStops: [
+					{ offset: 0, color: '#ffffff' },
+					{ offset: 100, color: '#000000' },
+				],
+			};
+		}
+	};
+
+	const setCornerSquaresColor = (event: ColorPickerChangeEvent) => {
+		qrCodeOptions.value.cornersSquareOptions!.color = `#${event.value}`;
+	};
+
+	const setCornerSquaresGradientAngle = debounce((value: number | number[]) => {
+		qrCodeOptions.value.cornersSquareOptions!.gradient!.rotation =
+			((value as number) / 180) * Math.PI;
+	}, 100);
+
+	const setCornerSquaresGradientStopColor = debounce(
+		(event: ColorPickerChangeEvent, index: number) => {
+			cornerSquaresGradient.value.stops[index]!.color = event.value;
+			qrCodeOptions.value.cornersSquareOptions!.gradient!.colorStops[
+				index
+			]!.color = `#${event.value}`;
+		},
+		100
+	);
+
+	const setImage = (event: Event) => {
+		const file = (event.target as HTMLInputElement).files?.[0];
+
+		if (file) {
+			image.value = file;
+
+			imageUrl.value = URL.createObjectURL(file);
+			qrCodeOptions.value.image = imageUrl.value;
+		}
+	};
+
+	const removeImage = () => {
+		image.value = null;
+		imageUrl.value = null;
+		qrCodeOptions.value.image = undefined;
+	};
+
+	const setImageSize = (value: number | number[]) => {
+		qrCodeOptions.value.imageOptions!.imageSize = value as number;
+	};
+
 	const saveQRCode = () => {
-		dialogRef?.value.close(qrCodeOptions.value);
+		qrCodeStore.setData({
+			backgroundBorderRadius: backgroundBorderRadius.value,
+			backgroundColor: backgroundColor.value,
+			backgroundColorType: backgroundColorType.value,
+			backgroundGradient: backgroundGradient.value,
+			colorPreset: colorPreset.value,
+			cornerDotsColor: cornerDotsColor.value,
+			cornerDotsColorType: cornerDotsColorType.value,
+			cornerDotsGradient: cornerDotsGradient.value,
+			cornerDotsType: cornerDotsType.value,
+			cornerSquaresColor: cornerSquaresColor.value,
+			cornerSquaresColorType: cornerSquaresColorType.value,
+			cornerSquaresGradient: cornerSquaresGradient.value,
+			cornerSquaresType: cornerSquaresType.value,
+			dotsColor: dotsColor.value,
+			dotsColorType: dotsColorType.value,
+			dotsGradient: dotsGradient.value,
+			dotsType: dotsType.value,
+			foregroundColor: foregroundColor.value,
+			foregroundColorType: foregroundColorType.value,
+			foregroundGradient: foregroundGradient.value,
+			image: image.value,
+			imageSize: imageSize.value,
+			imageUrl: imageUrl.value,
+			width: width.value,
+		});
+
+		return dialogRef?.value.close(qrCodeOptions.value);
 	};
 </script>
 
@@ -807,6 +1303,17 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1.5rem;
+		position: relative;
+		max-height: 40rem;
+		overflow-y: auto;
+		padding-bottom: 6rem;
+
+		/* Hide scrollbars in configuration dialog */
+		&::-webkit-scrollbar {
+				display: none;
+			}
+			-ms-overflow-style: none; /* IE and Edge */
+			scrollbar-width: none; /* Firefox */
 
 		hr {
 			border: none;
@@ -820,6 +1327,39 @@
 					display: flex;
 					flex-direction: column;
 					gap: 1.5rem;
+
+					.gradient-controls {
+						display: flex;
+						flex-direction: column;
+						gap: 1rem;
+
+						.angle {
+							display: flex;
+							flex-direction: row;
+							align-items: center;
+							gap: 0.5rem;
+
+							.title {
+								font-size: 1rem;
+								font-weight: 400;
+								color: var(--color-neutral-100);
+							}
+						}
+
+						.gradient-stops {
+							display: flex;
+							flex-direction: row;
+							flex-wrap: wrap;
+							gap: 1rem;
+
+							.gradient-stop {
+								display: flex;
+								flex-direction: row;
+								align-items: center;
+								gap: 0.5rem;
+							}
+						}
+					}
 
 					.section {
 						display: flex;
@@ -912,39 +1452,6 @@
 							align-items: center;
 							gap: 0.5rem;
 						}
-
-						.gradient-controls {
-							display: flex;
-							flex-direction: column;
-							gap: 1rem;
-
-							.angle {
-								display: flex;
-								flex-direction: row;
-								align-items: center;
-								gap: 0.5rem;
-
-								.title {
-									font-size: 1rem;
-									font-weight: 400;
-									color: var(--color-neutral-100);
-								}
-							}
-
-							.gradient-stops {
-								display: flex;
-								flex-direction: row;
-								flex-wrap: wrap;
-								gap: 1rem;
-
-								.gradient-stop {
-									display: flex;
-									flex-direction: row;
-									align-items: center;
-									gap: 0.5rem;
-								}
-							}
-						}
 					}
 
 					.section-container {
@@ -978,6 +1485,103 @@
 								flex-direction: row;
 								flex-wrap: wrap;
 								gap: 0.5rem;
+							}
+
+							.radio-group {
+								display: flex;
+								flex-direction: row;
+								gap: 1rem;
+							}
+						}
+					}
+
+					.file-upload-area {
+						position: relative;
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						justify-content: center;
+						gap: 0.5rem;
+						padding: 1rem;
+						background-color: color-mix(in oklab, var(--color-gray-800) 40%, transparent);
+						@include squircle(1.5rem);
+						border: 1px solid color-mix(in oklab, var(--color-gray-700) 60%, transparent);
+						cursor: pointer;
+
+						input {
+							position: absolute;
+							top: 0;
+							left: 0;
+							width: 0;
+							height: 0;
+							opacity: 0;
+						}
+
+						.upload-text {
+							font-size: 1rem;
+							font-weight: 400;
+							color: var(--color-neutral-100);
+						}
+
+						.upload-description {
+							text-align: center;
+							max-width: 20rem;
+							font-size: 0.75rem;
+							font-weight: 400;
+							color: var(--color-neutral-400);
+						}
+					}
+
+					.file-preview {
+						display: flex;
+						flex-direction: column;
+						gap: 0.5rem;
+
+						.preview-content {
+							display: flex;
+							flex-direction: row;
+							align-items: center;
+							justify-content: space-between;
+
+							.preview-info {
+								display: flex;
+								flex-direction: row;
+								align-items: center;
+								gap: 0.5rem;
+
+								img {
+									border-radius: 0.5rem;
+									overflow: hidden;
+								}
+
+								.info-text {
+									display: flex;
+									flex-direction: column;
+
+									.title {
+										font-size: 0.825rem;
+										font-weight: 500;
+										color: var(--color-neutral-100);
+									}
+
+									.description {
+										font-size: 0.75rem;
+										font-weight: 400;
+										color: var(--color-neutral-400);
+									}
+								}
+							}
+						}
+
+						.control-section {
+							display: flex;
+							flex-direction: column;
+							gap: 0.5rem;
+
+							.title {
+								font-size: 0.75rem;
+								font-weight: 400;
+								color: var(--color-neutral-400);
 							}
 						}
 					}
@@ -1027,6 +1631,20 @@
 					text-align: center;
 				}
 			}
+		}
+
+		.submit {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			padding: 1rem;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 0.5rem;
+			background-color: var(--color-gray-900);
+			box-shadow: var(--box-shadow-1);
 		}
 	}
 </style>

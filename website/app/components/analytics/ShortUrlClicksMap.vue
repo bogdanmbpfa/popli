@@ -59,7 +59,7 @@
 				accessToken:
 					'pk.eyJ1IjoicGhhbnRvbXNvbHV0aW9ucyIsImEiOiJjbHUycmVpcDEwc2c3Mm1ueDdzaDd1dnc1In0.5kltI9awT7ye3s2-m5u1eQ',
 			});
-		} catch (error) {
+		} catch {
 			mapError.value = true;
 
 			return;

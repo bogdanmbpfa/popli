@@ -14,16 +14,6 @@
 							fluid
 							:value="user.email"
 							readonly />
-
-						<PMessage v-if="user.emailConfirmedAt" class="default" severity="success">
-							<Icon name="mdi:checkbox-marked-circle-outline" />
-							Email verified
-						</PMessage>
-
-						<PMessage v-else class="default" severity="info">
-							<Icon name="mdi:information-outline" />
-							Email not verified.
-						</PMessage>
 					</FormInput>
 
 					<FormInput
@@ -96,8 +86,8 @@
 <script setup lang="ts">
 	import * as yup from 'yup';
 
-	import { EApiEndpoint } from '~/../enums';
-	import type { IAccountChangePassword } from '~/../interfaces';
+	import { EApiEndpoint } from '~~/enums';
+	import type { IAccountChangePassword } from '~~/interfaces';
 
 	definePageMeta({
 		layout: 'account',
@@ -171,7 +161,6 @@
 		useSignOut();
 
 		userStore.setUser(null);
-		userStore.setProfile(null);
 
 		toast.add({
 			severity: 'success',

@@ -86,6 +86,7 @@ export class ValidRefreshTokenGuard implements CanActivate {
     }
 
     const isValid = await verify(session.refreshToken, refreshToken);
+
     if (!isValid) {
       throw new UnauthorizedException(this.errorMessage);
     }

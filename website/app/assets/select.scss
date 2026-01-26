@@ -26,9 +26,12 @@
     &:hover,
     &:not(.p-disabled):hover,
     &.p-focus,
-    &:not(.p-disabled).p-focus {
-      border-color: color-mix(in oklab, var(--color-gray-700) 30%, transparent);
+    &:not(.p-disabled).p-focus,
+    &.p-variant-filled,
+    &.p-variant-filled:not(.p-disabled):hover,
+    &.p-variant-filled:not(.p-disabled).p-focus {
       background-color: color-mix(in oklab, var(--color-gray-900) 40%, transparent);
+      border-color: color-mix(in oklab, var(--color-gray-700) 30%, transparent);
       box-shadow: none;
     }
 
