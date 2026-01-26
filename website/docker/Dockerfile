@@ -8,7 +8,7 @@ RUN bun install --frozen-lockfile
 
 COPY . .
 
-RUN pnpm run build
+RUN bun run build
 
 ENV PORT=8080
 
