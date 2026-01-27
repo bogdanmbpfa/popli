@@ -9,6 +9,8 @@ export default defineEventHandler(async (event) => {
 	const { key, params, ...query } = getQuery(event);
 	const queryParams = new URLSearchParams(query as Record<string, string>).toString();
 	const body = await readMultipartFormData(event);
+	const userAgent = getRequestHeader(event, 'user-agent') ?? getHeader(event, 'user-agent');
+	const ipAddress = getRequestHeader(event, 'x-forwarded-for') ?? getHeader(event, 'x-forwarded-for');
 
 	const {
 		apiBaseUrl,
@@ -129,6 +131,8 @@ export default defineEventHandler(async (event) => {
 			headers: {
 				...(endpoint.auth && token ? { Authorization: `Bearer ${token}` } : {}),
 				...(endpoint.auth && refreshToken ? { 'X-Refresh-Token': refreshToken } : {}),
+				...(userAgent ? { 'User-Agent': userAgent } : {}),
+				...(ipAddress ? { 'X-Forwarded-For': ipAddress } : {}),
 			},
 		});
 
