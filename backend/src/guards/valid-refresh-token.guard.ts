@@ -31,6 +31,8 @@ export class ValidRefreshTokenGuard implements CanActivate {
 
     const refreshToken = request.headers['x-refresh-token'];
 
+    console.log(`ValidRefreshTokenGuard | refreshToken: ${refreshToken}`);
+
     if (!refreshToken) {
       throw new UnauthorizedException(this.errorMessage);
     }
@@ -44,6 +46,8 @@ export class ValidRefreshTokenGuard implements CanActivate {
       throw new UnauthorizedException(this.errorMessage);
     }
 
+    console.log(`ValidRefreshTokenGuard | userId: ${userId}`);
+
     if (!userId) {
       throw new UnauthorizedException(this.errorMessage);
     }
@@ -55,6 +59,8 @@ export class ValidRefreshTokenGuard implements CanActivate {
         eq(authSessionModel.userAgent, request.headers['user-agent']),
       ),
     });
+
+    console.log(`ValidRefreshTokenGuard | session: ${JSON.stringify(session)}`);
 
     if (!session) {
       throw new UnauthorizedException(this.errorMessage);
@@ -72,6 +78,8 @@ export class ValidRefreshTokenGuard implements CanActivate {
       where: eq(userModel.id, userId),
     });
 
+    console.log(`ValidRefreshTokenGuard | account: ${JSON.stringify(account)}`);
+
     if (!account) {
       throw new UnauthorizedException(this.errorMessage);
     }
@@ -86,6 +94,8 @@ export class ValidRefreshTokenGuard implements CanActivate {
     }
 
     const isValid = await verify(session.refreshToken, refreshToken);
+
+    console.log(`ValidRefreshTokenGuard | isValid: ${isValid}`);
 
     if (!isValid) {
       throw new UnauthorizedException(this.errorMessage);
