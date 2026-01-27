@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { verify } from 'argon2';
+import { hash, verify } from 'argon2';
 import { and, eq } from 'drizzle-orm';
 import { decodeJwt } from 'jose';
 
@@ -52,7 +52,7 @@ export class ValidRefreshTokenGuard implements CanActivate {
       throw new UnauthorizedException(this.errorMessage);
     }
 
-    const session = await db.query.authSessionModel.findFirst({
+    let session = await db.query.authSessionModel.findFirst({
       where: and(
         eq(authSessionModel.userId, userId),
         eq(authSessionModel.ipAddress, request.ip),
@@ -63,8 +63,19 @@ export class ValidRefreshTokenGuard implements CanActivate {
     console.log(`ValidRefreshTokenGuard | session: ${JSON.stringify(session)}`);
 
     if (!session) {
-      throw new UnauthorizedException(this.errorMessage);
+      [session] = await db
+        .insert(authSessionModel)
+        .values({
+          userId: userId,
+          ipAddress: request.ip,
+          userAgent: request.headers['user-agent'],
+          refreshToken: await hash(refreshToken),
+          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day
+        })
+        .returning();
     }
+
+    console.log(`ValidRefreshTokenGuard | session: ${JSON.stringify(session)}`);
 
     if (session.expiresAt.getTime() < Date.now()) {
       await db
