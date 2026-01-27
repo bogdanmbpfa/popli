@@ -1,6 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { config } from '@config';
 import { Controllers } from '@controllers';
@@ -14,6 +15,7 @@ import { UtilityServices } from '@utilities';
     HttpModule.register({
       timeout: 10000,
     }),
+    ScheduleModule.forRoot(),
   ],
   controllers: Controllers,
   providers: [...Services, ...UtilityServices],

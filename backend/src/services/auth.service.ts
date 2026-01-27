@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { hash, verify } from 'argon2';
 import { randomBytes } from 'crypto';
-import { eq, or } from 'drizzle-orm';
+import { eq, lt, or } from 'drizzle-orm';
 import type { Request } from 'express';
 
 import { authSessionModel, db, userModel } from '@database';
@@ -14,9 +14,12 @@ import {
   AuthResponseDTO,
 } from '@resources';
 import { EmailUtilityService, JWTUtilityService } from '@utilities';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly configService: ConfigService,
     private readonly emailUtilityService: EmailUtilityService,
@@ -235,6 +238,18 @@ export class AuthService {
         passwordResetCodeExpiresAt: null,
       })
       .where(eq(userModel.id, account.id));
+  }
+
+  @Cron(CronExpression.EVERY_HOUR)
+  async deleteExpiredSessions(): Promise<void> {
+    this.logger.log('Deleting expired sessions');
+
+    const deleted = await db
+      .delete(authSessionModel)
+      .where(lt(authSessionModel.expiresAt, new Date()))
+      .returning();
+
+    this.logger.log(`Deleted ${deleted.length} expired sessions`);
   }
 
   private async generateAuthTokens(
