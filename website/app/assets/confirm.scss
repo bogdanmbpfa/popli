@@ -39,3 +39,12 @@
 .p-dialog-mask {
 	padding: 1rem 0;
 }
+
+@media (max-width: 768px) {
+	.p-dialog {
+		&.default {
+			width: 100% !important;
+			max-width: calc(100lvw - 1rem) !important;
+		}
+	}
+}
