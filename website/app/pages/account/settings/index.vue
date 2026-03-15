@@ -74,7 +74,7 @@
           />
         </form>
 
-        <form @submit.prevent="onSubmitChangePassword">
+        <form class="change-password-form" @submit.prevent="onSubmitChangePassword">
           <FormInput
             id="currentPassword"
             label="Current password"
@@ -339,6 +339,22 @@ const onSubmitDeleteAccount = async () => {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .account-settings-page {
+    .container {
+      :deep(.form-container) {
+        form.change-password-form {
+          flex-direction: column;
+
+          .form-input {
+            max-width: 100%;
+          }
+        }
       }
     }
   }
