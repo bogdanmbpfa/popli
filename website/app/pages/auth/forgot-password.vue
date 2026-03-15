@@ -225,7 +225,7 @@
 			color-mix(in oklab, var(--color-purple-950) 20%, transparent) 50%,
 			color-mix(in oklab, var(--color-pink-950) 20%, transparent) 100%
 		);
-		padding: 1rem;
+		padding: 2rem 1rem 0;
 
 		.container {
 			display: flex;
@@ -303,7 +303,6 @@
 	@media (max-width: 768px) {
 		.auth-forgot-password {
 			justify-content: flex-start;
-			padding-top: 4rem;
 		}
 	}
 </style>
