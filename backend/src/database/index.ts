@@ -16,6 +16,9 @@ export const db = withReplicas(
       user: config.database.username,
       password: config.database.password,
       database: config.database.database,
+      ssl: {
+        rejectUnauthorized: false,
+      },
     },
     schema: {
       ...qrCodeSchema,
