@@ -8,6 +8,10 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    PAccordion: typeof import('primevue/accordion')['default']
+    PAccordionContent: typeof import('primevue/accordioncontent')['default']
+    PAccordionHeader: typeof import('primevue/accordionheader')['default']
+    PAccordionPanel: typeof import('primevue/accordionpanel')['default']
     PButton: typeof import('primevue/button')['default']
     PChart: typeof import('primevue/chart')['default']
     PColorPicker: typeof import('primevue/colorpicker')['default']

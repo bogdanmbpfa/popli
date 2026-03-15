@@ -27,6 +27,8 @@
 		},
 		description: {
 			type: String,
+			default: '',
+			required: false,
 		},
 	});
 </script>

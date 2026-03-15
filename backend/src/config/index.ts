@@ -57,6 +57,7 @@ export const config: IConfig = {
     aliasAlreadyExists: 'ALIAS_ALREADY_EXISTS',
     shortUrlNotFound: 'SHORT_URL_NOT_FOUND',
     ipProxy: 'IP_PROXY',
+    linkNotFound: 'LINK_NOT_FOUND',
   },
 
   googleCloud: {

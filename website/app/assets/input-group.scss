@@ -1,61 +1,83 @@
 @use './mixins.scss' as *;
 
 .p-inputgroup {
-	&.default {
-		.p-inputgroupaddon {
-			@include squircle(1.5rem);
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
-			padding: 0.5rem;
-			padding-right: 0;
-			font-size: 0.875rem;
-			background-color: color-mix(in oklab, var(--color-gray-900) 60%, transparent);
-			border: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
-			border-right: none;
-			color: var(--color-neutral-100);
-		}
+  &.default {
+    .p-inputgroupaddon {
+			min-width: unset;
+      @include squircle(1.5rem);
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      padding: 0.5rem;
+      padding-right: 0;
+      font-size: 0.875rem;
+      background-color: color-mix(
+        in oklab,
+        var(--color-gray-900) 60%,
+        transparent
+      );
+      border: 1px solid
+        color-mix(in oklab, var(--color-gray-700) 30%, transparent);
+      border-right: none;
+      color: var(--color-neutral-100);
+    }
 
-		.p-inputtext {
-			@include squircle(1.5rem);
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-			padding-left: 0;
-			border-left: none;
-		}
+    .p-inputtext {
+      @include squircle(1.5rem);
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      padding-left: 0;
+      border-left: none;
+    }
 
-		&:has(.p-inputtext:focus) {
-			.p-inputgroupaddon {
-				background-color: color-mix(in oklab, var(--color-gray-900) 60%, transparent);
-				border-color: color-mix(in oklab, var(--color-gray-700) 30%, transparent);
-				border-right: none;
-			}
+    &:has(.p-inputtext:focus) {
+      .p-inputgroupaddon {
+        background-color: color-mix(
+          in oklab,
+          var(--color-gray-900) 60%,
+          transparent
+        );
+        border-color: color-mix(
+          in oklab,
+          var(--color-gray-700) 30%,
+          transparent
+        );
+        border-right: none;
+      }
 
-			.p-inputtext {
-				border-left: none;
-			}
-		}
+      .p-inputtext {
+        border-left: none;
+      }
+    }
 
-		&:has(.p-inputtext:hover) {
-			.p-inputgroupaddon {
-				background-color: color-mix(in oklab, var(--color-gray-900) 60%, transparent);
-				border-color: color-mix(in oklab, var(--color-gray-700) 30%, transparent);
-				border-right: none;
-			}
+    &:has(.p-inputtext:hover) {
+      .p-inputgroupaddon {
+        background-color: color-mix(
+          in oklab,
+          var(--color-gray-900) 60%,
+          transparent
+        );
+        border-color: color-mix(
+          in oklab,
+          var(--color-gray-700) 30%,
+          transparent
+        );
+        border-right: none;
+      }
 
-			.p-inputtext {
-				border-left: none;
-			}
-		}
+      .p-inputtext {
+        border-left: none;
+      }
+    }
 
-		&:has(.p-inputtext.p-invalid) {
-			.p-inputgroupaddon {
-				border-color: var(--color-red-500);
-				border-right: none;
-			}
+    &:has(.p-inputtext.p-invalid) {
+      .p-inputgroupaddon {
+        border-color: var(--color-red-500);
+        border-right: none;
+      }
 
-			.p-inputtext {
-				border-left: none;
-			}
-		}
-	}
+      .p-inputtext {
+        border-left: none;
+      }
+    }
+  }
 }

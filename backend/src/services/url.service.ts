@@ -7,13 +7,21 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UAParser } from '@ua-parser-js/pro-business';
-import { and, asc, count, desc, eq, or, SQL, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, isNull, or, SQL, sql } from 'drizzle-orm';
 import { DateTime } from 'luxon';
 import { randomBytes } from 'node:crypto';
 
-import { db, shortUrlClickModel, shortUrlModel } from '@database';
 import {
+  db,
+  linkClickModel,
+  linkModel,
+  shortUrlClickModel,
+  shortUrlModel,
+} from '@database';
+import {
+  CreateLinkDTO,
   IUrlIpApiResponse,
+  LinkDTO,
   UrlCreateShortUrlDTO,
   UrlShortUrlCodeResponseDTO,
   UrlShortUrlCountryClicksDTO,
@@ -21,6 +29,7 @@ import {
   UrlShortUrlDTO,
   UrlShortUrlUpdateDTO,
 } from '@resources';
+import { processImage, StorageUtility } from '@utilities';
 
 @Injectable()
 export class UrlService {
@@ -29,6 +38,7 @@ export class UrlService {
   constructor(
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
+    private readonly storageUtility: StorageUtility,
   ) {}
 
   async createShortUrl(
@@ -352,5 +362,196 @@ export class UrlService {
       .groupBy(shortUrlClickModel.country, shortUrlClickModel.countryCode);
 
     return countryClicks;
+  }
+
+  async getLinks(userId: string): Promise<LinkDTO[]> {
+    const links = await db.query.linkModel.findMany({
+      where: and(eq(linkModel.userId, userId), isNull(linkModel.deletedAt)),
+      orderBy: [asc(linkModel.position)],
+    });
+
+    const linksDTO = await Promise.all(
+      links.map(async (link) => {
+        let backgroundImageUrl: string | null = null;
+
+        if (link.backgroundImage) {
+          backgroundImageUrl = await this.storageUtility.getUrl(
+            link.backgroundImage,
+          );
+        }
+
+        return {
+          id: link.id,
+          userId: link.userId,
+          type: link.type,
+          platform: link.platform,
+          url: link.url,
+          title: link.title,
+          backgroundImage: backgroundImageUrl,
+          titleColors: link.titleColors as string[] | null,
+          backgroundColors: link.backgroundColors as string[] | null,
+          position: link.position,
+          createdAt: link.createdAt.toISOString(),
+          updatedAt: link.updatedAt.toISOString(),
+          deletedAt: link.deletedAt?.toISOString() || null,
+        };
+      }),
+    );
+
+    return linksDTO;
+  }
+
+  async createLink(userId: string, dto: CreateLinkDTO): Promise<void> {
+    await db.transaction(async (tx) => {
+      if (dto.id) {
+        const existingLink = await tx.query.linkModel.findFirst({
+          where: and(eq(linkModel.userId, userId), eq(linkModel.id, dto.id)),
+        });
+
+        if (existingLink) {
+          if (existingLink.backgroundImage) {
+            await this.storageUtility.delete(existingLink.backgroundImage);
+          }
+
+          await tx.delete(linkModel).where(eq(linkModel.id, existingLink.id));
+        }
+      }
+
+      let backgroundImageUrl: string | null = null;
+
+      if (dto.backgroundImage) {
+        try {
+          const image = await processImage(dto.backgroundImage.buffer, {
+            width: 1280,
+            height: 720,
+          });
+
+          backgroundImageUrl = await this.storageUtility.upload(
+            image,
+            randomBytes(20).toString('hex'),
+            'image/webp',
+            'link-background-images',
+          );
+        } catch (error) {
+          this.logger.error('Error processing background image', error);
+          throw new BadRequestException(
+            this.configService.get('errorMessage.fileRequired'),
+          );
+        }
+      }
+
+      await tx.insert(linkModel).values({
+        id: dto.id,
+        userId,
+        type: dto.type,
+        platform: dto.platform || null,
+        url: dto.url,
+        title: dto.title,
+        backgroundImage: backgroundImageUrl,
+        titleColors: dto.titleColors,
+        backgroundColors: dto.backgroundColors,
+        position: dto.position,
+      });
+    });
+  }
+
+  async getLinkBackgroundImage(userId: string, id: string): Promise<Buffer> {
+    const link = await db.query.linkModel.findFirst({
+      where: and(eq(linkModel.id, id), eq(linkModel.userId, userId)),
+    });
+
+    if (!link) {
+      throw new NotFoundException(
+        this.configService.get('errorMessage.linkNotFound'),
+      );
+    }
+
+    if (!link.backgroundImage) {
+      throw new NotFoundException(
+        this.configService.get('errorMessage.backgroundImageNotFound'),
+      );
+    }
+
+    return await this.storageUtility.getBuffer(link.backgroundImage);
+  }
+
+  async deleteLink(userId: string, id: string): Promise<void> {
+    const link = await db.query.linkModel.findFirst({
+      where: and(eq(linkModel.id, id), eq(linkModel.userId, userId)),
+    });
+
+    if (link) {
+      await db.delete(linkModel).where(eq(linkModel.id, id));
+    }
+  }
+
+  async clickLink(
+    id: string,
+    ipAddress: string,
+    requestUserAgent: string,
+    requestReferrer?: string,
+  ): Promise<string> {
+    const link = await db.query.linkModel.findFirst({
+      where: eq(linkModel.id, id),
+    });
+
+    if (!link) {
+      throw new NotFoundException(
+        this.configService.get('errorMessage.linkNotFound'),
+      );
+    }
+
+    let ipData: IUrlIpApiResponse;
+
+    try {
+      const { data } = await this.httpService.axiosRef.get<IUrlIpApiResponse>(
+        `${this.configService.get('ipApi.baseUrl')}/api/json/${ipAddress}`,
+        {
+          transformResponse: (data) => {
+            return JSON.parse(data);
+          },
+        },
+      );
+
+      ipData = data;
+    } catch (error) {
+      this.logger.error(
+        `Error getting IP data for ${ipAddress}: ${(error as Error).message}`,
+        (error as Error).stack,
+      );
+      throw new BadRequestException(
+        this.configService.get('errorMessage.ipProxy'),
+      );
+    }
+
+    if (ipData.isProxy) {
+      throw new BadRequestException(
+        this.configService.get('errorMessage.ipProxy'),
+      );
+    }
+
+    const clickedAt = new Date();
+
+    const result = new UAParser(requestUserAgent).getResult();
+
+    const userAgent = result.ua;
+    const deviceType = result.device.type;
+    const browser = result.browser.name;
+    const os = result.os.name;
+
+    await db.insert(linkClickModel).values({
+      linkId: link.id,
+      ipAddress: ipData.ipAddress,
+      country: ipData.countryName,
+      countryCode: ipData.countryCode,
+      userAgent: userAgent,
+      deviceType: deviceType,
+      browser: browser,
+      os: os,
+      referrer: requestReferrer || null,
+      clickedAt,
+    });
+
+    return link.url;
   }
 }

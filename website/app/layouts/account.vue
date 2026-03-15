@@ -13,24 +13,15 @@
         <div class="title">
           <span class="name">Dashboard</span>
 
-          <span class="handle">@{{ user?.handle }}</span>
+          <span v-if="profile?.handle" class="handle"
+            >@{{ profile.handle }}</span
+          >
         </div>
       </template>
 
       <template #default>
         <div class="link-group">
           <span class="title">Manage</span>
-
-          <nuxt-link to="/account">
-            <PButton
-              class="default"
-              as="a"
-              variant="link"
-              icon="pi pi-user"
-              label="Profile"
-              fluid
-            />
-          </nuxt-link>
 
           <nuxt-link to="/account/link-in-bio">
             <PButton
@@ -178,11 +169,6 @@ const heading = computed(() => {
   const { path } = useRoute();
 
   switch (path) {
-    case '/account':
-      return {
-        name: 'Profile',
-        description: 'Update your profile information.',
-      };
     case '/account/link-in-bio':
       return {
         name: 'Link in Bio',
@@ -219,24 +205,16 @@ const heading = computed(() => {
       };
   }
 });
-const user = computed(() => userStore.getUser!);
+const profile = computed(() => userStore.getProfile!);
 
 onMounted(async () => {
-  const { data: profileData } = await useApiJson(EApiEndpoint.ACCOUNT_PROFILE);
-  const { data: userData } = await useApiJson(EApiEndpoint.ACCOUNT_ME);
+  const [{ data: userData }, { data: profileData }] = await Promise.all([
+    useApiJson(EApiEndpoint.ACCOUNT_ME),
+    useApiJson(EApiEndpoint.ACCOUNT_PROFILE),
+  ]);
 
-  userStore.setUser(
-    userData && profileData
-      ? {
-          ...userData!,
-          name: profileData.name,
-          handle: profileData.handle,
-          profileImage: profileData.profileImage,
-          coverImage: profileData?.coverImage || null,
-          bio: profileData.bio,
-        }
-      : null,
-  );
+  userStore.setUser(userData ? { ...userData! } : null);
+  userStore.setProfile(profileData ? { ...profileData! } : null);
 });
 
 if (isMobile) drawerVisible.value = false;
@@ -248,6 +226,7 @@ const toggleDrawer = () => {
 const signOut = () => {
   useSignOut();
   userStore.setUser(null);
+  userStore.setProfile(null);
 
   toast.add({
     severity: 'success',

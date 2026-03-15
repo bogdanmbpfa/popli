@@ -27,9 +27,6 @@ export default async function (headers?: HeadersInit) {
 		},
 	});
 
-	console.log(`UseRefreshToken | token: ${token}`);
-	console.log(`UseRefreshToken | refreshToken: ${refreshToken}`);
-
 	tokenCookie.value = token;
 	refreshTokenCookie.value = refreshToken;
 }

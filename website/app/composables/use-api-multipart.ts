@@ -1,10 +1,9 @@
 import type { NuxtError } from '#app';
 
-import type { EApiEndpoint } from '~~/enums';
 import type { IApiError, IApiFailure, IApiSuccess } from '~~/interfaces';
 import { apiEndpoints, type TApiEndpoint } from '~~/server/endpoints';
 
-export default async function <T, U extends keyof typeof EApiEndpoint>(
+export default async function <T, U extends keyof TApiEndpoint>(
   key: U,
   body?: T,
   query?: Record<string, unknown>,
@@ -24,11 +23,7 @@ export default async function <T, U extends keyof typeof EApiEndpoint>(
     const form = new FormData();
 
     for (const property of Object.keys(requestBody)) {
-      if (!property || !requestBody[property]) {
-        continue;
-      }
-
-      if (property === 'id') {
+      if (!property || requestBody[property] === undefined || requestBody[property] === null) {
         continue;
       }
 

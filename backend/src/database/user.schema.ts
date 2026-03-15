@@ -18,11 +18,6 @@ export const userModel = userManagementSchema.table(
     id: uuid('id').defaultRandom().primaryKey().unique().notNull(),
     email: varchar('email', { length: 255 }).notNull().unique(),
     password: varchar('password', { length: 255 }).notNull().unique(),
-    name: varchar('name', { length: 255 }).notNull(),
-    handle: varchar('handle', { length: 40 }).notNull().unique(),
-    profileImage: varchar('profile_image', { length: 255 }),
-    coverImage: varchar('cover_image', { length: 255 }),
-    bio: text('bio'),
     emailConfirmationCode: varchar('email_confirmation_code', {
       length: 6,
     }).unique(),
@@ -45,9 +40,32 @@ export const userModel = userManagementSchema.table(
       .$onUpdate(() => new Date()),
     deletedAt: timestamp('deleted_at'),
   },
+  (table) => [uniqueIndex('idx_users_email').on(table.email)],
+);
+
+export const profileModel = userManagementSchema.table(
+  'profiles',
+  {
+    id: uuid('id').defaultRandom().primaryKey().unique().notNull(),
+    userId: uuid('user_id').notNull(),
+    handle: varchar('handle', { length: 40 }).unique(),
+    name: varchar('name', { length: 255 }),
+    profileImage: varchar('profile_image', { length: 255 }),
+    coverImage: varchar('cover_image', { length: 255 }),
+    handleColor: varchar('handle_color', { length: 6 }),
+    bio: text('bio'),
+    bioColor: varchar('bio_color', { length: 6 }),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at')
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+    deletedAt: timestamp('deleted_at'),
+  },
   (table) => [
-    uniqueIndex('idx_users_email').on(table.email),
-    uniqueIndex('idx_users_handle').on(table.handle),
+    uniqueIndex('idx_profiles_id').on(table.id),
+    uniqueIndex('idx_profiles_user_id').on(table.userId),
+    uniqueIndex('idx_profiles_handle').on(table.handle),
   ],
 );
 
@@ -79,3 +97,11 @@ export const authSessionModelRelations = relations(
     }),
   }),
 );
+
+export const profileModelRelations = relations(profileModel, ({ one }) => ({
+  user: one(userModel, {
+    fields: [profileModel.userId],
+    references: [userModel.id],
+    relationName: 'user',
+  }),
+}));

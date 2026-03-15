@@ -55,10 +55,6 @@ export default defineEventHandler(async (event) => {
 				continue;
 			}
 
-			if (property.name === 'id') {
-				continue;
-			}
-
 			if (endpoint.filenames && endpoint.filenames.includes(property.name!)) {
 				form.append(
 					property.name!,

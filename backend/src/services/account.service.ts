@@ -9,13 +9,12 @@ import { hash, verify } from 'argon2';
 import { randomBytes } from 'crypto';
 import { eq } from 'drizzle-orm';
 
-import { db, userModel } from '@database';
+import { db, profileModel, userModel } from '@database';
 import {
   AccountChangePasswordDTO,
   AccountDTO,
   AccountProfileDTO,
   AccountRequestEmailUpdateDTO,
-  AccountUpdateDTO,
   AccountUpdateEmailDTO,
   AccountUpdateProfileDTO,
   AccountVerifyEmailDTO,
@@ -58,17 +57,6 @@ export class AccountService {
       createdAt: account.createdAt.toISOString(),
       updatedAt: account.updatedAt.toISOString(),
     } as AccountDTO;
-  }
-
-  async updateAccount(id: string, dto: AccountUpdateDTO): Promise<void> {
-    await db
-      .update(userModel)
-      .set({
-        ...(dto.name && { name: dto.name }),
-        ...(dto.handle && { handle: dto.handle }),
-        ...(dto.bio && { bio: dto.bio }),
-      })
-      .where(eq(userModel.id, id));
   }
 
   async requestEmailVerify(account: AccountDTO): Promise<void> {
@@ -158,9 +146,9 @@ export class AccountService {
     );
 
     await db
-      .update(userModel)
+      .update(profileModel)
       .set({ profileImage: imageUrl })
-      .where(eq(userModel.id, account.id));
+      .where(eq(profileModel.userId, account.id));
   }
 
   async uploadCoverImage(account: AccountDTO, dto: FileDTO): Promise<void> {
@@ -190,9 +178,9 @@ export class AccountService {
     );
 
     await db
-      .update(userModel)
+      .update(profileModel)
       .set({ coverImage: imageUrl })
-      .where(eq(userModel.id, account.id));
+      .where(eq(profileModel.userId, account.id));
   }
 
   async changePassword(
@@ -238,11 +226,11 @@ export class AccountService {
   }
 
   async checkHandle(handle: string): Promise<void> {
-    const account = await db.query.userModel.findFirst({
-      where: eq(userModel.handle, handle),
+    const profile = await db.query.profileModel.findFirst({
+      where: eq(profileModel.handle, handle),
     });
 
-    if (account) {
+    if (profile) {
       throw new BadRequestException(
         this.configService.get('errorMessage.handleAlreadyExists'),
       );
@@ -266,12 +254,15 @@ export class AccountService {
     dto: AccountUpdateProfileDTO,
   ): Promise<void> {
     await db
-      .update(userModel)
+      .update(profileModel)
       .set({
         ...(dto.name && { name: dto.name }),
+        ...(dto.handle && { handle: dto.handle }),
+        ...(dto.handleColor && { handleColor: dto.handleColor }),
         ...(dto.bio && { bio: dto.bio }),
+        ...(dto.bioColor && { bioColor: dto.bioColor }),
       })
-      .where(eq(userModel.id, account.id));
+      .where(eq(profileModel.userId, account.id));
   }
 
   async requestEmailUpdate(
@@ -356,11 +347,14 @@ export class AccountService {
   }
 
   async getProfile(id: string): Promise<AccountProfileDTO> {
-    const account = await db.query.userModel.findFirst({
-      where: eq(userModel.id, id),
+    const profile = await db.query.profileModel.findFirst({
+      where: eq(profileModel.userId, id),
+      with: {
+        user: true,
+      },
     });
 
-    if (!account) {
+    if (!profile) {
       throw new NotFoundException(
         this.configService.get('errorMessage.accountNotFound'),
       );
@@ -368,22 +362,29 @@ export class AccountService {
 
     let profileImageUrl: string | null = null;
 
-    if (account.profileImage) {
-      profileImageUrl = await this.storageUtility.getUrl(account.profileImage);
+    if (profile.profileImage) {
+      profileImageUrl = await this.storageUtility.getUrl(profile.profileImage);
     }
 
     let coverImageUrl: string | null = null;
 
-    if (account.coverImage) {
-      coverImageUrl = await this.storageUtility.getUrl(account.coverImage);
+    if (profile.coverImage) {
+      coverImageUrl = await this.storageUtility.getUrl(profile.coverImage);
     }
 
     return {
-      name: account.name,
-      handle: account.handle,
+      id: profile.id,
+      userId: profile.userId,
+      name: profile.name,
+      handle: profile.handle,
       profileImage: profileImageUrl,
       coverImage: coverImageUrl,
-      bio: account.bio,
+      bio: profile.bio,
+      handleColor: profile.handleColor,
+      bioColor: profile.bioColor,
+      createdAt: profile.createdAt.toISOString(),
+      updatedAt: profile.updatedAt.toISOString(),
+      deletedAt: profile.deletedAt ? profile.deletedAt.toISOString() : null,
     };
   }
 }

@@ -109,4 +109,15 @@ export class StorageUtility {
       throw error;
     }
   }
+
+  async delete(name: string): Promise<void> {
+    try {
+      const file = this.bucket.file(name);
+      await file.delete();
+    } catch (error) {
+      this.logger.error(error, `Error deleting file: ${name}`);
+
+      throw error;
+    }
+  }
 }

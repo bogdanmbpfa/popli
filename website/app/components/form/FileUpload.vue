@@ -27,7 +27,7 @@
 	const emit = defineEmits<{
 		(e: 'select', file: File): void;
 	}>();
-	const props = defineProps({
+	defineProps({
 		id: {
 			type: String,
 			default: 'file-upload',
@@ -50,24 +50,8 @@
 		},
 	});
 
-	const { t } = useI18n();
-
 	const fileInput = ref<HTMLInputElement>();
 	const file = ref<File | null>(null);
-	const mimeTypes = {
-		'image/jpeg': 'JPEG',
-		'image/jpg': 'JPG',
-		'image/png': 'PNG',
-		'application/pdf': 'PDF',
-		'image/webp': 'WEBP',
-	};
-
-	const acceptedMimeTypes = computed(() =>
-		props.accept
-			.split(',')
-			.map((type) => mimeTypes[type.trim() as keyof typeof mimeTypes])
-			.join(', ')
-	);
 
 	const choose = () => {
 		if (fileInput.value) {
@@ -95,7 +79,11 @@
 		file.value = null;
 	};
 
-	defineExpose({ remove });
+	const setFile = (newFile: File) => {
+		file.value = newFile;
+	};
+
+	defineExpose({ remove, setFile });
 </script>
 
 <style lang="scss" scoped>

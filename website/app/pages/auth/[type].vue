@@ -108,54 +108,6 @@
 
               <form @submit.prevent="onRegisterSubmit">
                 <FormInput
-                  id="name"
-                  label="Full Name"
-                  :error="registerErrors.name"
-                  required
-                >
-                  <PIconField>
-                    <PInputIcon class="pi pi-user" />
-
-                    <PInputText
-                      id="name"
-                      v-model="nameRegister"
-                      v-bind="nameRegisterAttributes"
-                      class="default"
-                      placeholder="Enter your full name"
-                      fluid
-                      autocomplete="name"
-                      :invalid="!!registerErrors.name"
-                      :disabled="registerIsSubmitting"
-                    />
-                  </PIconField>
-                </FormInput>
-
-                <FormInput
-                  id="handle"
-                  label="Handle"
-                  :error="registerErrors.handle"
-                  required
-                  caption="This will be your popli.one/handle URL"
-                >
-                  <PIconField>
-                    <PInputIcon class="pi pi-at" />
-
-                    <PInputText
-                      id="handle"
-                      v-model="handleRegister"
-                      v-bind="handleRegisterAttributes"
-                      class="default"
-                      placeholder="Choose your unique handle"
-                      fluid
-                      autocomplete="handle"
-                      :invalid="!!registerErrors.handle"
-                      :disabled="registerIsSubmitting"
-                      @value-change="onHandleChange"
-                    />
-                  </PIconField>
-                </FormInput>
-
-                <FormInput
                   id="register-email"
                   label="Email"
                   :error="registerErrors.email"
@@ -290,33 +242,12 @@ const {
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
         'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character',
       ),
-    name: yup
-      .string()
-      .required('Name is required')
-      .min(3, 'Name must be at least 3 characters')
-      .max(255, 'Name must be less than 255 characters')
-      .matches(
-        /^[a-zA-Z-\\'\s]+$/,
-        'Name must contain only letters, spaces, hyphens and apostrophes',
-      ),
-    handle: yup
-      .string()
-      .required('Handle is required')
-      .min(3, 'Handle must be at least 3 characters')
-      .max(255, 'Handle must be less than 255 characters')
-      .matches(
-        /^[a-zA-Z0-9_\-.]+$/,
-        'Handle must contain only letters, numbers, underscores and dots',
-      ),
   }),
 });
 
 const [emailRegister, emailRegisterAttributes] = registerDefineField('email');
 const [passwordRegister, passwordRegisterAttributes] =
   registerDefineField('password');
-const [nameRegister, nameRegisterAttributes] = registerDefineField('name');
-const [handleRegister, handleRegisterAttributes] =
-  registerDefineField('handle');
 
 onMounted(() => {
   if (!params.type || !['sign-in', 'sign-up'].includes(String(params.type))) {
@@ -361,28 +292,7 @@ const onLoginSubmit = loginHandleSubmit(async (values) => {
     });
   }
 
-  const { data: profileData } = await useApiJson(
-    EApiEndpoint.ACCOUNT_PROFILE,
-    {},
-    {},
-    {},
-    {
-      Authorization: `Bearer ${data.token}`,
-    },
-  );
-
-  userStore.setUser(
-    userData && profileData
-      ? {
-          ...userData!,
-          name: profileData.name,
-          handle: profileData.handle,
-          profileImage: profileData.profileImage,
-          coverImage: profileData.coverImage,
-          bio: profileData.bio,
-        }
-      : null,
-  );
+  userStore.setUser(userData ? { ...userData! } : null);
 
   toast.add({
     severity: 'success',
@@ -396,22 +306,6 @@ const onLoginSubmit = loginHandleSubmit(async (values) => {
 
   return navigateTo('/account');
 });
-
-const onHandleChange = debounce(async (value?: string) => {
-  if (!value) return;
-
-  await registerValidateField('handle');
-
-  if (registerErrors.value.handle) return;
-
-  const { error } = await useApiJson(EApiEndpoint.ACCOUNT_CHECK_HANDLE, {
-    handle: value,
-  });
-
-  registerSetFieldError('handle', error ? 'Handle not available' : undefined);
-
-  return;
-}, 500);
 
 const onEmailChange = debounce(async (value?: string) => {
   if (!value) return;
@@ -464,28 +358,7 @@ const onRegisterSubmit = registerHandleSubmit(async (values) => {
     });
   }
 
-  const { data: profileData } = await useApiJson(
-    EApiEndpoint.ACCOUNT_PROFILE,
-    {},
-    {},
-    {},
-    {
-      Authorization: `Bearer ${data.token}`,
-    },
-  );
-
-  userStore.setUser(
-    userData && profileData
-      ? {
-          ...userData!,
-          name: profileData.name,
-          handle: profileData.handle,
-          profileImage: profileData.profileImage,
-          coverImage: profileData.coverImage,
-          bio: profileData.bio,
-        }
-      : null,
-  );
+  userStore.setUser(userData ? { ...userData! } : null);
 
   registerResetForm();
 

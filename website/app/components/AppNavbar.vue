@@ -57,22 +57,8 @@ const user = computed(() => userStore.getUser);
 onMounted(async () => {
   if (!user.value) {
     const { data: userData } = await useApiJson(EApiEndpoint.ACCOUNT_ME);
-    const { data: profileData } = await useApiJson(
-      EApiEndpoint.ACCOUNT_PROFILE,
-    );
 
-    userStore.setUser(
-      userData && profileData
-        ? {
-            ...userData!,
-            name: profileData.name,
-            handle: profileData.handle,
-            profileImage: profileData.profileImage,
-            coverImage: profileData.coverImage,
-            bio: profileData.bio,
-          }
-        : null,
-    );
+    userStore.setUser(userData ? { ...userData! } : null);
   }
 });
 </script>

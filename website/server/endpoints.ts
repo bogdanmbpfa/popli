@@ -4,6 +4,8 @@ import type {
 	IAccountUser,
 	IApiEndpoint,
 	IAuthLoginResponse,
+	ILink,
+	IProfile,
 	IQrCode,
 	IQrCodeAnalytics,
 	IUrlShortUrl,
@@ -84,8 +86,15 @@ export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 		auth: true,
 		filenames: ['file'],
 	},
+	[EApiEndpoint.ACCOUNT_UPLOAD_PROFILE_IMAGE]: {
+		path: '/account/upload-profile-image',
+		method: 'POST',
+		contentType: 'multipart',
+		auth: true,
+		filenames: ['file'],
+	},
 	[EApiEndpoint.ACCOUNT_UPDATE_PROFILE]: {
-		path: '/account',
+		path: '/account/update-profile',
 		method: 'PATCH',
 		contentType: 'json',
 		auth: true,
@@ -122,54 +131,79 @@ export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 		contentType: 'json',
 		auth: true,
 	},
-
 	[EApiEndpoint.URL_SHORT_URL]: {
 		path: '/url/short-url',
 		method: 'GET',
 		contentType: 'json',
 		auth: true,
 	},
-
 	[EApiEndpoint.URL_SHORT_URL_TOGGLE]: {
 		path: '/url/short-url/{id}/toggle',
 		method: 'PATCH',
 		contentType: 'json',
 		auth: true,
 	},
-
 	[EApiEndpoint.URL_SHORT_URL_UPDATE]: {
 		path: '/url/short-url',
 		method: 'PATCH',
 		contentType: 'json',
 		auth: true,
 	},
-
 	[EApiEndpoint.URL_SHORT_URL_DELETE]: {
 		path: '/url/short-url/{id}',
 		method: 'DELETE',
 		contentType: 'json',
 		auth: true,
 	},
-
 	[EApiEndpoint.URL_SHORT_URL_REDIRECT]: {
 		path: '/url/short-url/{shortUrlCode}',
 		method: 'GET',
 		contentType: 'json',
 		auth: false,
 	},
-
 	[EApiEndpoint.URL_SHORT_URL_DAILY_CLICKS]: {
 		path: '/url/short-url/{id}/daily-clicks',
 		method: 'GET',
 		contentType: 'json',
 		auth: true,
 	},
-
 	[EApiEndpoint.URL_SHORT_URL_COUNTRY_CLICKS]: {
 		path: '/url/short-url/{id}/country-clicks',
 		method: 'GET',
 		contentType: 'json',
 		auth: true,
+	},
+	[EApiEndpoint.URL_LINKS]: {
+		path: '/url/link',
+		method: 'GET',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.URL_LINKS_CREATE]: {
+		path: '/url/link',
+		method: 'POST',
+		contentType: 'multipart',
+		auth: true,
+		filenames: ['backgroundImage'],
+		stringArrays: ['titleColors', 'backgroundColors'],
+	},
+	[EApiEndpoint.URL_LINK_BACKGROUND_IMAGE]: {
+		path: '/url/link/{id}/background-image',
+		method: 'GET',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.URL_LINK_DELETE]: {
+		path: '/url/link/{id}',
+		method: 'DELETE',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.URL_LINK_CLICK]: {
+		path: '/url/link/{id}/click',
+		method: 'POST',
+		contentType: 'json',
+		auth: false,
 	},
 
 	// QR Code API Endpoints
@@ -197,6 +231,14 @@ export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 		method: 'DELETE',
 		contentType: 'json',
 		auth: true,
+	},
+
+	// Profile API Endpoints
+	[EApiEndpoint.PROFILE_GET]: {
+		path: '/profile/{handle}',
+		method: 'GET',
+		contentType: 'json',
+		auth: false,
 	},
 };
 
@@ -230,10 +272,18 @@ export type TApiEndpoint = {
 	[EApiEndpoint.URL_SHORT_URL_REDIRECT]: IUrlShortUrlRedirect;
 	[EApiEndpoint.URL_SHORT_URL_DAILY_CLICKS]: IUrlShortUrlDailyClicks[];
 	[EApiEndpoint.URL_SHORT_URL_COUNTRY_CLICKS]: IUrlShortUrlCountryClicks[];
+	[EApiEndpoint.URL_LINKS]: ILink[];
+	[EApiEndpoint.URL_LINKS_CREATE]: undefined;
+	[EApiEndpoint.URL_LINK_BACKGROUND_IMAGE]: Buffer;
+	[EApiEndpoint.URL_LINK_DELETE]: undefined;
+	[EApiEndpoint.URL_LINK_CLICK]: string;
 
 	// QR Code API Endpoints
 	[EApiEndpoint.QR_CODE_CREATE]: undefined;
 	[EApiEndpoint.QR_CODE_GET]: IQrCode[];
 	[EApiEndpoint.QR_CODE_ANALYTICS]: IQrCodeAnalytics;
 	[EApiEndpoint.QR_CODE_DELETE]: undefined;
+
+	// Profile API Endpoints
+	[EApiEndpoint.PROFILE_GET]: IProfile;
 };

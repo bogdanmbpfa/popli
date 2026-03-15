@@ -1,10 +1,9 @@
 import type { NuxtError } from '#app';
 
-import type { EApiEndpoint } from '~~/enums';
 import type { IApiError, IApiFailure, IApiSuccess } from '~~/interfaces';
 import type { TApiEndpoint } from '~~/server/endpoints';
 
-const useApiJson = async <T, U extends keyof typeof EApiEndpoint>(
+const useApiJson = async <T, U extends keyof TApiEndpoint>(
   key: U,
   body?: T,
   query?: Record<string, unknown>,

@@ -30,7 +30,6 @@ import {
   AccountDTO,
   AccountProfileDTO,
   AccountRequestEmailUpdateDTO,
-  AccountUpdateDTO,
   AccountUpdateEmailDTO,
   AccountUpdateProfileDTO,
   AccountVerifyEmailDTO,
@@ -59,29 +58,6 @@ export class AccountController {
   @UseGuards(AuthenticatedGuard)
   async getAccount(@DAccount() account: AccountDTO): Promise<AccountDTO> {
     return await this.accountService.getAccount(account.id);
-  }
-
-  @Patch('/')
-  @ApiOperation({ summary: 'Update the current account' })
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'The token to access the account',
-    required: true,
-    example: 'Bearer <token>',
-  })
-  @ApiConsumes('application/json')
-  @ApiBody({ type: () => AccountUpdateDTO })
-  @ApiProduces('application/json')
-  @ApiResponse({
-    status: 200,
-    description: 'The updated account',
-  })
-  @UseGuards(AuthenticatedGuard)
-  async updateAccount(
-    @DAccount() account: AccountDTO,
-    @Body() dto: AccountUpdateDTO,
-  ): Promise<void> {
-    return await this.accountService.updateAccount(account.id, dto);
   }
 
   @Post('/request-email-verify')

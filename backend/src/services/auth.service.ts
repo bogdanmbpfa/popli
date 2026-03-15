@@ -2,10 +2,10 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { hash, verify } from 'argon2';
 import { randomBytes } from 'crypto';
-import { eq, lt, or } from 'drizzle-orm';
+import { eq, lt } from 'drizzle-orm';
 import type { Request } from 'express';
 
-import { authSessionModel, db, userModel } from '@database';
+import { authSessionModel, db, profileModel, userModel } from '@database';
 import {
   AuthLoginDTO,
   AuthRegisterDTO,
@@ -31,10 +31,9 @@ export class AuthService {
     request: Request,
   ): Promise<AuthResponseDTO> {
     const email = dto.email.toLowerCase();
-    const handle = dto.handle.toLowerCase();
 
     const existingUser = await db.query.userModel.findFirst({
-      where: or(eq(userModel.email, email), eq(userModel.handle, handle)),
+      where: eq(userModel.email, email),
     });
 
     if (existingUser) {
@@ -53,8 +52,6 @@ export class AuthService {
       .values({
         email,
         password,
-        name: dto.name,
-        handle,
         jwtSecret,
         refreshTokenSecret,
       })
@@ -73,6 +70,8 @@ export class AuthService {
       ipAddress: request.ip!,
       userAgent: request.headers['user-agent']!,
     });
+
+    await db.insert(profileModel).values({ userId: id });
 
     await this.emailUtilityService.sendEmail(
       email,

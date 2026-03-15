@@ -4,9 +4,6 @@ import {
   IsNotEmpty,
   IsString,
   IsStrongPassword,
-  Matches,
-  MaxLength,
-  MinLength,
 } from 'class-validator';
 
 export class AuthRegisterDTO {
@@ -35,32 +32,4 @@ export class AuthRegisterDTO {
     minSymbols: 1,
   })
   password: string;
-
-  @ApiProperty({
-    type: String,
-    description: 'The name of the account',
-    example: 'John Doe',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(3)
-  @MaxLength(255)
-  @Matches(/^[a-zA-Z-\\'\s]+$/, {
-    message: 'Name must contain only letters, spaces, hyphens and apostrophes',
-  })
-  name: string;
-
-  @ApiProperty({
-    type: String,
-    description: 'The handle of the account',
-    example: 'john-doe',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(3)
-  @MaxLength(255)
-  @Matches(/^[a-zA-Z0-9_\-.]+$/, {
-    message: 'Handle must contain only letters, numbers, underscores and dots',
-  })
-  handle: string;
 }
