@@ -11,7 +11,7 @@
         <span class="description"> Pop your links. Share your story. </span>
       </div>
 
-      <PTabs v-model:value="tab" class="default">
+      <PTabs v-model:value="tab" class="default" @update:value="onTabChange">
         <PTabList>
           <PTab value="sign-in">Sign In</PTab>
           <PTab value="sign-up">Sign Up</PTab>
@@ -194,6 +194,7 @@ definePageMeta({
 });
 
 const { params } = useRoute();
+const router = useRouter();
 const {
   public: { images },
 } = useRuntimeConfig();
@@ -256,6 +257,8 @@ onMounted(() => {
 
   tab.value = String(params.type) === 'sign-in' ? 'sign-in' : 'sign-up';
 });
+
+const onTabChange = (value: string | number) => router.replace({ path: `/auth/${value}` });
 
 const onLoginSubmit = loginHandleSubmit(async (values) => {
   const { data, error } = await useApiJson(EApiEndpoint.AUTH_LOGIN, values);
