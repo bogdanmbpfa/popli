@@ -11,7 +11,8 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		min-height: 100vh;
+		height: 100%;
+		min-height: 100lvh;
 		position: relative;
 		width: 100%;
 	}

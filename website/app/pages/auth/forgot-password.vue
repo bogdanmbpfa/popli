@@ -134,7 +134,6 @@
 		handleSubmit: resetPasswordHandleSubmit,
 		isSubmitting: resetPasswordIsSubmitting,
 		resetForm: resetPasswordResetForm,
-		setFieldError: resetPasswordSetFieldError,
 	} = useForm<IAuthResetPassword>({
 		validationSchema: yup.object().shape({
 			code: yup
@@ -298,6 +297,13 @@
 					}
 				}
 			}
+		}
+	}
+
+	@media (max-width: 768px) {
+		.auth-forgot-password {
+			justify-content: flex-start;
+			padding-top: 4rem;
 		}
 	}
 </style>

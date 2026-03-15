@@ -159,8 +159,8 @@ const clickLink = async (id: string) => {
 @use '../../assets/mixins.scss' as *;
 
 .profile {
-  width: 100svw;
-  height: 100svh;
+  width: 100lvw;
+  height: 100lvh;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -389,8 +389,8 @@ const clickLink = async (id: string) => {
 @media (max-width: 768px) {
   .profile {
     .profile-container {
-      height: 100svh;
-      width: 100svw;
+      height: 100lvh;
+      width: 100lvw;
       border-radius: 0;
       border: none;
     }

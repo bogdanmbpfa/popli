@@ -505,7 +505,7 @@ const copyProfileLink = () => {
   .configuration {
     width: 100%;
     max-width: 40rem;
-    height: calc(100svh - 9rem);
+    height: calc(100lvh - 9rem);
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -543,7 +543,7 @@ const copyProfileLink = () => {
 
     .preview {
       padding: 0;
-      height: calc(100svh - 5rem);
+      height: calc(100lvh - 5rem);
 
       .preview-container {
         max-width: 100%;
@@ -577,7 +577,7 @@ const copyProfileLink = () => {
         opacity: 1;
         visibility: visible;
         backdrop-filter: blur(1.5rem);
-        height: calc(100svh - 5rem);
+        height: calc(100lvh - 5rem);
         z-index: 40;
         border-radius: 0;
         border: none;

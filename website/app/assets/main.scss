@@ -23,34 +23,34 @@
 @use './typography.scss';
 
 html {
-	min-height: 100svh;
-	font-size: 16px;
-	font-family: 'Roboto', sans-serif;
-	line-height: 1.5;
+  min-height: 100lvh;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.5;
 
-	body {
-		min-height: 100svh;
-		position: relative;
-		margin: 0;
-		background-color: var(--background-1);
-		color: var(--text-200);
-		overflow-x: hidden;
+  body {
+    min-height: 100lvh;
+    position: relative;
+    margin: 0;
+    background-color: var(--background-1);
+    color: var(--text-200);
+    overflow-x: hidden;
 
-		.iconify {
-			filter: brightness(0) saturate(100%) invert(49%) sepia(8%) saturate(731%) hue-rotate(202deg)
-				brightness(88%) contrast(84%);
-		}
+    .iconify {
+      filter: brightness(0) saturate(100%) invert(49%) sepia(8%) saturate(731%)
+        hue-rotate(202deg) brightness(88%) contrast(84%);
+    }
 
-		#__nuxt {
-			min-height: 100svh;
+    #__nuxt {
+      min-height: 100lvh;
 
-			.wrapper {
-				min-height: 100svh;
-			}
-		}
+      .wrapper {
+        min-height: 100lvh;
+      }
+    }
 
-		a {
-			text-decoration: none;
-		}
-	}
+    a {
+      text-decoration: none;
+    }
+  }
 }

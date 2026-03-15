@@ -380,8 +380,8 @@ const onRegisterSubmit = registerHandleSubmit(async (values) => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 1;
   width: 100%;
+  flex: 1;
   background-image: linear-gradient(
     to bottom right in oklab,
     color-mix(in oklab, var(--color-blue-950) 20%, transparent) 0%,
@@ -499,6 +499,13 @@ const onRegisterSubmit = registerHandleSubmit(async (values) => {
         }
       }
     }
+  }
+}
+
+@media (max-width: 768px) {
+  .auth {
+    justify-content: flex-start;
+    padding-top: 4rem;
   }
 }
 </style>

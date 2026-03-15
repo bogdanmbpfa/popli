@@ -245,7 +245,7 @@ const signOut = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
+  min-height: 100lvh;
   position: relative;
   width: 100%;
 
@@ -253,7 +253,7 @@ const signOut = () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 100vh;
+    min-height: 100lvh;
     position: relative;
     width: 100%;
     padding-left: 0;
@@ -335,7 +335,7 @@ const signOut = () => {
 @media (max-width: 1028px) {
   .p-drawer-mask:has(.sidebar) {
     position: fixed !important;
-    max-height: 100svh !important;
+    max-height: 100lvh !important;
 
     .p-drawer {
       background-color: oklch(0.1773 0.0133 264.14);
