@@ -223,8 +223,19 @@ const toggleDrawer = () => {
   drawerVisible.value = !drawerVisible.value;
 };
 
-const signOut = () => {
-  useSignOut();
+const signOut = async () => {
+  try {
+    await useSignOut();
+  } catch {
+    return toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Failed to sign out. Please try again.',
+      life: 3000,
+      closable: false,
+    });
+  }
+  
   userStore.setUser(null);
   userStore.setProfile(null);
 
