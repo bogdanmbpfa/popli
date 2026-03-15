@@ -22,6 +22,7 @@ export class CreateUrlSchema1762973427540 implements MigrationInterface {
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'uuid',
+            default: 'uuidv7()',
           },
           {
             name: 'user_id',
@@ -133,6 +134,7 @@ export class CreateUrlSchema1762973427540 implements MigrationInterface {
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'uuid',
+            default: 'uuidv7()',
           },
           {
             name: 'short_url_id',

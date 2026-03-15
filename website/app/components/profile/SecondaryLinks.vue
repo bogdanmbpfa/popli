@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { v4 as uuidv4 } from 'uuid';
+import { v7 as uuidv7 } from 'uuid';
 
 import { EApiEndpoint, ELinkType } from '~~/enums';
 
@@ -61,7 +61,7 @@ const areLinksValid = computed(() => {
 
 const onAddLink = () => {
   urlStore.addLink({
-    id: uuidv4(),
+    id: uuidv7(),
     type: ELinkType.SECONDARY,
     position: urlStore.secondaryLinks.length,
   });

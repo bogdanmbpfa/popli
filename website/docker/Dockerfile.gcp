@@ -1,0 +1,13 @@
+# Use when .output is already built on the host (avoids OOM during docker build).
+# Build the website first: cd website && bun install --frozen-lockfile && bun run build
+FROM oven/bun:alpine
+
+WORKDIR /app
+
+COPY .output ./.output
+
+ENV PORT=8080
+
+EXPOSE 8080
+
+CMD ["bun", "run", ".output/server/index.mjs"]

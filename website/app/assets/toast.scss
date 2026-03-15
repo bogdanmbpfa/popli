@@ -1,3 +1,5 @@
+@use './mixins.scss' as *;
+
 .p-toast {
 	&.default {
 		height: fit-content;
@@ -5,9 +7,10 @@
 		.p-toast-message {
 			margin: 0;
 			border: none;
-			border-radius: 1.5rem;
+			// border-radius: 1.5rem;
 			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 			border: 1px solid rgba(203, 213, 225, 0.3);
+			@include squircle(3rem);
 			transition: none;
 			transform: 0 0 0;
 			opacity: 1;
@@ -158,5 +161,16 @@
 	50% {
 		opacity: 0.1;
 		transform: translateX(100%);
+	}
+}
+
+@media (max-width: 768px) {
+	.p-toast {
+		top: 2rem !important;
+		left: 0 !important;
+		right: 0 !important;
+		transform: none;
+		padding: 0 1rem;
+		width: 100%;
 	}
 }

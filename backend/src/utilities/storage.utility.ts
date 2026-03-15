@@ -47,6 +47,12 @@ export class StorageUtility {
     try {
       await writeFile(filepath, buffer);
 
+      console.log(
+        this.configService
+          .get('googleCloud.storage.serviceAccountKey')
+          .replace(/\\n/g, '\n'),
+      );
+
       this.logger.log(`Uploading file to Google Cloud Storage: ${filepath}`);
 
       const [file] = await this.bucket.upload(filepath, {

@@ -23,7 +23,7 @@
         <div class="link-group">
           <span class="title">Manage</span>
 
-          <nuxt-link to="/account/link-in-bio">
+          <nuxt-link to="/account/link-in-bio" @click="toggleDrawer">
             <PButton
               class="default"
               as="a"
@@ -34,7 +34,7 @@
             />
           </nuxt-link>
 
-          <nuxt-link to="/account/appearance">
+          <nuxt-link to="/account/appearance" @click="toggleDrawer">
             <PButton
               class="default"
               as="a"
@@ -45,7 +45,7 @@
             />
           </nuxt-link>
 
-          <nuxt-link to="/account/analytics">
+          <nuxt-link to="/account/analytics" @click="toggleDrawer">
             <PButton
               class="default"
               as="a"
@@ -56,7 +56,7 @@
             />
           </nuxt-link>
 
-          <nuxt-link to="/account/settings">
+          <nuxt-link to="/account/settings" @click="toggleDrawer">
             <PButton
               class="default"
               as="a"
@@ -71,7 +71,7 @@
         <div class="link-group">
           <span class="title">Tools</span>
 
-          <nuxt-link to="/account/url-shortener">
+          <nuxt-link to="/account/url-shortener" @click="toggleDrawer">
             <PButton
               class="default"
               as="a"
@@ -82,7 +82,7 @@
             />
           </nuxt-link>
 
-          <nuxt-link to="/account/qr-code">
+          <nuxt-link to="/account/qr-code" @click="toggleDrawer">
             <PButton
               class="default"
               as="a"
@@ -93,7 +93,7 @@
             />
           </nuxt-link>
 
-          <nuxt-link to="/account/digital-store">
+          <nuxt-link to="/account/digital-store" @click="toggleDrawer">
             <PButton
               class="default"
               as="a"
@@ -107,7 +107,7 @@
       </template>
 
       <template #footer>
-        <nuxt-link to="/">
+        <nuxt-link to="/" @click="toggleDrawer">
           <PButton
             class="default"
             as="a"

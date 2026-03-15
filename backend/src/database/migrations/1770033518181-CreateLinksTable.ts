@@ -42,6 +42,7 @@ export class CreateLinksTable1770033518181 implements MigrationInterface {
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'uuid',
+            default: 'uuidv7()',
           },
           {
             name: 'user_id',
@@ -161,6 +162,7 @@ export class CreateLinksTable1770033518181 implements MigrationInterface {
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'uuid',
+            default: 'uuidv7()',
           },
           {
             name: 'link_id',

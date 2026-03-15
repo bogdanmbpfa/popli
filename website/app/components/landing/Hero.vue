@@ -79,7 +79,6 @@
 				display: flex;
 				flex-direction: column;
 				align-items: center;
-				// gap: 0.25rem;
 			}
 
 			span.subheading {
@@ -93,6 +92,7 @@
 				display: flex;
 				flex-direction: row;
 				align-items: center;
+				flex-wrap: wrap;
 				gap: 2rem;
 
 				.feature {

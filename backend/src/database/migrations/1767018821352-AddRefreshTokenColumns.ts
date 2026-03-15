@@ -20,7 +20,7 @@ export class AddRefreshTokenColumns1767018821352 implements MigrationInterface {
     ]);
 
     const users = await queryRunner.query(
-      'SELECT id FROM user_management.users',
+      'SELECT id FROM user_management.users;',
     );
 
     for (const user of users) {
@@ -55,6 +55,7 @@ export class AddRefreshTokenColumns1767018821352 implements MigrationInterface {
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'uuid',
+            default: 'uuidv7()',
           },
           {
             name: 'user_id',

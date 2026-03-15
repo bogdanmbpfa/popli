@@ -251,7 +251,7 @@
 </template>
 
 <script setup lang="ts">
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import type { ColorPickerChangeEvent } from 'primevue/colorpicker';
 
 import type FileUpload from '~/components/form/FileUpload.vue';
@@ -286,7 +286,7 @@ onMounted(async () => {
       id: props.link.id,
     });
     backgroundImage.value = data
-      ? new File([data.buffer], 'background-image.webp')
+      ? new File([data.buffer as ArrayBuffer], 'background-image.webp')
       : null;
   }
 });

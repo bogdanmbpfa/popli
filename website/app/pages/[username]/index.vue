@@ -298,8 +298,8 @@ const clickLink = async (id: string) => {
             corner-shape: unset;
 
             img {
-              width: 1rem;
-              height: 1rem;
+              width: 1.25rem;
+              height: 1.25rem;
             }
           }
         }

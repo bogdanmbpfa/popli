@@ -8,8 +8,6 @@ import {
 
 export class CreateUsersTable1762973149676 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
-
     await queryRunner.createSchema('user_management', true);
 
     await queryRunner.createTable(
@@ -23,6 +21,7 @@ export class CreateUsersTable1762973149676 implements MigrationInterface {
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'uuid',
+            default: 'uuidv7()',
           },
           {
             name: 'email',

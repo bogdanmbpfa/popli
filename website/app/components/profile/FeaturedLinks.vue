@@ -10,7 +10,7 @@
         v-for="platform in platforms.slice(0, visiblePlatformsCount)"
         :key="platform.type"
         class="default"
-        severity="secondary"
+        severity="contrast"
         :title="platform.name"
         fluid
         @click="onAddLink(platform)"
@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { v4 as uuidv4 } from 'uuid';
+import { v7 as uuidv7 } from 'uuid';
 
 import { EApiEndpoint, ELinkPlatform, ELinkType } from '~~/enums';
 
@@ -152,7 +152,7 @@ const links = computed(() => urlStore.getPrimaryLinks);
 
 const onAddLink = (platform: { type: ELinkPlatform; name: string }) =>
   urlStore.addLink({
-    id: uuidv4(),
+    id: uuidv7(),
     type: ELinkType.PRIMARY,
     platform: platform.type,
     position: links.value.length,
@@ -227,7 +227,7 @@ const onSave = async () => {
 
     .p-button {
       min-width: unset;
-      max-width: 6.3rem;
+      max-width: 6.35rem;
 
       img {
         width: 1rem;
@@ -241,12 +241,15 @@ const onSave = async () => {
     flex-direction: column;
     gap: 0.5rem;
   }
+}
 
-  .featured-links-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    cursor: grab;
+@media (max-width: 768px) {
+  .featured-links {
+    .platforms {
+      .p-button {
+        max-width: 3.275rem;
+      }
+    }
   }
 }
 </style>

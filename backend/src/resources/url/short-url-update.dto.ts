@@ -18,7 +18,7 @@ export class UrlShortUrlUpdateDTO {
   })
   @IsString()
   @IsNotEmpty()
-  @IsUUID(4)
+  @IsUUID()
   id: string;
 
   @ApiProperty({

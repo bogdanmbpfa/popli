@@ -10,7 +10,7 @@ volumes:
 services:
   database:
     container_name: database
-    image: postgres:16.1
+    image: postgres:18.3
     ports:
       - 5432:5432
     environment:
@@ -20,7 +20,7 @@ services:
       POSTGRES_DB: popli
       POSTGRES_PORT: 5432
     volumes:
-      - popli-postgres-data:/var/lib/postgresql/data
+      - popli-postgres-data:/var/lib/postgresql
     networks:
       - popli
 

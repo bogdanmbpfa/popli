@@ -33,6 +33,7 @@ export class CreateQrCodeSchema1762973857736 implements MigrationInterface {
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'uuid',
+            default: 'uuidv7()',
           },
           {
             name: 'user_id',
@@ -121,6 +122,7 @@ export class CreateQrCodeSchema1762973857736 implements MigrationInterface {
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'uuid',
+            default: 'uuidv7()',
           },
           {
             name: 'qr_code_id',

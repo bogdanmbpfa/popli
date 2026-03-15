@@ -33,9 +33,9 @@ spec:
             - name: WEBSITE_URL
               value: 'https://dev.popli.one'
             - name: DATABASE_READ_HOST
-              value: '10.42.241.3'
+              value: '10.42.241.12'
             - name: DATABASE_WRITE_HOST
-              value: '10.42.241.3'
+              value: '10.42.241.12'
             - name: DATABASE_PORT
               value: '5432'
             - name: DATABASE_NAME
@@ -50,7 +50,7 @@ spec:
             - name: GOOGLE_CLOUD_PROJECT_ID
               value: 'popli-465817'
             - name: GOOGLE_CLOUD_STORAGE_SERVICE_ACCOUNT_EMAIL
-              value: 'github-service-account@popli-465817.iam.gserviceaccount.com'
+              value: 'storage-service-account@popli-465817.iam.gserviceaccount.com'
             - name: GOOGLE_CLOUD_STORAGE_SERVICE_ACCOUNT_KEY
               valueFrom:
                 secretKeyRef:

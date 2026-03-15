@@ -20,6 +20,7 @@ export class CreateProfilesTable1771493096483 implements MigrationInterface {
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'uuid',
+            default: 'uuidv7()',
           },
           {
             name: 'user_id',
@@ -131,12 +132,22 @@ export class CreateProfilesTable1771493096483 implements MigrationInterface {
       'SELECT * FROM user_management.users;',
     );
 
-    await queryRunner.query(
-      `
-			INSERT INTO user_management.profiles (user_id, handle, name, profile_image, cover_image, bio)
-			VALUES ${users.map((user) => `('${user.id}', '${user.handle}', '${user.name}', ${user.profile_image ? `${user.profile_image}` : null}, ${user.cover_image ? `${user.cover_image}` : null}, ${user.bio ? `${user.bio}` : null})`).join(', ')};
-		`,
-    );
+    for (const user of users) {
+      await queryRunner.query(
+        `
+            INSERT INTO user_management.profiles (user_id, handle, name, profile_image, cover_image, bio)
+            VALUES ($1, $2, $3, $4, $5, $6);
+          `,
+        [
+          user.id,
+          user.handle,
+          user.name,
+          user.profile_image ? `'${user.profile_image}'` : null,
+          user.cover_image ? `'${user.cover_image}'` : null,
+          user.bio ? `'${user.bio}'` : null,
+        ],
+      );
+    }
 
     await queryRunner.dropColumns('user_management.users', [
       'handle',
