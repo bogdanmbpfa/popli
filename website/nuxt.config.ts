@@ -1,7 +1,7 @@
 import Aura from '@primeuix/themes/aura';
 
 export default defineNuxtConfig({
-	compatibilityDate: '2025-07-29',
+	compatibilityDate: 'latest',
 
 	css: ['primeicons/primeicons.css', '~/assets/main.scss'],
 
