@@ -1647,4 +1647,10 @@
 			box-shadow: var(--box-shadow-1);
 		}
 	}
+
+	@media (max-width: 768px) {
+		.qr-code-advanced-configuration {
+			max-height: 60lvh;
+		}
+	}
 </style>

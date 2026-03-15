@@ -6,6 +6,7 @@ import { config } from '@config';
 import * as qrCodeSchema from './qrcode.schema';
 import * as urlSchema from './url.schema';
 import * as userSchema from './user.schema';
+import { EEnvironment } from '@resources';
 
 export const db = withReplicas(
   drizzle({
@@ -16,9 +17,12 @@ export const db = withReplicas(
       user: config.database.username,
       password: config.database.password,
       database: config.database.database,
-      ssl: {
-        rejectUnauthorized: false,
-      },
+      ssl:
+        config.nodeEnv === EEnvironment.PRODUCTION
+          ? {
+              rejectUnauthorized: false,
+            }
+          : false,
     },
     schema: {
       ...qrCodeSchema,
@@ -35,9 +39,12 @@ export const db = withReplicas(
         user: config.database.username,
         password: config.database.password,
         database: config.database.database,
-        ssl: {
-          rejectUnauthorized: false,
-        },
+        ssl:
+          config.nodeEnv === EEnvironment.PRODUCTION
+            ? {
+                rejectUnauthorized: false,
+              }
+            : false,
       },
       schema: {
         ...qrCodeSchema,
