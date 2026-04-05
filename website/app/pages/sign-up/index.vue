@@ -211,5 +211,13 @@ const onRegisterSubmit = handleSubmit(async (values) => {
   .form-container {
     max-width: 30rem;
   }
+
+  .sign-in {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+  }
 }
 </style>
