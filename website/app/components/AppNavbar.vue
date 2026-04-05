@@ -10,34 +10,24 @@
       </div>
 
       <div class="center">
-        <nuxt-link to="#features"> Features </nuxt-link>
+        <nuxt-link to="#features" class="default"> Features </nuxt-link>
 
-        <nuxt-link to="#pricing"> Pricing </nuxt-link>
+        <nuxt-link to="#pricing" class="default"> Pricing </nuxt-link>
 
-        <nuxt-link to="/about"> About </nuxt-link>
+        <nuxt-link to="/about" class="default"> About </nuxt-link>
       </div>
 
       <div class="right">
-        <nuxt-link v-if="!user" to="/auth/sign-in">
-          <PButton class="default" as="a" variant="link" label="Sign In" />
+        <nuxt-link v-if="!user" to="/sign-in" class="default">
+          Sign In
         </nuxt-link>
 
-        <nuxt-link v-if="!user" to="/auth/sign-up">
-          <PButton
-            class="default"
-            severity="contrast"
-            as="a"
-            label="Get Started"
-          />
+        <nuxt-link v-if="!user" to="/sign-up" class="contrast">
+          Get Started
         </nuxt-link>
 
-        <nuxt-link v-if="user" to="/account">
-          <PButton
-            class="default"
-            severity="contrast"
-            icon="pi pi-user"
-            label="Account"
-          />
+        <nuxt-link v-if="user" to="/account" class="contrast">
+          Account
         </nuxt-link>
       </div>
     </div>
@@ -72,19 +62,9 @@ nav {
   top: 0;
   left: 0;
   padding: 0 0.5rem;
-  backdrop-filter: blur(8px);
-  background-color: color-mix(
-    in oklab,
-    var(--background-primary) 60%,
-    transparent
-  );
-  border-bottom: 1px solid var(--border-1);
-  outline-color: color-mix(
-    in oklab,
-    var(--background-primary) 50%,
-    transparent
-  );
-  color: var(--text-100);
+  backdrop-filter: blur(0.75rem);
+  background-color: var(--background-primary);
+  color: var(--tertiary-100);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,6 +76,7 @@ nav {
     width: 100%;
     max-width: 80rem;
     height: 100%;
+    position: relative;
 
     .left {
       display: flex;
@@ -116,19 +97,20 @@ nav {
         span {
           font-size: 1.25rem;
           font-weight: 600;
-          color: var(--text-100);
+          color: var(--tertiary-100);
         }
       }
     }
 
     .center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
       align-items: center;
       gap: 1rem;
 
       a {
-        text-decoration: none;
-        color: var(--text-300);
         padding: 0.5rem 1rem;
         z-index: 1;
       }
@@ -137,7 +119,7 @@ nav {
     .right {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 2rem;
 
       .theme-toggle {
         display: flex;

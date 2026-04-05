@@ -4,7 +4,7 @@
       <PButton
         v-if="Number.isFinite(link.position) && link.position! > 0"
         class="default up-button"
-        severity="info"
+        severity="help"
         icon="pi pi-arrow-up"
         title="Move up"
         @click="onIncrementPosition"
@@ -12,7 +12,7 @@
       <PButton
         v-if="Number.isFinite(link.position) && link.position! < lastPosition"
         class="default down-button"
-        severity="info"
+        severity="help"
         icon="pi pi-arrow-down"
         title="Move down"
         @click="onDecrementPosition"
@@ -41,7 +41,7 @@
 
     <PButton
       class="default delete-button"
-      severity="info"
+      severity="danger"
       icon="pi pi-times"
       title="Delete"
       @click="onDelete"
@@ -163,6 +163,7 @@ const onDelete = async () => {
 
     :deep(.p-button) {
       padding: 0 0.5rem;
+      height: calc(50% - 0.125rem);
 
       .p-button-icon {
         font-size: 0.75rem;
@@ -178,6 +179,13 @@ const onDelete = async () => {
         width: 1rem;
         height: 1rem;
       }
+    }
+  }
+
+  :deep(.p-button) {
+    &.delete-button {
+      flex: 1;
+      height: 100%;
     }
   }
 }

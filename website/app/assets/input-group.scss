@@ -1,28 +1,20 @@
-@use './mixins.scss' as *;
-
 .p-inputgroup {
   &.default {
     .p-inputgroupaddon {
-			min-width: unset;
-      @include squircle(1.5rem);
+      min-width: unset;
+      border-radius: 0.25rem;
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
-      padding: 0.5rem;
+      padding: 0.75rem;
       padding-right: 0;
       font-size: 1rem;
-      background-color: color-mix(
-        in oklab,
-        var(--color-gray-900) 60%,
-        transparent
-      );
-      border: 1px solid
-        color-mix(in oklab, var(--color-gray-700) 30%, transparent);
+      background-color: var(--input-background);
+      border: 1px solid transparent;
       border-right: none;
-      color: var(--color-neutral-100);
+      color: var(--neutral-100);
     }
 
     .p-inputtext {
-      @include squircle(1.5rem);
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
       padding-left: 0;
@@ -31,16 +23,8 @@
 
     &:has(.p-inputtext:focus) {
       .p-inputgroupaddon {
-        background-color: color-mix(
-          in oklab,
-          var(--color-gray-900) 60%,
-          transparent
-        );
-        border-color: color-mix(
-          in oklab,
-          var(--color-gray-700) 30%,
-          transparent
-        );
+        background-color: var(--input-background);
+        border-color: color-mix(in oklab, var(--neutral-400) 20%, transparent);
         border-right: none;
       }
 
@@ -51,16 +35,8 @@
 
     &:has(.p-inputtext:hover) {
       .p-inputgroupaddon {
-        background-color: color-mix(
-          in oklab,
-          var(--color-gray-900) 60%,
-          transparent
-        );
-        border-color: color-mix(
-          in oklab,
-          var(--color-gray-700) 30%,
-          transparent
-        );
+        background-color: var(--input-background);
+        border-color: transparent;
         border-right: none;
       }
 
@@ -71,7 +47,7 @@
 
     &:has(.p-inputtext.p-invalid) {
       .p-inputgroupaddon {
-        border-color: var(--color-red-500);
+        border-color: var(--primary-600);
         border-right: none;
       }
 

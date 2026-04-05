@@ -25,10 +25,8 @@
 			}
 		);
 
-		if (error) return navigateTo('/');
+		if (error || !data) return navigateTo('/');
 
-		if (!data || !data.url) return navigateTo('/');
-
-		window.location.href = data.url;
+		window.location.href = data;
 	});
 </script>

@@ -5,6 +5,7 @@ interface IProfileLink {
   type: ELinkType;
   platform: ELinkPlatform | null;
   title: string | null;
+  url: string;
   backgroundImage: string | null;
   titleColors: string[] | null;
   backgroundColors: string[] | null;

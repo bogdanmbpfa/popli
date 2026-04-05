@@ -87,6 +87,28 @@ export const authSessionModel = userManagementSchema.table(
   ],
 );
 
+export const profileAccessModel = userManagementSchema.table(
+  'profile_access',
+  {
+    id: uuid('id').defaultRandom().primaryKey().unique().notNull(),
+    userId: uuid('user_id').notNull(),
+    ipAddress: inet('ip_address').notNull(),
+    country: varchar('country', { length: 255 }).notNull(),
+    countryCode: varchar('country_code', { length: 2 }).notNull(),
+    deviceType: varchar('device_type', { length: 255 }),
+    browser: varchar('browser', { length: 255 }),
+    userAgent: varchar('user_agent', { length: 255 }).notNull(),
+    os: varchar('os', { length: 255 }),
+    referrer: text('referrer'),
+    accessedAt: timestamp('accessed_at').notNull().defaultNow(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex('idx_profile_access_id').on(table.id),
+    index('idx_profile_access_user_id').on(table.userId),
+  ],
+);
+
 export const authSessionModelRelations = relations(
   authSessionModel,
   ({ one }) => ({
@@ -105,3 +127,14 @@ export const profileModelRelations = relations(profileModel, ({ one }) => ({
     relationName: 'user',
   }),
 }));
+
+export const profileAccessModelRelations = relations(
+  profileAccessModel,
+  ({ one }) => ({
+    user: one(userModel, {
+      fields: [profileAccessModel.userId],
+      references: [userModel.id],
+      relationName: 'user',
+    }),
+  }),
+);

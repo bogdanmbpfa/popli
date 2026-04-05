@@ -7,4 +7,8 @@ export interface IQrCodeAnalytics {
     countryCode: string;
     totalScans: number;
   }[];
+  dailyScans: {
+    date: string;
+    scans: number;
+  }[];
 }

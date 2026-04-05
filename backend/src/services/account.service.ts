@@ -129,7 +129,7 @@ export class AccountService {
     let image: Buffer;
 
     try {
-      image = await processImage(dto.buffer, { width: 512, height: 512 });
+      image = await processImage(dto.buffer, { width: 44, height: 44 });
     } catch (error) {
       this.logger.error('Error processing image', error);
 
@@ -161,7 +161,7 @@ export class AccountService {
     let image: Buffer;
 
     try {
-      image = await processImage(dto.buffer, { width: 1280, height: 720 });
+      image = await processImage(dto.buffer, { width: 432, height: 240 });
     } catch (error) {
       this.logger.error('Error processing image', error);
 

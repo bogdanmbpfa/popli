@@ -42,4 +42,9 @@ export interface IConfig {
   ipApi: {
     baseUrl: string;
   };
+  queue: {
+    host: string;
+    port: number;
+    password?: string;
+  };
 }

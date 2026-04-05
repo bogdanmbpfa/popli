@@ -4,15 +4,70 @@
     outline: none;
     box-shadow: none;
     border: none;
+    width: 100%;
 
-    .p-message-content {
-      padding: 0;
-      
-      .p-message-text {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-        font-size: 0.75rem;
+    .p-message-content-wrapper {
+      .p-message-content {
+        padding: 0;
+
+        .p-message-text {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.25rem;
+          font-size: 0.75rem;
+          text-align: center;
+        }
+      }
+    }
+
+    &.text-left {
+      .p-message-content {
+        .p-message-text {
+          justify-content: flex-start;
+          text-align: left;
+        }
+      }
+    }
+
+    &.p-message-error {
+      .p-message-content-wrapper {
+        .p-message-content {
+          .p-message-text {
+            color: var(--primary-600);
+          }
+        }
+      }
+    }
+
+    &.p-message-success {
+      .p-message-content-wrapper {
+        .p-message-content {
+          .p-message-text {
+            color: var(--secondary-400);
+          }
+        }
+      }
+    }
+
+    &.p-message-info {
+      .p-message-content-wrapper {
+        .p-message-content {
+          .p-message-text {
+            color: var(--neutral-400);
+          }
+        }
+      }
+    }
+
+    &.p-message-contrast {
+      .p-message-content-wrapper {
+        .p-message-content {
+          .p-message-text {
+            color: var(--primary-400);
+          }
+        }
       }
     }
   }

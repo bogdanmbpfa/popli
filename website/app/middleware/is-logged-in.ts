@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware(async () => {
   const refreshTokenCookie = useCookie(cookies.auth.refreshTokenName);
 
   if (!middlewareCookie.value && !refreshTokenCookie.value) {
-    return navigateTo('/auth/sign-in');
+    return navigateTo('/sign-in');
   }
 
   if (!middlewareCookie?.value && refreshTokenCookie?.value) {
@@ -15,7 +15,7 @@ export default defineNuxtRouteMiddleware(async () => {
       const headers = useRequestHeaders();
       await useRefreshToken(headers);
     } catch {
-      return navigateTo('/auth/sign-in');
+      return navigateTo('/sign-in');
     }
   }
 });

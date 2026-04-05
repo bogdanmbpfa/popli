@@ -34,17 +34,17 @@
 </script>
 
 <style lang="scss" scoped>
-	@use '../../assets/mixins.scss' as *;
-
 	.form-container {
 		width: 100%;
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
-		padding: 1rem;
-		@include squircle(1.5rem);
-		background-color: color-mix(in oklab, var(--color-gray-900) 40%, transparent);
-		border: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
+		gap: 2rem;
+		padding: 2rem;
+		border-radius: 0.5rem;
+		background-color: color-mix(in oklab, var(--neutral-950) 60%, transparent);
+		border: none;
+		position: relative;
+		overflow: hidden;
 
 		.heading {
 			display: flex;
@@ -56,15 +56,15 @@
 				align-items: center;
 				gap: 0.5rem;
 
-				font-size: 1rem;
+				font-size: 1.25rem;
 				font-weight: 500;
-				color: var(--color-neutral-100);
+				color: var(--neutral-100);
 			}
 
 			.description {
 				font-size: 0.875rem;
 				font-weight: 400;
-				color: var(--color-neutral-400);
+				color: var(--neutral-400);
 			}
 		}
 	}

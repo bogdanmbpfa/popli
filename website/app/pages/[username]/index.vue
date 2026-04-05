@@ -4,6 +4,7 @@
       <div class="background">
         <Icon
           v-if="!profile.coverImage"
+          class="info"
           name="material-symbols:person"
           size="14rem"
         />
@@ -12,7 +13,7 @@
           v-else
           :src="profile.coverImage"
           :alt="profile.name"
-          loading="lazy"
+          fetchpriority="high"
         />
       </div>
 
@@ -20,7 +21,7 @@
         <nuxt-img
           :src="profile.profileImage"
           :alt="profile.name"
-          loading="lazy"
+          fetchpriority="high"
         />
       </div>
 
@@ -33,20 +34,22 @@
             :style="{
               color: profile.handleColor
                 ? `#${profile.handleColor}`
-                : 'var(--text-300)',
+                : 'var(--neutral-400)',
             }"
-            >@{{ profile.handle }}</span
           >
+            @{{ profile.handle }}
+          </span>
 
           <span
             class="bio"
             :style="{
               color: profile.bioColor
                 ? `#${profile.bioColor}`
-                : 'var(--text-300)',
+                : 'var(--neutral-400)',
             }"
-            >{{ profile.bio }}</span
           >
+            {{ profile.bio }}
+          </span>
         </div>
 
         <div class="content">
@@ -56,7 +59,7 @@
               :key="link.id"
               class="default"
               :title="link.platform!"
-              @click="clickLink(link.id)"
+              @click="clickLink(link.id, link.url)"
             >
               <NuxtImg
                 :src="`/${link.platform}.svg`"
@@ -71,6 +74,7 @@
               v-for="link in profile.secondaryLinks"
               :key="link.id"
               class="default"
+              severity="secondary"
               :title="link.title!"
               :style="[
                 link.backgroundColors
@@ -81,7 +85,7 @@
                         .join(', ')});`
                   : 'background-color: transparent',
               ]"
-              @click="clickLink(link.id)"
+              @click="clickLink(link.id, link.url)"
             >
               <NuxtImg
                 v-if="link.backgroundImage"
@@ -99,7 +103,7 @@
                       : `color: transparent; background-image: linear-gradient(to right, ${link.titleColors
                           .map((color) => `#${color}`)
                           .join(', ')}); background-clip: text;`
-                    : 'color: var(--text-100)',
+                    : 'color: var(--neutral-100)',
                 ]"
               >
                 {{ link.title }}
@@ -126,7 +130,12 @@ definePageMeta({
   layout: 'profile',
 });
 
-const { username } = useRoute().params;
+const route = useRoute();
+const requestUrl = useRequestURL();
+const {
+  public: { images },
+} = useRuntimeConfig();
+const { username } = route.params;
 
 const { data: profile } = await useApiJson(
   EApiEndpoint.PROFILE_GET,
@@ -135,29 +144,64 @@ const { data: profile } = await useApiJson(
   { handle: username },
 );
 
+const profileName = computed(() => profile?.name || `@${username}`);
+const profileHandle = computed(() => profile?.handle || String(username));
+const profileBio = computed(() => profile?.bio || '');
+const pageTitle = computed(
+  () => `${profileName.value} (@${profileHandle.value})`,
+);
+const pageDescription = computed(() =>
+  profileBio.value
+    ? profileBio.value
+    : `Discover ${profileName.value}'s links and social profiles on Popli.one.`,
+);
+const previewImage = computed(
+  () => profile?.coverImage || profile?.profileImage || images.logo,
+);
+const canonicalUrl = computed(() => {
+  return `${requestUrl.origin}${route.fullPath}`;
+});
+
+useHead({
+  link: [
+    {
+      rel: 'canonical',
+      href: canonicalUrl,
+    },
+  ],
+});
+
+useSeoMeta({
+  title: pageTitle,
+  description: pageDescription,
+  ogType: 'profile',
+  ogTitle: pageTitle,
+  ogDescription: pageDescription,
+  ogUrl: canonicalUrl,
+  ogImage: previewImage,
+  twitterCard: 'summary_large_image',
+  twitterTitle: pageTitle,
+  twitterDescription: pageDescription,
+  twitterImage: previewImage,
+  robots: () => (profile ? 'index, follow' : 'noindex, nofollow'),
+});
+
 onMounted(() => {
   if (!profile) {
     return navigateTo('/');
   }
+
+  useApiJson(EApiEndpoint.PROFILE_ACCESS, {}, {}, { handle: username });
 });
 
-const clickLink = async (id: string) => {
-  const { data } = await useApiJson(
-    EApiEndpoint.URL_LINK_CLICK,
-    {},
-    {},
-    { id },
-  );
+const clickLink = async (id: string, url: string) => {
+  useApiJson(EApiEndpoint.URL_LINK_CLICK, {}, {}, { id });
 
-  if (!data) return;
-
-  return navigateTo(data, { external: true, open: { target: '_blank' } });
+  return navigateTo(url, { external: true, open: { target: '_blank' } });
 };
 </script>
 
 <style scoped lang="scss">
-@use '../../assets/mixins.scss' as *;
-
 .profile {
   width: 100lvw;
   height: 100lvh;
@@ -170,8 +214,8 @@ const clickLink = async (id: string) => {
     position: relative;
     height: 60rem;
     width: 30rem;
-    border: 1px solid var(--border-1);
-    @include squircle(3rem);
+    border: 1px solid color-mix(in oklab, var(--neutral-400) 20%, transparent);
+    border-radius: 3rem;
     z-index: 10;
     overflow: hidden;
 
@@ -187,6 +231,7 @@ const clickLink = async (id: string) => {
       display: flex;
       align-items: center;
       justify-content: center;
+      background-image: var(--linear-gradient-primary);
 
       img {
         width: 100%;
@@ -204,7 +249,7 @@ const clickLink = async (id: string) => {
       height: 3rem;
       border-radius: 50%;
       padding: 0.125rem;
-      background-image: var(--gradient-bottom-right-primary);
+      background-image: var(--linear-gradient-primary);
       overflow: hidden;
       z-index: 50;
 
@@ -244,33 +289,33 @@ const clickLink = async (id: string) => {
         background-image: linear-gradient(
           to bottom,
           transparent 20%,
-          var(--background-1)
+          var(--background-primary)
         );
         min-height: 6rem;
 
         .name {
           font-size: 1.5rem;
           font-weight: 500;
-          color: var(--text-100);
+          color: var(--neutral-100);
         }
 
         .handle {
           font-size: 1rem;
           font-weight: 400;
-          color: var(--text-300);
+          color: var(--neutral-400);
         }
 
         .bio {
           font-size: 1rem;
           font-weight: 400;
-          color: var(--text-300);
+          color: var(--neutral-400);
         }
       }
 
       .content {
         width: 100%;
         height: 100%;
-        background-color: var(--background-1);
+        background-color: var(--background-primary);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -292,7 +337,7 @@ const clickLink = async (id: string) => {
             width: 1.75rem;
             height: 1.75rem;
             border-radius: 50%;
-            background-image: var(--gradient-bottom-right-primary);
+            background-image: var(--linear-gradient-primary);
             overflow: hidden;
             min-width: unset;
             corner-shape: unset;
@@ -316,8 +361,9 @@ const clickLink = async (id: string) => {
             width: 100%;
             height: 4rem;
             overflow: hidden;
-            border: 1px solid var(--border-1);
-            @include squircle(1.5rem);
+            border: 1px solid
+              color-mix(in oklab, var(--neutral-400) 20%, transparent);
+            border-radius: 0.5rem;
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -341,7 +387,7 @@ const clickLink = async (id: string) => {
             .title {
               font-size: 1rem;
               font-weight: 500;
-              color: var(--text-100);
+              color: var(--neutral-100);
               z-index: 30;
             }
           }
@@ -366,7 +412,7 @@ const clickLink = async (id: string) => {
             span {
               font-size: 0.875rem;
               font-weight: 400;
-              color: var(--text-300);
+              color: var(--neutral-400);
             }
 
             a {
@@ -374,7 +420,7 @@ const clickLink = async (id: string) => {
               font-weight: 400;
               color: transparent;
               text-decoration: none;
-              background-image: var(--gradient-right-primary);
+              background-image: var(--linear-gradient-primary);
               background-clip: text;
               -webkit-background-clip: text;
               -webkit-text-fill-color: transparent;

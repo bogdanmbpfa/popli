@@ -6,12 +6,9 @@ h1 {
   color: var(--text-100);
   line-height: 1.2;
 
-	&.primary {
-    color: transparent;
-    font-weight: 700;
-    background-clip: text;
-		background-image: var(--gradient-right-primary);
-	}
+  &.large {
+    font-size: clamp(2.25rem, 5vw, 5rem);
+  }
 }
 
 h2 {
@@ -25,5 +22,9 @@ span {
     color: transparent;
     background-image: var(--gradient-right-primary);
     background-clip: text;
+  }
+
+  &.contrast {
+    color: var(--primary-400);
   }
 }

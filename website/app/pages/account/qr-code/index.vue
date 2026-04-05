@@ -1,58 +1,63 @@
 <template>
-	<div class="qr-code-page">
-		<div class="container">
-			<PTabs v-model:value="tab" class="default">
-				<PTabList>
-					<PTab value="generate"> <Icon name="mdi:plus" size="1rem" /> Create new </PTab>
-					<PTab value="manage"> <Icon name="mdi:qrcode" size="1rem" /> Manage QR Codes </PTab>
-				</PTabList>
+  <div class="qr-code-page">
+      <PTabs v-model:value="tab" class="default">
+        <PTabList>
+          <PTab value="generate">
+            <Icon
+              :class="tab === 'generate' ? 'danger' : 'default'"
+              name="mdi:plus"
+              size="1rem"
+            />
+            Create new
+          </PTab>
+          <PTab value="manage">
+            <Icon
+              :class="tab === 'manage' ? 'danger' : 'default'"
+              name="mdi:qrcode"
+              size="1rem"
+            />
+            Manage QR Codes
+          </PTab>
+        </PTabList>
 
-				<PTabPanels>
-					<PTabPanel value="generate">
-						<QrcodeGenerate @refresh="refreshQrCodes" />
-					</PTabPanel>
+        <PTabPanels>
+          <PTabPanel value="generate">
+            <QrcodeGenerate @refresh="refreshQrCodes" />
+          </PTabPanel>
 
-					<PTabPanel value="manage"> <QrcodeManage ref="qrCodeManage" /> </PTabPanel>
-				</PTabPanels>
-			</PTabs>
-		</div>
-	</div>
+          <PTabPanel value="manage">
+            <QrcodeManage ref="qrCodeManage" />
+          </PTabPanel>
+        </PTabPanels>
+      </PTabs>
+  </div>
 </template>
 
 <script setup lang="ts">
-	import type QrCodeManage from '~/components/qrcode/Manage.vue';
+import type QrCodeManage from '~/components/qrcode/Manage.vue';
 
-	definePageMeta({
-		layout: 'account',
-		middleware: 'is-logged-in',
-	});
+definePageMeta({
+  layout: 'account',
+  middleware: 'is-logged-in',
+});
 
-	const tab = ref<'generate' | 'manage'>('generate');
-	const qrCodeManage = ref<InstanceType<typeof QrCodeManage> | null>(null);
+const tab = ref<'generate' | 'manage'>('generate');
+const qrCodeManage = ref<InstanceType<typeof QrCodeManage> | null>(null);
 
-	const refreshQrCodes = async () => {
-		if (qrCodeManage.value) {
-			await qrCodeManage.value.getQrCodes();
-		}
-	};
+const refreshQrCodes = async () => {
+  if (qrCodeManage.value) {
+    await qrCodeManage.value.getQrCodes();
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-	.qr-code-page {
-		display: flex;
-		flex-direction: row;
-		height: 100%;
-		width: 100%;
-		flex: 1;
-		position: relative;
-
-		.container {
-			display: flex;
-			flex-direction: column;
-			gap: 2rem;
-			flex: 1;
-			width: 100%;
-			padding: 2rem;
-		}
-	}
+.qr-code-page {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  flex: 1;
+  position: relative;
+}
 </style>

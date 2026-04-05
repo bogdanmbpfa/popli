@@ -16,21 +16,21 @@
               :value="user.email"
               readonly
             />
-
-            <PMessage
-              v-if="user.emailConfirmedAt"
-              class="default"
-              severity="success"
-            >
-              <Icon name="mdi:checkbox-marked-circle-outline" />
-              Email verified
-            </PMessage>
-
-            <PMessage v-else class="default" severity="error">
-              <Icon name="mdi:alert-circle-outline" />
-              Email not verified.
-            </PMessage>
           </FormInput>
+
+          <PMessage
+            v-if="user.emailConfirmedAt"
+            class="default text-left"
+            severity="success"
+          >
+            <Icon name="mdi:checkbox-marked-circle-outline" class="success" />
+            Email verified
+          </PMessage>
+
+          <PMessage v-else class="default text-left" severity="error">
+            <Icon name="mdi:alert-circle-outline" class="danger" />
+            Email not verified.
+          </PMessage>
 
           <FormInput
             v-if="isEmailVerifyRequested && !user.emailConfirmedAt"
@@ -74,7 +74,10 @@
           />
         </form>
 
-        <form class="change-password-form" @submit.prevent="onSubmitChangePassword">
+        <form
+          class="change-password-form"
+          @submit.prevent="onSubmitChangePassword"
+        >
           <FormInput
             id="currentPassword"
             label="Current password"
@@ -85,6 +88,7 @@
             <PPassword
               v-model="currentPassword"
               v-bind="currentPasswordAttributes"
+              class="default"
               input-id="currentPassword"
               input-class="default"
               placeholder="Enter your current password"
@@ -107,6 +111,7 @@
             <PPassword
               v-model="newPassword"
               v-bind="newPasswordAttributes"
+              class="default"
               input-id="newPassword"
               input-class="default"
               placeholder="Enter your new password"
@@ -129,12 +134,20 @@
         </form>
       </FormContainer>
 
-      <FormContainer
-        title="Delete account"
-        title-icon="mdi:delete-outline"
-        description="Your account will be marked as deleted and will be removed from the system after 30 days."
-      >
-        <form @submit.prevent="onSubmitDeleteAccount">
+      <div class="danger-zone">
+        <div class="heading">
+          <Icon name="pixel:octagon-times-solid" class="danger" size="1.5rem" />
+          <span>Danger Zone</span>
+        </div>
+
+        <div class="content">
+          <span class="disclaimer">
+            Deleting your account is permanent. This will immediately disable
+            your <span class="highlight">Popli</span> short links, clear your
+            analytics history, and remove all bio page data. This action cannot
+            be undone.
+          </span>
+
           <PButton
             type="submit"
             class="default"
@@ -142,9 +155,10 @@
             icon="pi pi-trash"
             label="Delete account"
             :disabled="actionInProgress"
+            @click="openConfirmDeleteAccount"
           />
-        </form>
-      </FormContainer>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -160,6 +174,7 @@ definePageMeta({
   middleware: 'is-logged-in',
 });
 
+const confirm = useConfirm();
 const globalStore = useGlobalStore();
 const toast = useToast();
 const userStore = useUserStore();
@@ -283,37 +298,52 @@ const onSubmitChangePassword = handleChangePasswordSubmit(async (values) => {
   });
 });
 
-const onSubmitDeleteAccount = async () => {
-  globalStore.toggleActionInProgress();
+const openConfirmDeleteAccount = () =>
+  confirm.require({
+    icon: 'pi pi-exclamation-triangle',
+    header: 'Delete Account permanently?',
+    message:
+    'This action is irreversible. All your short links, qr codes, analytics data and profile settings will be deleted forever.',
+    acceptClass: 'default p-button-danger',
+    acceptIcon: 'pi pi-trash',
+    acceptLabel: 'Delete account',
+    rejectClass: 'default p-button-help',
+    rejectLabel: 'Cancel',
+    modal:true,
+    position: 'center',
+    blockScroll: true,
+    accept: async () => {
+      globalStore.toggleActionInProgress();
 
-  const { error } = await useApiJson(EApiEndpoint.ACCOUNT_DELETE, {});
+      const { error } = await useApiJson(EApiEndpoint.ACCOUNT_DELETE, {});
 
-  if (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: error.message,
-      life: 3000,
-    });
+      if (error) {
+        toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message,
+          life: 3000,
+        });
 
-    return globalStore.toggleActionInProgress();
-  }
+        return globalStore.toggleActionInProgress();
+      }
 
-  useSignOut();
+      useSignOut();
 
-  userStore.setUser(null);
+      userStore.setUser(null);
 
-  toast.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: 'Account deleted successfully',
-    life: 3000,
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Account deleted successfully',
+        life: 3000,
+      });
+
+      globalStore.toggleActionInProgress();
+
+      return navigateTo('/');
+    },
   });
-
-  globalStore.toggleActionInProgress();
-
-  return navigateTo('/');
-};
 </script>
 
 <style lang="scss" scoped>
@@ -341,6 +371,43 @@ const onSubmitDeleteAccount = async () => {
         flex-wrap: wrap;
       }
     }
+
+    .danger-zone {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background-color: var(--danger);
+      border: 1px solid color-mix(in oklab, var(--primary-400) 20%, transparent);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+
+      .heading {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary-400);
+      }
+
+      .content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+
+        .disclaimer {
+          font-size: 0.875rem;
+          font-weight: 400;
+          color: var(--neutral-400);
+
+          .highlight {
+            color: var(--neutral-100);
+            font-weight: 600;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -354,6 +421,12 @@ const onSubmitDeleteAccount = async () => {
           .form-input {
             max-width: 100%;
           }
+        }
+      }
+
+      .danger-zone {
+        .content {
+          flex-direction: column;
         }
       }
     }

@@ -1,6 +1,6 @@
 .p-drawer {
   &.default {
-    background-color: color-mix(in oklab, var(--color-gray-900) 40%, transparent);
+    background-color: var(--background-primary);
     border: none;
     border-right: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
 
@@ -12,7 +12,6 @@
       padding: 1rem;
       height: 100%;
       max-height: 5rem;
-      border-bottom: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
 
       img {
         width: 3rem;
@@ -27,23 +26,23 @@
         .name {
           font-size: 1rem;
           font-weight: 500;
-          color: var(--color-neutral-100);
+          color: var(--neutral-100);
         }
 
         .handle {
           font-size: 0.75rem;
-          color: var(--color-neutral-400);
+          color: var(--neutral-400);
         }
       }
 
       .p-drawer-close-button {
         border: none;
-        color: var(--color-neutral-400);
+        color: var(--neutral-400);
         background: none;
 
         &:hover, &:focus-visible {
           background: none;
-          color: var(--color-neutral-400);
+          color: var(--neutral-400);
           border: none;
           outline: none;
         }
@@ -64,7 +63,7 @@
         .title {
           font-size: 0.75rem;
           font-weight: 500;
-          color: var(--color-neutral-400);
+          color: var(--neutral-400);
         }
 
         a {

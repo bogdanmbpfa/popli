@@ -1,7 +1,7 @@
 <template>
   <div class="featured-links">
     <div class="heading">
-      <Icon name="material-symbols:link" size="1rem" />
+      <Icon class="info" name="material-symbols:link" size="1rem" />
       <span>Featured Links</span>
     </div>
 
@@ -10,7 +10,7 @@
         v-for="platform in platforms.slice(0, visiblePlatformsCount)"
         :key="platform.type"
         class="default"
-        severity="contrast"
+        severity="help"
         :title="platform.name"
         fluid
         @click="onAddLink(platform)"

@@ -11,13 +11,13 @@
     <span v-if="caption" class="caption">{{ caption }}</span>
 
     <div v-if="error" class="error">
-      <Icon name="mdi:alert-circle-outline" size="0.75rem" />
+      <Icon class="danger" name="mdi:alert-circle-outline" size="0.75rem" />
 
       <span>{{ error }}</span>
     </div>
 
     <div v-if="successCaption" class="success">
-      <Icon name="mdi:check-circle-outline" size="0.75rem" />
+      <Icon class="success" name="mdi:check-circle-outline" size="0.75rem" />
 
       <span>{{ successCaption }}</span>
     </div>
@@ -77,12 +77,13 @@ defineProps({
   label {
     font-size: 0.75rem;
     font-weight: 500;
-    color: var(--text-100);
+    color: var(--neutral-100);
   }
 
   .input-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
     gap: 0.25rem;
   }
 
@@ -90,7 +91,7 @@ defineProps({
   .caption {
     font-size: 0.75rem;
     font-weight: 500;
-    color: var(--text-300);
+    color: var(--neutral-400);
   }
 
   .error {
@@ -99,13 +100,11 @@ defineProps({
     gap: 0.25rem;
     font-size: 0.75rem;
     font-weight: 500;
-    color: var(--text-danger);
+    color: var(--primary-400);
 
     .iconify {
       width: 0.75rem;
       height: 0.75rem;
-      filter: brightness(0) saturate(100%) invert(9%) sepia(55%) saturate(5599%)
-        hue-rotate(348deg) brightness(101%) contrast(91%);
     }
 
     span {
@@ -119,13 +118,11 @@ defineProps({
     gap: 0.25rem;
     font-size: 0.75rem;
     font-weight: 500;
-    color: var(--text-success);
+    color: var(--secondary-400);
 
     .iconify {
       width: 0.75rem;
       height: 0.75rem;
-      filter: brightness(0) saturate(100%) invert(61%) sepia(74%)
-        saturate(2912%) hue-rotate(102deg) brightness(95%) contrast(101%);
     }
 
     span {

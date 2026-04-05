@@ -14,7 +14,7 @@
 		<PButton
 			type="button"
 			class="default"
-			severity="info"
+			severity="secondary icon-only"
 			icon="pi pi-upload"
 			icon-pos="left"
 			label="Choose file"

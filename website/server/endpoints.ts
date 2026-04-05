@@ -6,12 +6,13 @@ import type {
 	IAuthLoginResponse,
 	ILink,
 	IProfile,
+	IProfileDailyClicks,
+	IProfileTotalClicks,
 	IQrCode,
 	IQrCodeAnalytics,
 	IUrlShortUrl,
 	IUrlShortUrlCountryClicks,
 	IUrlShortUrlDailyClicks,
-	IUrlShortUrlRedirect,
 } from '~/../interfaces';
 
 export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
@@ -240,6 +241,24 @@ export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 		contentType: 'json',
 		auth: false,
 	},
+	[EApiEndpoint.PROFILE_DAILY_CLICKS]: {
+		path: '/profile/analytics/daily-clicks',
+		method: 'GET',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.PROFILE_TOTAL_CLICKS]: {
+		path: '/profile/analytics/total-clicks',
+		method: 'GET',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.PROFILE_ACCESS]: {
+		path: '/profile/{handle}/access',
+		method: 'POST',
+		contentType: 'json',
+		auth: false,
+	},
 };
 
 export type TApiEndpoint = {
@@ -257,6 +276,7 @@ export type TApiEndpoint = {
 	[EApiEndpoint.ACCOUNT_CHECK_EMAIL]: undefined;
 	[EApiEndpoint.ACCOUNT_PROFILE]: IAccountProfile;
 	[EApiEndpoint.ACCOUNT_UPLOAD_COVER_IMAGE]: undefined;
+	[EApiEndpoint.ACCOUNT_UPLOAD_PROFILE_IMAGE]: undefined;
 	[EApiEndpoint.ACCOUNT_UPDATE_PROFILE]: undefined;
 	[EApiEndpoint.ACCOUNT_REQUEST_EMAIL_VERIFY]: undefined;
 	[EApiEndpoint.ACCOUNT_VERIFY_EMAIL]: undefined;
@@ -269,7 +289,7 @@ export type TApiEndpoint = {
 	[EApiEndpoint.URL_SHORT_URL_UPDATE]: undefined;
 	[EApiEndpoint.URL_SHORT_URL_DELETE]: undefined;
 	[EApiEndpoint.URL_SHORT_URL_TOGGLE]: undefined;
-	[EApiEndpoint.URL_SHORT_URL_REDIRECT]: IUrlShortUrlRedirect;
+	[EApiEndpoint.URL_SHORT_URL_REDIRECT]: string;
 	[EApiEndpoint.URL_SHORT_URL_DAILY_CLICKS]: IUrlShortUrlDailyClicks[];
 	[EApiEndpoint.URL_SHORT_URL_COUNTRY_CLICKS]: IUrlShortUrlCountryClicks[];
 	[EApiEndpoint.URL_LINKS]: ILink[];
@@ -286,4 +306,7 @@ export type TApiEndpoint = {
 
 	// Profile API Endpoints
 	[EApiEndpoint.PROFILE_GET]: IProfile;
+	[EApiEndpoint.PROFILE_DAILY_CLICKS]: IProfileDailyClicks;
+	[EApiEndpoint.PROFILE_TOTAL_CLICKS]: IProfileTotalClicks;
+	[EApiEndpoint.PROFILE_ACCESS]: undefined;
 };

@@ -1,50 +1,129 @@
 .p-dialog {
-	&.default {
-		background-color: var(--color-gray-900);
-		border: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
-		box-shadow: var(--box-shadow-1);
-		border-radius: 1.5rem;
-		color: var(--color-neutral-100);
+  &.default {
+    background-color: var(--neutral-950);
+    border: 1px solid color-mix(in oklab, var(--primary-400) 20%, transparent);
+    box-shadow: var(--box-shadow-tertiary);
+    border-radius: 1rem;
     max-height: calc(100lvh - 1rem);
     max-width: calc(100lvw - 1rem);
     overflow-y: auto;
+    position: relative;
 
-		.p-dialog-header {
-			padding: 1rem;
-
-			.p-dialog-header-actions {
-				.p-dialog-close-button {
-					padding: 0;
-					height: fit-content;
-					color: var(--color-neutral-100);
-
-					&:hover {
-						background-color: transparent;
-					}
-				}
-			}
+		&.p-confirmdialog {
+      width: 100%;
+			max-width: 30rem;
 		}
 
-		.p-dialog-content {
-			/* Hide scrollbars in configuration dialog */
-			&::-webkit-scrollbar {
-				display: none;
+    .p-dialog-header {
+      padding: 1.5rem;
+      position: relative;
+      display: flex;
+      justify-content: center;
+
+      .p-dialog-title {
+        color: var(--neutral-100);
+      }
+
+      .p-dialog-header-actions {
+        position: absolute;
+        right: 1.5rem;
+        top: 1.5rem;
+
+        .p-dialog-close-button {
+          padding: 0;
+          height: fit-content;
+          color: var(--neutral-400);
+
+          &:hover {
+            background-color: transparent;
+          }
+        }
+      }
+    }
+
+    &:has(.p-confirmdialog-icon) {
+      .p-dialog-header {
+        padding-top: 6rem;
+      }
+    }
+
+    .p-dialog-content {
+      /* Hide scrollbars in configuration dialog */
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+
+			padding: 0 1.5rem 1.5rem;
+
+      .p-confirmdialog-icon {
+        position: absolute;
+        top: 1.5rem;
+        left: calc(50% - 2rem);
+        transform: translateX(calc(50% - 1rem));
+
+        &::before {
+          position: absolute;
+          top: 1rem;
+          left: 1rem;
+          right: 0;
+          bottom: 0;
+          filter: brightness(0) saturate(100%) invert(70%) sepia(18%)
+            saturate(1851%) hue-rotate(302deg) brightness(100%) contrast(103%);
+        }
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: color-mix(in oklab, var(--primary-950) 20%, transparent);
+					border: 1px solid color-mix(in oklab, var(--primary-400) 20%, transparent);
+          width: 4rem;
+          height: 4rem;
+          z-index: -1;
+					border-radius: 1rem;
+        }
+      }
+
+			.p-confirmdialog-message {
+				text-align: center;
+				color: var(--neutral-400);
+				font-size: 0.875rem;
 			}
-			-ms-overflow-style: none; /* IE and Edge */
-			scrollbar-width: none; /* Firefox */
+    }
+
+    &:has(.p-dialog-footer) {
+      .p-dialog-content {
+        padding-bottom: 0;
+      }
+    }
+
+		.p-dialog-footer {
+			padding: 1.5rem;
+			display: flex;
+			justify-content: space-between;
+			gap: 1rem;
+
+			.p-button {
+				width: 100%;
+			}
 		}
-	}
+  }
 }
 
 .p-dialog-mask {
-	padding: 1rem 0;
+  padding: 1rem 0;
 }
 
 @media (max-width: 768px) {
-	.p-dialog {
-		&.default {
-			width: 100% !important;
-			max-width: calc(100lvw - 1rem) !important;
-		}
-	}
+  .p-dialog {
+    &.default {
+      width: 100% !important;
+      max-width: calc(100lvw - 1rem) !important;
+    }
+  }
 }

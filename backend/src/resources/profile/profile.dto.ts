@@ -25,6 +25,13 @@ class LinkDTO {
 
   @ApiProperty({
     type: String,
+    description: 'The URL of the link',
+    example: 'https://example.com/link',
+  })
+  url: string;
+
+  @ApiProperty({
+    type: String,
     description: 'The title of the link',
     example: 'My Link',
   })

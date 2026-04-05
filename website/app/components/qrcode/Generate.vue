@@ -10,17 +10,25 @@
 
     <div class="content">
       <FormInput id="data-type" label="Type" size="half" required>
-        <PSelect
+        <PSelectButton
           id="data-type"
           v-model="type"
           class="default"
-          overlay-class="default"
           fluid
           :options="typeOptions"
           :option-label="(option) => option.label"
           :option-value="(option) => option.value"
           @value-change="qrCodeOptions.data = undefined"
-        />
+        >
+          <template #option="{ option }">
+            <Icon
+              class="default"
+              :name="dataTypeIcons[option.value as EQRCodeDataType]"
+              size="1rem"
+            />
+            <span class="label">{{ option.label }}</span>
+          </template>
+        </PSelectButton>
       </FormInput>
 
       <FormInput id="title" label="Title" size="half" required>
@@ -30,10 +38,11 @@
           class="default"
           overlay-class="default"
           fluid
+          placeholder="My QR Code"
         />
       </FormInput>
 
-      <FormInput id="data" label="Data" required>
+      <FormInput id="data" label="Destination" required>
         <PInputText
           v-if="type === 'url'"
           id="data"
@@ -112,6 +121,10 @@
       @click="openQrCodeAdvancedConfigurationDialog"
     />
 
+    <PMessage v-if="formError" class="default" severity="error" fluid>
+      {{ formError }}
+    </PMessage>
+
     <PButton
       type="button"
       class="default"
@@ -142,6 +155,13 @@ const dialog = useDialog();
 const qrCodeStore = useQrCodeStore();
 const toast = useToast();
 
+const dataTypeIcons = ref({
+  [EQRCodeDataType.TEXT]: 'mdi:text-box-outline',
+  [EQRCodeDataType.URL]: 'material-symbols:link',
+  [EQRCodeDataType.EMAIL]: 'mdi:email-outline',
+  [EQRCodeDataType.PHONE]: 'mdi:phone-outline',
+});
+const formError = ref<string | null>(null);
 let qrCodeOptions = reactive<Options>({
   width: 128,
   height: 128,
@@ -228,38 +248,25 @@ const openQrCodeAdvancedConfigurationDialog = () =>
   });
 
 const generateQRCode = async () => {
+  formError.value = null;
+
   if (!qrCodeData.value) {
-    return toast.add({
-      severity: 'error',
-      summary: 'Oops!',
-      detail: 'Please enter a valid data',
-      life: 3000,
-      closable: false,
-    });
+    formError.value = 'Please enter a valid data';
+    return;
   }
 
   switch (type.value) {
     case EQRCodeDataType.EMAIL:
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(qrCodeData.value)) {
-        return toast.add({
-          severity: 'error',
-          summary: 'Oops!',
-          detail: 'Invalid email address',
-          life: 3000,
-          closable: false,
-        });
+        formError.value = 'Invalid email address';
+        return;
       }
       break;
 
     case EQRCodeDataType.PHONE:
       if (!/^[0-9]+$/.test(qrCodeData.value)) {
-        return toast.add({
-          severity: 'error',
-          summary: 'Oops!',
-          detail: 'Invalid phone number',
-          life: 3000,
-          closable: false,
-        });
+        formError.value = 'Invalid phone number';
+        return;
       }
       break;
 
@@ -268,13 +275,8 @@ const generateQRCode = async () => {
 
     case EQRCodeDataType.URL:
       if (!/^https?:\/\/[^\s/$.?#].[^\s]*$/.test(qrCodeData.value)) {
-        return toast.add({
-          severity: 'error',
-          summary: 'Oops!',
-          detail: 'Invalid URL',
-          life: 3000,
-          closable: false,
-        });
+        formError.value = 'Invalid URL';
+        return;
       }
       break;
 
@@ -290,13 +292,8 @@ const generateQRCode = async () => {
   });
 
   if (error) {
-    return toast.add({
-      severity: 'error',
-      summary: 'Oops!',
-      detail: error.message,
-      life: 3000,
-      closable: false,
-    });
+    formError.value = error.message;
+    return;
   }
 
   toast.add({
@@ -307,6 +304,7 @@ const generateQRCode = async () => {
     closable: false,
   });
 
+  formError.value = null;
   type.value = EQRCodeDataType.URL;
   title.value = '';
   qrCodeData.value = null;
@@ -369,18 +367,13 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-@use '../../assets/mixins.scss' as *;
-
 .qrcode-generate {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  backdrop-filter: blur(1.5rem) saturate(180%);
-  -webkit-backdrop-filter: blur(1.5rem) saturate(180%);
-  background-color: color-mix(in oklab, var(--color-gray-900) 40%, transparent);
+  background: var(--background-secondary);
   padding: 1.5rem;
-  @include squircle(1.5rem);
-  border: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
+  border-radius: 0.25rem;
 
   .header {
     display: flex;
@@ -390,13 +383,13 @@ watch(
     .title {
       font-size: 1rem;
       font-weight: 500;
-      color: var(--color-neutral-100);
+      color: var(--neutral-100);
     }
 
     .description {
       font-size: 0.75rem;
       font-weight: 400;
-      color: var(--color-neutral-400);
+      color: var(--neutral-400);
     }
   }
 
@@ -410,286 +403,8 @@ watch(
   hr {
     border: none;
     border-top: 1px solid
-      color-mix(in oklab, var(--color-gray-700) 30%, transparent);
+      color-mix(in oklab, var(--neutral-400) 20%, transparent);
     margin: 0;
-  }
-
-  .appearance {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-
-    .title {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--color-neutral-100);
-    }
-
-    .content {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-
-      .control-section,
-      .advanced-control-section {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-
-        .title {
-          font-size: 0.75rem;
-          font-weight: 400;
-          color: var(--color-neutral-100);
-        }
-
-        .button-group {
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
-          gap: 0.5rem;
-
-          :deep(.p-button) {
-            min-width: 8rem;
-
-            &.classic {
-              .p-button-icon {
-                color: var(--color-black);
-              }
-            }
-
-            &.blue {
-              .p-button-icon {
-                color: var(--color-blue-600);
-              }
-            }
-
-            &.purple {
-              .p-button-icon {
-                color: var(--color-purple-600);
-              }
-            }
-
-            &.pink {
-              .p-button-icon {
-                color: var(--color-pink-600);
-              }
-            }
-
-            &.darkMode {
-              .p-button-icon {
-                color: var(--color-gray-600);
-              }
-            }
-
-            &.ocean {
-              .p-button-icon {
-                color: var(--color-blue-500);
-              }
-            }
-
-            &.forest {
-              .p-button-icon {
-                color: var(--color-green-600);
-              }
-            }
-
-            &.sunset {
-              .p-button-icon {
-                color: var(--color-orange-700);
-              }
-            }
-          }
-        }
-
-        .section-header {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          gap: 0.5rem;
-
-          .title {
-            font-size: 0.75rem;
-            font-weight: 400;
-            color: var(--text-100);
-          }
-        }
-
-        .radio-group {
-          display: flex;
-          flex-direction: row;
-          gap: 1rem;
-        }
-
-        .color-picker-container {
-          width: fit-content;
-          background-color: color-mix(
-            in oklab,
-            var(--color-gray-900) 40%,
-            transparent
-          );
-          border-radius: 0.5rem;
-          padding: 0.5rem;
-        }
-
-        .gradient-controls {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-
-          .slider-control {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 1rem;
-
-            .title {
-              font-size: 0.75rem;
-              font-weight: 400;
-              color: var(--text-100);
-            }
-
-            :deep(.p-slider) {
-              width: 10rem;
-            }
-
-            .value-display {
-              font-size: 0.75rem;
-              font-weight: 400;
-              color: var(--text-100);
-            }
-          }
-
-          .gradient-stops {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 1rem;
-
-            .gradient-stop {
-              display: flex;
-              flex-direction: row;
-              align-items: center;
-              gap: 1rem;
-
-              .color-picker-container {
-                padding: 0.5rem;
-                background-color: var(--background-2);
-                border-radius: 0.5rem;
-              }
-
-              .slider-control {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                gap: 1rem;
-
-                :deep(.p-slider) {
-                  width: 10rem;
-                }
-
-                .value-display {
-                  font-size: 0.75rem;
-                  font-weight: 400;
-                  color: var(--text-100);
-                }
-              }
-            }
-          }
-        }
-
-        .file-upload-area {
-          width: 100%;
-          padding: 1rem;
-          border: 2px dashed var(--border-1);
-          border-radius: 0.5rem;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          cursor: pointer;
-          position: relative;
-
-          input {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 0;
-            opacity: 0;
-          }
-
-          .upload-text {
-            font-size: 1rem;
-            font-weight: 400;
-            color: var(--text-100);
-          }
-
-          .upload-description {
-            font-size: 0.75rem;
-            font-weight: 400;
-            color: var(--text-300);
-          }
-        }
-
-        .file-preview {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-
-          .preview-content {
-            border: 1px solid var(--border-1);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-
-            .preview-info {
-              display: flex;
-              flex-direction: row;
-              align-items: center;
-              gap: 0.5rem;
-
-              img {
-                border-radius: 0.5rem;
-                overflow: hidden;
-              }
-
-              .info-text {
-                display: flex;
-                flex-direction: column;
-
-                .title {
-                  font-size: 0.825rem;
-                  font-weight: 500;
-                  color: var(--text-100);
-                }
-
-                .description {
-                  font-size: 0.75rem;
-                  font-weight: 400;
-                  color: var(--text-300);
-                }
-              }
-            }
-          }
-        }
-
-        .advanced-options {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-      }
-
-      .advanced-control-section {
-        padding: 1rem;
-        border: 1px solid var(--border-1);
-        border-radius: 0.5rem;
-      }
-    }
   }
 
   .preview {
@@ -700,7 +415,7 @@ watch(
     .title {
       font-size: 1rem;
       font-weight: 500;
-      color: var(--color-neutral-100);
+      color: var(--neutral-100);
     }
 
     .container {
@@ -710,14 +425,9 @@ watch(
       align-items: center;
       gap: 0.5rem;
       padding: 2rem;
-      background-color: color-mix(
-        in oklab,
-        var(--color-gray-900) 40%,
-        transparent
-      );
-      @include squircle(1.5rem);
       border: 2px dashed
-        color-mix(in oklab, var(--color-gray-700) 30%, transparent);
+        color-mix(in oklab, var(--neutral-400) 20%, transparent);
+      border-radius: 0.25rem;
 
       #qr-code-canvas {
         overflow: hidden;
@@ -729,13 +439,13 @@ watch(
       .caption-title {
         font-size: 0.75rem;
         font-weight: 400;
-        color: var(--color-neutral-400);
+        color: var(--neutral-400);
       }
 
       .caption-description {
         font-size: 0.75rem;
         font-weight: 400;
-        color: var(--color-neutral-400);
+        color: var(--neutral-400);
         text-align: center;
       }
     }

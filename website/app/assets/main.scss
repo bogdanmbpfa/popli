@@ -1,18 +1,23 @@
 @use './variables.scss';
 @use './accordion.scss';
+@use './anchor.scss';
 @use './button.scss';
 @use './colorpicker.scss';
 @use './confirm.scss';
+@use './datatable.scss';
 @use './datepicker.scss';
 @use './drawer.scss';
 @use './form.scss';
 @use './icon-field.scss';
+@use './iconify.scss';
 @use './input-group.scss';
 @use './input-number.scss';
 @use './input-otp.scss';
 @use './input-text.scss';
 @use './message.scss';
+@use './password.scss';
 @use './radio-button.scss';
+@use './select-button.scss';
 @use './select.scss';
 @use './slider.scss';
 @use './tabs.scss';
@@ -32,8 +37,8 @@ html {
     min-height: 100lvh;
     position: relative;
     margin: 0;
-    background-color: var(--background-1);
-    color: var(--text-200);
+    background-color: var(--background-primary);
+    color: var(--tertiary-100);
     overflow-x: hidden;
 
     .iconify {
@@ -52,5 +57,16 @@ html {
     a {
       text-decoration: none;
     }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(3.5);
+    opacity: 0;
   }
 }

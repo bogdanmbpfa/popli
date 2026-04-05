@@ -1,10 +1,13 @@
 <template>
   <div v-if="link" class="secondary-link">
-    <div class="position-buttons">
+    <div
+      v-if="Number.isFinite(link.position) && (link.position! > 0 || link.position! < lastPosition)"
+      class="position-buttons"
+    >
       <PButton
         v-if="Number.isFinite(link.position) && link.position! > 0"
         class="default up-button"
-        severity="info"
+        severity="help"
         icon="pi pi-arrow-up"
         title="Move up"
         @click="onIncrementPosition"
@@ -12,7 +15,7 @@
       <PButton
         v-if="Number.isFinite(link.position) && link.position! < lastPosition"
         class="default down-button"
-        severity="info"
+        severity="help"
         icon="pi pi-arrow-down"
         title="Move down"
         @click="onDecrementPosition"
@@ -34,29 +37,13 @@
       <div class="title-colors">
         <span class="title">Title Colors</span>
 
-        <div class="radio-group">
-          <div class="radio-button-item">
-            <PRadioButton
-              v-model="titleColorType"
-              input-id="title-colors-solid"
-              name="titleColors"
-              class="default"
-              value="solid"
-            />
-            <label for="title-colors-solid">Solid</label>
-          </div>
-
-          <div class="radio-button-item">
-            <PRadioButton
-              v-model="titleColorType"
-              input-id="title-colors-gradient"
-              name="titleColors"
-              class="default"
-              value="gradient"
-            />
-            <label for="title-colors-gradient">Gradient</label>
-          </div>
-        </div>
+        <PSelectButton
+          v-model="titleColorType"
+          class="default"
+          :options="titleColorTypeOptions"
+          :option-label="(option) => option.label"
+          :option-value="(option) => option.value"
+        />
 
         <div v-if="titleColorType === 'solid'" class="color-picker-container">
           <PColorPicker
@@ -148,29 +135,13 @@
       <div class="background-colors">
         <span class="title">Background Colors</span>
 
-        <div class="radio-group">
-          <div class="radio-button-item">
-            <PRadioButton
-              v-model="backgroundColorType"
-              input-id="background-colors-solid"
-              name="backgroundColors"
-              class="default"
-              value="solid"
-            />
-            <label for="background-colors-solid">Solid</label>
-          </div>
-
-          <div class="radio-button-item">
-            <PRadioButton
-              v-model="backgroundColorType"
-              input-id="background-colors-gradient"
-              name="backgroundColors"
-              class="default"
-              value="gradient"
-            />
-            <label for="background-colors-gradient">Gradient</label>
-          </div>
-        </div>
+        <PSelectButton
+          v-model="backgroundColorType"
+          class="default"
+          :options="backgroundColorTypeOptions"
+          :option-label="(option) => option.label"
+          :option-value="(option) => option.value"
+        />
 
         <div
           v-if="backgroundColorType === 'solid'"
@@ -242,7 +213,7 @@
 
     <PButton
       class="default"
-      severity="info"
+      severity="danger"
       icon="pi pi-times"
       title="Delete"
       @click="onDelete"
@@ -270,9 +241,21 @@ const backgroundImageUpload = ref<InstanceType<typeof FileUpload>>();
 const title = ref<string>('');
 const titleColors = ref<string[]>([]);
 const titleColorType = ref<'solid' | 'gradient'>('solid');
+const titleColorTypeOptions = ref<
+  { label: string; value: 'solid' | 'gradient' }[]
+>([
+  { label: 'Solid', value: 'solid' },
+  { label: 'Gradient', value: 'gradient' },
+]);
 const backgroundImage = ref<File | null>(null);
 const backgroundColors = ref<string[]>([]);
 const backgroundColorType = ref<'solid' | 'gradient'>('solid');
+const backgroundColorTypeOptions = ref<
+  { label: string; value: 'solid' | 'gradient' }[]
+>([
+  { label: 'Solid', value: 'solid' },
+  { label: 'Gradient', value: 'gradient' },
+]);
 const url = ref<string>('');
 
 onMounted(async () => {
@@ -282,12 +265,25 @@ onMounted(async () => {
   url.value = props.link.url ?? '';
 
   if (props.link.backgroundImage) {
-    const { data } = await useApiJson(EApiEndpoint.URL_LINK_BACKGROUND_IMAGE, {
-      id: props.link.id,
-    });
-    backgroundImage.value = data
-      ? new File([data.buffer as ArrayBuffer], 'background-image.webp')
-      : null;
+    try {
+      const fileBuffer = await $fetch<ArrayBuffer>(
+        props.link.backgroundImage as string,
+        {
+          responseType: 'arrayBuffer',
+        },
+      );
+
+      if (fileBuffer) {
+        const file = new File([fileBuffer], 'background-image.webp', {
+          type: 'image/webp',
+        });
+
+        backgroundImage.value = file;
+        backgroundImageUpload.value?.setFile(file);
+      }
+    } catch {
+      backgroundImage.value = null;
+    }
   }
 });
 
@@ -367,8 +363,6 @@ const onDelete = async () => {
 </script>
 
 <style lang="scss" scoped>
-@use '../../assets/mixins.scss' as *;
-
 .secondary-link {
   width: 100%;
   display: flex;
@@ -380,7 +374,7 @@ const onDelete = async () => {
     gap: 0.5rem;
 
     :deep(.p-button) {
-      padding: 0 0.5rem;
+      padding: 0.25rem 0.5rem;
 
       .p-button-icon {
         font-size: 0.75rem;
@@ -394,8 +388,8 @@ const onDelete = async () => {
     flex-direction: column;
     gap: 0.5rem;
     padding: 0.5rem;
-    border: 1px solid var(--border-1);
-    @include squircle(1.5rem);
+    border: 1px solid color-mix(in oklab, var(--neutral-400) 20%, transparent);
+    border-radius: 0.5rem;
 
     .title-colors {
       display: flex;
@@ -405,7 +399,7 @@ const onDelete = async () => {
       .title {
         font-size: 0.75rem;
         font-weight: 500;
-        color: var(--text-100);
+        color: var(--neutral-100);
       }
 
       .radio-group {
@@ -443,13 +437,13 @@ const onDelete = async () => {
       .title {
         font-size: 0.75rem;
         font-weight: 500;
-        color: var(--text-100);
+        color: var(--neutral-100);
       }
 
       .caption {
         font-size: 0.75rem;
         font-weight: 400;
-        color: var(--text-300);
+        color: var(--neutral-400);
       }
     }
 
@@ -461,7 +455,7 @@ const onDelete = async () => {
       .title {
         font-size: 0.75rem;
         font-weight: 500;
-        color: var(--text-100);
+        color: var(--neutral-100);
       }
 
       .radio-group {

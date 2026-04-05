@@ -1,0 +1,131 @@
+.p-datatable {
+  &.default {
+    .p-datatable-table-container {
+      background-color: var(--background-secondary);
+      border: 2px solid var(--background-secondary);
+      border-top-left-radius: 0.5rem;
+      border-top-right-radius: 0.5rem;
+      overflow: hidden;
+
+      .p-datatable-table {
+        .p-datatable-thead {
+          tr {
+            th {
+              background: none;
+              border: none;
+              color: var(--neutral-400);
+              font-size: 0.875rem;
+              font-weight: 400;
+            }
+          }
+        }
+      }
+
+      .p-datatable-tbody {
+        tr {
+          background-color: var(--background-primary);
+          opacity: 0.5;
+
+          td {
+            border-top: 1px solid var(--background-secondary);
+            border-bottom: 1px solid var(--background-secondary);
+
+            .content {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              gap: 0.25rem;
+
+              &.column {
+                flex-direction: column;
+                align-items: flex-start;
+              }
+
+              .clickable {
+                font-size: 0.75rem;
+                cursor: pointer;
+              }
+
+              .title {
+                font-size: 1rem;
+                font-weight: 500;
+                color: var(--neutral-100);
+              }
+
+              .caption {
+                font-size: 0.75rem;
+                font-weight: 400;
+                color: var(--neutral-400);
+              }
+
+              .value {
+                font-size: 1rem;
+                font-weight: 500;
+                color: var(--neutral-100);
+              }
+            }
+          }
+
+          &:first-child {
+            td {
+              border-top: none;
+            }
+          }
+
+          &:last-child {
+            td {
+              border-bottom: none;
+            }
+          }
+
+          &:hover {
+            background-color: var(--background-secondary);
+          }
+
+          &:has(.content.active) {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    .p-datatable-paginator-bottom {
+      border: 2px solid var(--background-secondary);
+      border-top: none;
+      border-bottom-left-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+      background-color: var(--background-secondary);
+
+      .p-paginator {
+        background: none;
+        border-radius: 0;
+
+        .p-paginator-content {
+          .p-paginator-prev, .p-paginator-next {
+            color: var(--neutral-100);
+            background: none;
+
+            &.p-disabled {
+              color: var(--neutral-400);
+            }
+          }
+
+          .p-paginator-pages {
+            gap: 0.5rem;
+
+            .p-paginator-page {
+              color: var(--neutral-400);
+              background: none;
+              min-width: unset;
+
+              &.p-paginator-page-selected {
+                color: var(--neutral-100);
+                font-weight: 600;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

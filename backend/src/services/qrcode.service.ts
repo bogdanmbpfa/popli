@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { and, count, desc, eq, inArray, isNull, sql } from 'drizzle-orm';
+import { and, count, desc, eq, gte, inArray, isNull, sql } from 'drizzle-orm';
 import { randomBytes } from 'node:crypto';
 
 import { db, qrCodeModel, qrCodeScanModel } from '@database';
@@ -11,6 +11,7 @@ import {
   QrCodeDTO,
 } from '@resources';
 import { processImage, StorageUtility } from '@utilities';
+import { DateTime } from 'luxon';
 
 @Injectable()
 export class QrCodeService {
@@ -121,30 +122,50 @@ export class QrCodeService {
       throw new BadRequestException('QR code not found');
     }
 
-    const [totalScansResult, uniqueCountriesResult, countryDistribution] =
-      await Promise.all([
-        db
-          .select({
-            totalScans: count(qrCodeScanModel.id),
-          })
-          .from(qrCodeScanModel)
-          .where(eq(qrCodeScanModel.qrCodeId, qrCodeId)),
-        db
-          .select({
-            totalCountries: sql<number>`COUNT(DISTINCT ${qrCodeScanModel.countryCode})`,
-          })
-          .from(qrCodeScanModel)
-          .where(eq(qrCodeScanModel.qrCodeId, qrCodeId)),
-        db
-          .select({
-            country: qrCodeScanModel.country,
-            countryCode: qrCodeScanModel.countryCode,
-            totalScans: count(qrCodeScanModel.id),
-          })
-          .from(qrCodeScanModel)
-          .where(eq(qrCodeScanModel.qrCodeId, qrCodeId))
-          .groupBy(qrCodeScanModel.country, qrCodeScanModel.countryCode),
-      ]);
+    const [
+      totalScansResult,
+      uniqueCountriesResult,
+      countryDistribution,
+      dailyScans,
+    ] = await Promise.all([
+      db
+        .select({
+          totalScans: count(qrCodeScanModel.id),
+        })
+        .from(qrCodeScanModel)
+        .where(eq(qrCodeScanModel.qrCodeId, qrCodeId)),
+      db
+        .select({
+          totalCountries: sql<number>`COUNT(DISTINCT ${qrCodeScanModel.countryCode})`,
+        })
+        .from(qrCodeScanModel)
+        .where(eq(qrCodeScanModel.qrCodeId, qrCodeId)),
+      db
+        .select({
+          country: qrCodeScanModel.country,
+          countryCode: qrCodeScanModel.countryCode,
+          totalScans: count(qrCodeScanModel.id),
+        })
+        .from(qrCodeScanModel)
+        .where(eq(qrCodeScanModel.qrCodeId, qrCodeId))
+        .groupBy(qrCodeScanModel.country, qrCodeScanModel.countryCode),
+      db
+        .select({
+          date: sql<string>`to_char(scanned_at, 'YYYY-MM-DD')`,
+          scans: count(qrCodeScanModel.id),
+        })
+        .from(qrCodeScanModel)
+        .where(
+          and(
+            eq(qrCodeScanModel.qrCodeId, qrCodeId),
+            gte(
+              qrCodeScanModel.scannedAt,
+              DateTime.now().minus({ days: 30 }).toJSDate(),
+            ),
+          ),
+        )
+        .groupBy(sql<string>`to_char(scanned_at, 'YYYY-MM-DD')`),
+    ]);
 
     const totalScans = totalScansResult[0]?.totalScans ?? 0;
     const totalCountries = Number(
@@ -162,6 +183,7 @@ export class QrCodeService {
         countryCode: item.countryCode,
         totalScans: item.totalScans,
       })),
+      dailyScans,
     };
   }
 

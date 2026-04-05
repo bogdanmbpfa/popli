@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="onBioSubmit">
     <div class="heading">
-      <Icon name="solar:user-id-linear" size="1rem" />
+      <Icon class="info" name="solar:user-id-linear" size="1rem" />
       <span>Bio</span>
     </div>
 
@@ -171,12 +171,7 @@ form {
     span {
       font-size: 1rem;
       font-weight: 500;
-      color: var(--color-neutral-100);
-    }
-
-    .iconify {
-      filter: brightness(0) saturate(100%) invert(100%) sepia(46%) saturate(51%)
-        hue-rotate(202deg) brightness(115%) contrast(96%);
+      color: var(--neutral-100);
     }
   }
 

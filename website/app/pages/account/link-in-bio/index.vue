@@ -8,9 +8,9 @@
           <div class="dynamic-island" />
 
           <div class="network-battery">
-            <Icon name="material-symbols:android-wifi-3-bar" size="1rem" />
+            <Icon class="info" name="material-symbols:android-wifi-3-bar" size="1rem" />
 
-            <Icon name="material-symbols-light:battery-android-5" size="1rem" />
+            <Icon class="info" name="material-symbols-light:battery-android-5" size="1rem" />
           </div>
         </div>
 
@@ -18,6 +18,7 @@
           <div class="background">
             <Icon
               v-if="!profile.coverImage"
+              class="info"
               name="material-symbols:person"
               size="14rem"
             />
@@ -50,16 +51,10 @@
                       ? `#${profile.handleColor}`
                       : 'var(--text-300)',
                   }"
+                  @click="copyProfileLink"
                 >
                   @{{ profile.handle }}
                 </span>
-
-                <PButton
-                  class="default"
-                  icon="pi pi-copy"
-                  title="Copy Profile Link"
-                  @click="copyProfileLink"
-                />
               </div>
 
               <span
@@ -157,6 +152,7 @@
     </div>
 
     <PButton
+      v-if="isMobile"
       class="default"
       severity="secondary edit-profile-button"
       :icon="isConfigurationOpen ? 'pi pi-times' : 'pi pi-cog'"
@@ -223,8 +219,6 @@ const copyProfileLink = () => {
 </script>
 
 <style lang="scss" scoped>
-@use '~/assets/mixins.scss' as *;
-
 .link-in-bio {
   width: 100%;
   display: flex;
@@ -247,7 +241,7 @@ const copyProfileLink = () => {
       max-width: 25rem;
       height: 100%;
       max-height: 50rem;
-      @include squircle(3.5rem);
+      border-radius: 2rem;
       background-color: black;
       overflow: hidden;
 
@@ -266,7 +260,7 @@ const copyProfileLink = () => {
         .time {
           font-size: 0.875rem;
           font-weight: 500;
-          color: var(--text-100);
+          color: var(--neutral-100);
         }
 
         .dynamic-island {
@@ -278,7 +272,7 @@ const copyProfileLink = () => {
           margin: auto;
           width: 6rem;
           height: 1.5rem;
-          background-color: var(--background-1);
+          background-color: var(--background-primary);
           border-radius: 3rem;
         }
 
@@ -287,11 +281,6 @@ const copyProfileLink = () => {
           flex-direction: row;
           align-items: center;
           gap: 0.5rem;
-
-          .iconify {
-            filter: brightness(0) saturate(100%) invert(100%) sepia(7%)
-              saturate(2%) hue-rotate(99deg) brightness(108%) contrast(96%);
-          }
         }
       }
 
@@ -315,17 +304,12 @@ const copyProfileLink = () => {
           top: 0;
           left: 0;
           width: 100%;
-          height: 40%;
+          height: 15rem;
           display: flex;
           flex-direction: column;
           align-items: center;
-          background-image: var(--gradient-bottom-right-primary);
+          background-image: var(--linear-gradient-primary);
           z-index: 5;
-
-          .iconify {
-            filter: brightness(0) saturate(100%) invert(74%) sepia(0%)
-              saturate(47%) hue-rotate(246deg) brightness(87%) contrast(92%);
-          }
 
           img {
             width: 100%;
@@ -343,8 +327,8 @@ const copyProfileLink = () => {
           height: 3rem;
           border-radius: 50%;
           padding: 0.125rem;
-          background-image: var(--gradient-bottom-right-primary);
-          box-shadow: var(--box-shadow-1);
+          background-image: var(--linear-gradient-primary);
+          box-shadow: var(--box-shadow-primary);
           overflow: hidden;
           z-index: 50;
 
@@ -387,7 +371,7 @@ const copyProfileLink = () => {
             .name {
               font-size: 1.25rem;
               font-weight: 500;
-              color: var(--text-100);
+              color: var(--neutral-100);
             }
 
             .handle-container {
@@ -399,13 +383,7 @@ const copyProfileLink = () => {
               .handle {
                 font-size: 1rem;
                 font-weight: 400;
-              }
-
-              .p-button {
-                position: absolute !important;
-                top: 0.125rem;
-                right: -1.5rem;
-                padding: 0;
+                cursor: pointer;
               }
             }
 
@@ -438,7 +416,7 @@ const copyProfileLink = () => {
                 width: 1.75rem;
                 height: 1.75rem;
                 border-radius: 50%;
-                background-image: var(--gradient-bottom-right-primary);
+                background-image: var(--linear-gradient-primary);
                 cursor: pointer;
 
                 img {
@@ -458,9 +436,9 @@ const copyProfileLink = () => {
               a {
                 width: 100%;
                 height: 4rem;
-                border: 1px solid var(--border-1);
+                border: 1px solid color-mix(in oklab, var(--neutral-400) 20%, transparent);
                 padding: 1rem;
-                @include squircle(1.5rem);
+                border-radius: 0.5rem;
                 display: flex;
                 flex-direction: row;
                 align-items: center;
@@ -491,7 +469,7 @@ const copyProfileLink = () => {
                 .title {
                   font-size: 0.875rem;
                   font-weight: 500;
-                  color: var(--text-100);
+                  color: var(--neutral-100);
                   z-index: 20;
                 }
               }
@@ -510,14 +488,10 @@ const copyProfileLink = () => {
     flex-direction: column;
     gap: 1rem;
     padding: 2rem 2rem;
-    @include squircle(1.5rem);
-    background-color: color-mix(
-      in oklab,
-      var(--color-gray-900) 40%,
-      transparent
-    );
+    border-radius: 1.5rem;
+    background-color: var(--background-secondary);
     border: 1px solid
-      color-mix(in oklab, var(--color-gray-700) 30%, transparent);
+      color-mix(in oklab, var(--neutral-400) 20%, transparent);
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;

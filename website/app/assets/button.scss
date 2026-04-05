@@ -1,176 +1,173 @@
-@use './mixins.scss' as *;
+.p-button.default {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  outline: none;
+  padding: 0.75rem 2rem;
+  min-width: fit-content;
+  background: none;
+  color: var(--neutral-400);
+  border-radius: 0.25rem;
 
-.p-button,
-a.p-button {
-  &.default {
-    @include squircle(1.5rem);
-    background: var(--background-5);
-    color: var(--text-400);
-    outline: none;
-    border: none;
-    box-shadow: none;
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    width: fit-content;
-    height: fit-content;
-    min-width: 6rem;
-    cursor: pointer;
+  &::after {
+    display: none;
+  }
+
+  .p-button-label {
+    text-wrap: nowrap;
+  }
+
+  &:disabled, &.p-disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  //#region SEVERITY - SECONDARY
+  &.p-button-secondary {
+    border: 1px solid color-mix(in oklab, var(--neutral-400) 20%, transparent);
+    background-color: transparent;
+    color: var(--neutral-400);
 
     &:hover,
-    &:focus {
-      background: var(--background-5);
-      color: var(--text-400);
+    &:not(:disabled):hover,
+    &:active,
+    &:not(:disabled):active,
+    &:focus-visible,
+    &:not(:disabled):focus-visible {
+      background-color: var(--neutral-900);
+
+      &.icon-only, &.p-button-icon-only {
+        padding: 0;
+        border: none;
+        background-color: transparent;
+        outline: none;
+        color: var(--neutral-400);
+      }
+    }
+
+    &.icon-only, &.p-button-icon-only {
+      padding: 0;
+      border: none;
+      background-color: transparent;
       outline: none;
-      border: none;
-      box-shadow: none;
-    }
-
-    &:disabled {
-      cursor: not-allowed;
-    }
-
-    .p-button-label {
-      font-size: 0.875rem;
-      font-weight: var(--font-weight-normal);
-      text-decoration: none;
-    }
-
-    .p-button-icon {
-      size: 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .iconify {
-      filter: brightness(0) saturate(100%) invert(100%) sepia(46%) saturate(51%)
-        hue-rotate(202deg) brightness(115%) contrast(96%);
-    }
-
-    &.p-button-fluid {
-      width: 100%;
-    }
-
-    &.p-button-link {
-      background: transparent;
-      color: var(--color-neutral-100);
-      text-decoration: none;
-
-      .p-button-label {
-        text-decoration: none;
-      }
-
-      &.p-button-danger {
-        background: transparent;
-        color: var(--color-red-500);
-      }
-    }
-
-    &.p-button-icon-only {
-      background: none;
-      padding: 0.5rem;
-      border: none;
-      gap: 0;
-      width: fit-content;
-      color: var(--color-neutral-100);
-      min-width: unset;
-
-      .p-button-icon {
-        size: 1rem;
-        font-size: 1rem;
-        font-weight: 600;
-      }
-
-      &:hover {
-        background: none;
-        outline: none;
-        border: none;
-        box-shadow: none;
-        color: var(--color-neutral-100);
-      }
-    }
-
-    &.p-button-info {
-      background-color: var(--background-4);
-      color: var(--text-400);
-
-      &:not(:disabled):hover,
-				&:not(:disabled):focus,
-				&:not(:disabled):active {
-				border: none;
-        background-color: var(--background-4);
-        color: var(--text-400);
-      }
-    }
-
-    &.p-button-contrast {
-      background-image: var(--gradient-right-primary);
-      color: white;
-
-      &:not(.p-disabled):hover,
-      &:not(:disabled):hover {
-        background-image: var(--gradient-right-primary);
-        color: white;
-        outline: none;
-        border: none;
-        box-shadow: none;
-      }
-    }
-
-    &.p-button-secondary {
-      background-color: color-mix(
-        in oklab,
-        var(--color-gray-900) 40%,
-        transparent
-      );
-      color: var(--color-neutral-100);
-      border: 1px solid
-        color-mix(in oklab, var(--color-gray-700) 30%, transparent);
-
-      &:hover {
-        background-color: color-mix(
-          in oklab,
-          var(--color-gray-900) 40%,
-          transparent
-        );
-        color: var(--color-neutral-100);
-      }
-
-      &.active {
-        background-image: var(--gradient-right-primary);
-        border: none;
-        color: white;
-      }
-    }
-
-    &.p-button-danger {
-      background: var(--color-red-500);
-      color: white;
-
-      &:hover {
-        background: var(--color-red-500);
-        color: white;
-      }
-
-      &.p-button-icon-only {
-        background: transparent;
-        color: var(--color-red-500);
-
-        &:hover {
-          background: transparent;
-          color: var(--color-red-500);
-        }
-      }
+      color: var(--neutral-400);
     }
   }
-}
+  //#endregion
 
-a.router-link-active {
-  .p-button.default {
-    &.p-button-link {
-      background: var(--background-3);
+  // #region SEVERITY - CONTRAST
+  &.p-button-contrast {
+    background-image: var(--linear-gradient-primary);
+    color: var(--primary-950);
+    box-shadow: var(--box-shadow-primary);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover,
+    &:not(:disabled):hover,
+    &:not(:disabled):active {
+      border: none;
+      outline: none;
+      background-image: var(--linear-gradient-primary);
+      color: var(--primary-950);
+      box-shadow: var(--box-shadow-primary);
+      transform: scale(1.02);
+
+      &.icon-only {
+        padding: 0;
+        border: none;
+        background-color: transparent;
+        color: var(--primary-950);
+      }
+    }
+
+    &.icon-only {
+      padding: 0;
+      border: none;
+      background-color: transparent;
     }
   }
+  // #endregion
+
+  // #region SEVERITY - DANGER
+  &.p-button-danger {
+    background-color: var(--danger);
+    color: var(--primary-400);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid color-mix(in oklab, var(--primary-400) 20%, transparent);
+
+    &:hover,
+    &:not(:disabled):hover,
+    &:not(:disabled):active {
+      outline: none;
+      background-color: var(--primary-400);
+      color: var(--danger);
+
+      &.icon-only, &.p-button-icon-only {
+        padding: 0;
+        border: none;
+        background-color: transparent;
+        color: var(--primary-400);
+      }
+    }
+
+    &.icon-only, &.p-button-icon-only {
+      padding: 0;
+      border: none;
+      background-color: transparent;
+    }
+  }
+  // #endregion
+
+  // #region SEVERITY - HELP
+  &.p-button-help {
+    background-color: var(--neutral-900);
+    color: var(--neutral-400);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid color-mix(in oklab, var(--neutral-400) 20%, transparent);
+
+    &:hover,
+    &:not(:disabled):hover,
+    &:not(:disabled):active {
+      background-color: var(--neutral-800);
+      color: var(--neutral-400);
+
+      &.icon-only {
+        padding: 0;
+        border: none;
+        background-color: transparent;
+        color: var(--neutral-400);
+      }
+    }
+
+    &.icon-only {
+      padding: 0;
+      border: none;
+      background-color: transparent;
+    }
+  }
+  // #endregion
+
+  // #region SEVERITY - INFO
+  &.p-button-info {
+    background-color: var(--background-primary);
+    color: var(--neutral-100);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+
+    &:hover,
+    &:not(:disabled):hover,
+    &:not(:disabled):active {
+      background-color: var(--background-primary);
+      color: var(--neutral-100);
+    }
+
+    &.icon-only {
+      padding: 0;
+      border: none;
+      background-color: transparent;
+    }
+  }
+  // #endregion
 }

@@ -1,6 +1,25 @@
 import Aura from '@primeuix/themes/aura';
 
 export default defineNuxtConfig({
+  app: {
+    head: {
+      noscript: [
+        {
+          innerHTML: '<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" />',
+        },
+      ],
+      link: [
+        {
+          rel: 'preload',
+          href: 'https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css',
+          as: 'style',
+          crossorigin: 'anonymous',
+          fetchpriority: 'low',
+          onload: 'this.onload = null; this.rel = "stylesheet";',
+        },
+      ],
+    },
+  },
   compatibilityDate: 'latest',
 
   css: ['primeicons/primeicons.css', '~/assets/main.scss'],
@@ -81,6 +100,7 @@ export default defineNuxtConfig({
         logo: 'https://storage.googleapis.com/popli-public/logo.png',
       },
       nodeEnv: '',
+      mapboxAccessToken: '',
     },
   },
 
@@ -112,6 +132,9 @@ export default defineNuxtConfig({
         'lodash/orderBy',
         'lodash/debounce',
         'uuid',
+        'luxon',
+        'mapbox-gl',
+        'qr-code-styling',
       ],
     },
   },

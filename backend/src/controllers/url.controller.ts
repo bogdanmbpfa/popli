@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UploadedFile,
   UseGuards,
@@ -32,11 +33,14 @@ import {
   CreateLinkDTO,
   LinkDTO,
   UrlCreateShortUrlDTO,
-  UrlShortUrlCodeResponseDTO,
   UrlShortUrlCountryClicksDTO,
   UrlShortUrlDailyClicksDTO,
   UrlShortUrlDTO,
   UrlShortUrlUpdateDTO,
+  UrlLinkCountryClicksDTO,
+  UrlLinkDailyClicksDTO,
+  UrlLinkCountryClicksQueryDTO,
+  UrlLinkDailyClicksQueryDTO,
 } from '@resources';
 import { UrlService } from '@services';
 
@@ -83,39 +87,6 @@ export class UrlController {
     @DAccount() account: AccountDTO,
   ): Promise<UrlShortUrlDTO[]> {
     return this.urlService.getShortUrls(account.id);
-  }
-
-  @Get('/short-url/:shortCode')
-  @ApiOperation({ summary: 'Get a short URL' })
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'The token to access the account',
-    required: true,
-    example: 'Bearer <token>',
-  })
-  @ApiParam({
-    name: 'shortCode',
-    description: 'The short code of the short URL',
-    required: true,
-    example: '12345678',
-  })
-  @ApiProduces('application/json')
-  @ApiResponse({
-    status: 200,
-    description: 'Short URL',
-    type: () => UrlShortUrlCodeResponseDTO,
-  })
-  @UseGuards(AuthenticatedGuard)
-  async getShortUrl(
-    @Param('shortCode') shortCode: string,
-    @Req() request: Request,
-  ): Promise<UrlShortUrlCodeResponseDTO> {
-    return this.urlService.getShortUrl(
-      shortCode,
-      request.ip || '',
-      request.headers['user-agent'] || '',
-      request.headers['referer'],
-    );
   }
 
   @Delete('/short-url/:id')
@@ -251,6 +222,103 @@ export class UrlController {
     return this.urlService.getShortUrlCountryClicks(account.id, id);
   }
 
+  @Get('/short-url/:shortCode')
+  @ApiOperation({ summary: 'Get a short URL' })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'The token to access the account',
+    required: true,
+    example: 'Bearer <token>',
+  })
+  @ApiParam({
+    name: 'shortCode',
+    description: 'The short code of the short URL',
+    required: true,
+    example: '12345678',
+  })
+  @ApiProduces('application/json')
+  @ApiResponse({
+    status: 200,
+    description: 'Short URL',
+    type: String,
+  })
+  async getShortUrl(
+    @Param('shortCode') shortCode: string,
+    @Req() request: Request,
+  ): Promise<string> {
+    return await this.urlService.getShortUrl(
+      shortCode,
+      request.ip || '',
+      request.headers['user-agent'] || '',
+      request.headers['referer'],
+    );
+  }
+
+  @Get('/link/:id/country-clicks')
+  @ApiOperation({ summary: 'Get the country clicks for a link' })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'The token to access the account',
+    required: true,
+    example: 'Bearer <token>',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the link',
+    required: true,
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiProduces('application/json')
+  @ApiResponse({
+    status: 200,
+    description: 'Country clicks',
+    type: () => UrlLinkCountryClicksDTO,
+    isArray: true,
+  })
+  @UseGuards(AuthenticatedGuard)
+  getLinkCountryClicks(
+    @DAccount() account: AccountDTO,
+    @Param('id') id: string,
+    @Query() query: UrlLinkCountryClicksQueryDTO,
+  ): Promise<UrlLinkCountryClicksDTO[]> {
+    return this.urlService.getLinkCountryClicks(
+      account.id,
+      id,
+      query.start,
+      query.end,
+    );
+  }
+
+  @Get('/link/:id/daily-clicks')
+  @ApiOperation({ summary: 'Get daily clicks for a link' })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'The token to access the account',
+    required: true,
+    example: 'Bearer <token>',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the link',
+    required: true,
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiProduces('application/json')
+  @ApiResponse({
+    status: 200,
+    description: 'Daily clicks',
+    type: () => UrlLinkDailyClicksDTO,
+    isArray: true,
+  })
+  @UseGuards(AuthenticatedGuard)
+  getLinkDailyClicks(
+    @DAccount() account: AccountDTO,
+    @Param('id') id: string,
+    @Query() query: UrlLinkDailyClicksQueryDTO,
+  ): Promise<UrlLinkDailyClicksDTO[]> {
+    return this.urlService.getLinkDailyClicks(account.id, id, query.days);
+  }
+
   @Get('/link')
   @ApiOperation({ summary: 'Get all links' })
   @ApiHeader({
@@ -349,11 +417,11 @@ export class UrlController {
     example: '123e4567-e89b-12d3-a456-426614174000',
   })
   @ApiProduces('application/json')
-  @ApiResponse({ status: 200, description: 'Link clicked', type: () => String })
+  @ApiResponse({ status: 200, description: 'Link clicked' })
   async clickLink(
     @Param('id') id: string,
     @Req() request: Request,
-  ): Promise<string> {
+  ): Promise<void> {
     return await this.urlService.clickLink(
       id,
       request.ip || '',

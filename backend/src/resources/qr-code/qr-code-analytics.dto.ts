@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class QrCodeCountryDistributionDTO {
+class QrCodeCountryDistributionDTO {
   @ApiProperty({
     type: String,
     description: 'The country name',
@@ -21,6 +21,22 @@ export class QrCodeCountryDistributionDTO {
     example: 150,
   })
   totalScans: number;
+}
+
+class QrCodeDailyScansDTO {
+  @ApiProperty({
+    type: String,
+    description: 'The date of the daily scans',
+    example: '2021-01-01',
+  })
+  date: string;
+
+  @ApiProperty({
+    type: Number,
+    description: 'The number of scans on the date',
+    example: 100,
+  })
+  scans: number;
 }
 
 export class QrCodeAnalyticsDTO {
@@ -51,4 +67,11 @@ export class QrCodeAnalyticsDTO {
     isArray: true,
   })
   countryDistribution: QrCodeCountryDistributionDTO[];
+
+  @ApiProperty({
+    type: () => QrCodeDailyScansDTO,
+    description: 'The list of daily scans',
+    isArray: true,
+  })
+  dailyScans: QrCodeDailyScansDTO[];
 }

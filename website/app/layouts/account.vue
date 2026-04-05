@@ -23,109 +23,67 @@
         <div class="link-group">
           <span class="title">Manage</span>
 
-          <nuxt-link to="/account/link-in-bio" @click="toggleDrawer">
-            <PButton
-              class="default"
-              as="a"
-              variant="link"
-              icon="pi pi-link"
-              label="Link in Bio"
-              fluid
-            />
+          <nuxt-link
+            class="default sidebar-link"
+            to="/account/link-in-bio"
+            @click="toggleDrawer"
+          >
+            <Icon name="akar-icons:link-chain" size="1.5rem" />
+            Link in Bio
           </nuxt-link>
 
-          <nuxt-link to="/account/appearance" @click="toggleDrawer">
-            <PButton
-              class="default"
-              as="a"
-              variant="link"
-              icon="pi pi-palette"
-              label="Appearance"
-              fluid
-            />
+          <nuxt-link
+            class="default sidebar-link"
+            to="/account/analytics"
+            @click="toggleDrawer"
+          >
+            <Icon name="material-symbols:analytics-outline" size="1.5rem" />
+            Analytics
           </nuxt-link>
 
-          <nuxt-link to="/account/analytics" @click="toggleDrawer">
-            <PButton
-              class="default"
-              as="a"
-              variant="link"
-              icon="pi pi-chart-line"
-              label="Analytics"
-              fluid
-            />
-          </nuxt-link>
-
-          <nuxt-link to="/account/settings" @click="toggleDrawer">
-            <PButton
-              class="default"
-              as="a"
-              variant="link"
-              icon="pi pi-cog"
-              label="Settings"
-              fluid
-            />
+          <nuxt-link
+            class="default sidebar-link"
+            to="/account/settings"
+            @click="toggleDrawer"
+          >
+            <Icon name="material-symbols:settings-outline" size="1.5rem" />
+            Settings
           </nuxt-link>
         </div>
 
         <div class="link-group">
           <span class="title">Tools</span>
 
-          <nuxt-link to="/account/url-shortener" @click="toggleDrawer">
-            <PButton
-              class="default"
-              as="a"
-              variant="link"
-              icon="pi pi-link"
-              label="URL Shortener"
-              fluid
-            />
+          <nuxt-link
+            class="default sidebar-link"
+            to="/account/url-shortener"
+            @click="toggleDrawer"
+          >
+            <Icon name="akar-icons:link-chain" size="1.5rem" />
+            URL Shortener
           </nuxt-link>
 
-          <nuxt-link to="/account/qr-code" @click="toggleDrawer">
-            <PButton
-              class="default"
-              as="a"
-              variant="link"
-              icon="pi pi-qrcode"
-              label="QR Code"
-              fluid
-            />
-          </nuxt-link>
-
-          <nuxt-link to="/account/digital-store" @click="toggleDrawer">
-            <PButton
-              class="default"
-              as="a"
-              variant="link"
-              icon="pi pi-shopping-bag"
-              label="Digital Store"
-              fluid
-            />
+          <nuxt-link
+            class="default sidebar-link"
+            to="/account/qr-code"
+            @click="toggleDrawer"
+          >
+            <Icon name="ic:outline-qr-code-scanner" size="1.5rem" />
+            QR Code
           </nuxt-link>
         </div>
       </template>
 
       <template #footer>
-        <nuxt-link to="/" @click="toggleDrawer">
-          <PButton
-            class="default"
-            as="a"
-            variant="link"
-            icon="pi pi-home"
-            label="Home"
-            fluid
-          />
+        <nuxt-link class="default sidebar-link" to="/" @click="toggleDrawer">
+          <Icon name="material-symbols:home-outline" size="1.5rem" />
+          Home
         </nuxt-link>
 
         <PButton
           class="default"
-          as="a"
-          variant="link"
-          severity="danger"
           icon="pi pi-sign-out"
           label="Sign Out"
-          fluid
           @click="signOut"
         />
       </template>
@@ -134,6 +92,7 @@
     <div class="wrapper" :class="{ 'drawer-open': drawerVisible }">
       <div class="top-bar">
         <PButton
+          v-if="isMobile"
           class="default"
           as="a"
           variant="link"
@@ -182,11 +141,16 @@ const heading = computed(() => {
     case '/account/analytics':
       return { name: 'Analytics', description: 'View your account analytics.' };
     case '/account/settings':
-      return { name: 'Settings', description: 'Update your account settings.' };
+      return {
+        name: 'Account Settings',
+        description:
+          'Manage your personal information, security preferences and account status.',
+      };
     case '/account/url-shortener':
       return {
         name: 'URL Shortener',
-        description: 'Create and manage short links.',
+        description:
+          'Create and manage your short links with precision. Deploy high-performance redirects with custom aliases and real-time tracking.',
       };
     case '/account/qr-code':
       return {
@@ -220,6 +184,8 @@ onMounted(async () => {
 if (isMobile) drawerVisible.value = false;
 
 const toggleDrawer = () => {
+  if (!isMobile) return;
+
   drawerVisible.value = !drawerVisible.value;
 };
 
@@ -235,7 +201,7 @@ const signOut = async () => {
       closable: false,
     });
   }
-  
+
   userStore.setUser(null);
   userStore.setProfile(null);
 
@@ -296,12 +262,8 @@ const signOut = async () => {
       gap: 1rem;
       padding: 1rem;
       border-bottom: 1px solid
-        color-mix(in oklab, var(--color-gray-700) 30%, transparent);
-      background-color: color-mix(
-        in oklab,
-        var(--color-gray-900) 40%,
-        transparent
-      );
+        color-mix(in oklab, var(--neutral-800) 30%, transparent);
+      background-color: var(--background-secondary);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       z-index: 10;
@@ -339,17 +301,27 @@ const signOut = async () => {
       }
     }
   }
-}
-</style>
 
-<style lang="scss">
-@media (max-width: 1028px) {
   .p-drawer-mask:has(.sidebar) {
     position: fixed !important;
     max-height: 100lvh !important;
 
     .p-drawer {
       background-color: oklch(0.1773 0.0133 264.14);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .account-layout {
+    .wrapper {
+      .top-bar {
+        .title {
+          .description {
+            display: none;
+          }
+        }
+      }
     }
   }
 }

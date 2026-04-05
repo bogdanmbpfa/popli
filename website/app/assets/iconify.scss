@@ -1,0 +1,25 @@
+.iconify {
+  &.default {
+    filter: brightness(0) saturate(100%) invert(72%) sepia(6%) saturate(189%)
+      hue-rotate(219deg) brightness(94%) contrast(89%);
+  }
+
+  &.danger {
+    filter: brightness(0) saturate(100%) invert(70%) sepia(18%) saturate(1851%)
+      hue-rotate(302deg) brightness(100%) contrast(103%);
+  }
+
+  &.success {
+    filter: brightness(0) saturate(100%) invert(61%) sepia(6%) saturate(4816%)
+      hue-rotate(181deg) brightness(106%) contrast(106%);
+  }
+
+  &.info {
+    filter: brightness(0) saturate(100%) invert(86%) sepia(3%) saturate(1150%)
+      hue-rotate(210deg) brightness(113%) contrast(93%);
+  }
+
+  &.clickable {
+    cursor: pointer;
+  }
+}

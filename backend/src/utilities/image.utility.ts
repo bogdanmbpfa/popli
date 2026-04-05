@@ -26,6 +26,7 @@ export const processImage = async (
   } catch (error) {
     throw new Error(
       `Error getting exif data: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      { cause: error },
     );
   }
 

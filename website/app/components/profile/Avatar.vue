@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="onSubmitProfileImage">
     <div class="heading">
-      <Icon name="icon-park-outline:avatar" size="1rem" />
+      <Icon class="info" name="icon-park-outline:avatar" size="1rem" />
       <span>Avatar</span>
     </div>
     
@@ -128,12 +128,7 @@ form {
     span {
       font-size: 1rem;
       font-weight: 500;
-      color: var(--color-neutral-100);
-    }
-
-    .iconify {
-      filter: brightness(0) saturate(100%) invert(100%) sepia(46%) saturate(51%)
-        hue-rotate(202deg) brightness(115%) contrast(96%);
+      color: var(--neutral-100);
     }
   }
 
@@ -146,7 +141,7 @@ form {
   .caption {
     font-size: 0.75rem;
     font-weight: 400;
-    color: var(--color-neutral-400);
+    color: var(--neutral-400);
   }
 }
 </style>

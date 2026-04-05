@@ -74,4 +74,10 @@ export const config: IConfig = {
   ipApi: {
     baseUrl: 'https://free.freeipapi.com',
   },
+
+  queue: {
+    host: process.env.QUEUE_HOST || '127.0.0.1',
+    port: process.env.QUEUE_PORT ? Number(process.env.QUEUE_PORT) : 6379,
+    password: process.env.QUEUE_PASSWORD,
+  },
 };

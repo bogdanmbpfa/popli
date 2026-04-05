@@ -1,5 +1,3 @@
-@use './mixins.scss' as *;
-
 .p-tabs {
 	&.default {
 		width: 100%;
@@ -10,32 +8,27 @@
 
 			.p-tablist-content {
 				.p-tablist-tab-list {
-					@include squircle(1.5rem);
-					background-color: color-mix(in oklab, var(--color-gray-900) 40%, transparent);
-					border: 1px solid color-mix(in oklab, var(--color-gray-700) 30%, transparent);
-					padding: 0.25rem;
+					background-color: var(--background-secondary);
 					display: flex;
-					backdrop-filter: blur(1.5rem) saturate(150%);
+					border: none;
 
 					.p-tab {
 						width: 100%;
 						display: flex;
 						justify-content: center;
 						align-items: center;
-						padding: 0.25rem;
+						padding: 1rem;
 						flex-shrink: unset;
-						@include squircle(1.5rem);
 						border: none;
-						color: var(--text-100);
+						color: var(--neutral-400);
 						font-weight: 500;
-
-						.iconify {
-							filter: brightness(0) saturate(100%) invert(100%) sepia(46%) saturate(51%)
-								hue-rotate(202deg) brightness(115%) contrast(96%);
-						}
+						font-size: 1rem;
+						border-radius: 0;
+						transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
 						&.p-tab-active {
-							background-image: var(--gradient-right-primary);
+							color: var(--primary-400);
+							border-bottom: 4px solid var(--primary-400);
 						}
 					}
 

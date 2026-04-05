@@ -11,7 +11,9 @@ declare module 'vue' {
     PButton: typeof import('primevue/button')['default']
     PChart: typeof import('primevue/chart')['default']
     PColorPicker: typeof import('primevue/colorpicker')['default']
+    PColumn: typeof import('primevue/column')['default']
     PConfirmDialog: typeof import('primevue/confirmdialog')['default']
+    PDataTable: typeof import('primevue/datatable')['default']
     PDrawer: typeof import('primevue/drawer')['default']
     PDynamicDialog: typeof import('primevue/dynamicdialog')['default']
     PIconField: typeof import('primevue/iconfield')['default']
@@ -23,8 +25,7 @@ declare module 'vue' {
     PInputText: typeof import('primevue/inputtext')['default']
     PMessage: typeof import('primevue/message')['default']
     PPassword: typeof import('primevue/password')['default']
-    PRadioButton: typeof import('primevue/radiobutton')['default']
-    PSelect: typeof import('primevue/select')['default']
+    PSelectButton: typeof import('primevue/selectbutton')['default']
     PSlider: typeof import('primevue/slider')['default']
     PTab: typeof import('primevue/tab')['default']
     PTabList: typeof import('primevue/tablist')['default']
@@ -34,7 +35,11 @@ declare module 'vue' {
     PTag: typeof import('primevue/tag')['default']
     PTextarea: typeof import('primevue/textarea')['default']
     PToast: typeof import('primevue/toast')['default']
+    PToggleSwitch: typeof import('primevue/toggleswitch')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+  }
+  export interface ComponentCustomProperties {
+    KeyFilter: typeof import('primevue/keyfilter')['default']
   }
 }

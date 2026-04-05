@@ -1,7 +1,7 @@
 <template>
   <div class="secondary-links">
     <div class="heading">
-      <Icon name="material-symbols:link" size="1rem" />
+      <Icon class="info" name="material-symbols:link" size="1rem" />
       <span>Secondary Links</span>
     </div>
 
@@ -104,8 +104,6 @@ const onSave = async () => {
 </script>
 
 <style lang="scss" scoped>
-@use '../../assets/mixins.scss' as *;
-
 .secondary-links {
   display: flex;
   flex-direction: column;
@@ -122,12 +120,7 @@ const onSave = async () => {
     span {
       font-size: 1rem;
       font-weight: 500;
-      color: var(--color-neutral-100);
-    }
-
-    .iconify {
-      filter: brightness(0) saturate(100%) invert(100%) sepia(46%) saturate(51%)
-        hue-rotate(202deg) brightness(115%) contrast(96%);
+      color: var(--neutral-100);
     }
   }
 

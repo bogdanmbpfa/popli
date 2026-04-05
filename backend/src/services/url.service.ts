@@ -1,4 +1,5 @@
 import { HttpService } from '@nestjs/axios';
+import { InjectQueue } from '@nestjs/bullmq';
 import {
   BadRequestException,
   Injectable,
@@ -7,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UAParser } from '@ua-parser-js/pro-business';
+import { Queue } from 'bullmq';
 import { and, asc, count, desc, eq, isNull, or, SQL, sql } from 'drizzle-orm';
 import { DateTime } from 'luxon';
 import { randomBytes } from 'node:crypto';
@@ -22,12 +24,15 @@ import {
   CreateLinkDTO,
   IUrlIpApiResponse,
   LinkDTO,
+  UrlLinkCountryClicksDTO,
+  UrlLinkDailyClicksDTO,
   UrlCreateShortUrlDTO,
-  UrlShortUrlCodeResponseDTO,
   UrlShortUrlCountryClicksDTO,
   UrlShortUrlDailyClicksDTO,
   UrlShortUrlDTO,
   UrlShortUrlUpdateDTO,
+  EQueueName,
+  EJobName,
 } from '@resources';
 import { processImage, StorageUtility } from '@utilities';
 
@@ -39,6 +44,7 @@ export class UrlService {
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
     private readonly storageUtility: StorageUtility,
+    @InjectQueue(EQueueName.CLICK) private readonly clickQueue: Queue,
   ) {}
 
   async createShortUrl(
@@ -157,7 +163,7 @@ export class UrlService {
     ipAddress: string,
     requestUserAgent: string,
     requestReferrer?: string,
-  ): Promise<UrlShortUrlCodeResponseDTO> {
+  ): Promise<string> {
     const shortUrl = await db.query.shortUrlModel.findFirst({
       where: or(
         eq(shortUrlModel.shortCode, shortCode),
@@ -175,7 +181,8 @@ export class UrlService {
 
     try {
       const { data } = await this.httpService.axiosRef.get<IUrlIpApiResponse>(
-        `${this.configService.get('ipApi.baseUrl')}/api/json/${ipAddress}`,
+        // `${this.configService.get('ipApi.baseUrl')}/api/json/${ipAddress}`,
+        `${this.configService.get('ipApi.baseUrl')}/api/json/82.78.167.144`,
         {
           transformResponse: (data) => {
             return JSON.parse(data);
@@ -223,7 +230,7 @@ export class UrlService {
       clickedAt,
     });
 
-    return { url: shortUrl.url };
+    return shortUrl.url;
   }
 
   async deleteShortUrl(userId: string, id: string): Promise<void> {
@@ -364,6 +371,106 @@ export class UrlService {
     return countryClicks;
   }
 
+  async getLinkCountryClicks(
+    userId: string,
+    id: string,
+    start?: string,
+    end?: string,
+  ): Promise<UrlLinkCountryClicksDTO[]> {
+    const link = await db.query.linkModel.findFirst({
+      where: and(
+        eq(linkModel.id, id),
+        eq(linkModel.userId, userId),
+        isNull(linkModel.deletedAt),
+      ),
+    });
+
+    if (!link) {
+      throw new NotFoundException(
+        this.configService.get('errorMessage.linkNotFound'),
+      );
+    }
+
+    const now = DateTime.now();
+
+    const startDate = start ? DateTime.fromISO(start) : now.startOf('month');
+    const endDate = end ? DateTime.fromISO(end) : now;
+
+    if (!startDate.isValid || !endDate.isValid) {
+      throw new BadRequestException('Invalid date interval');
+    }
+
+    if (endDate < startDate) {
+      throw new BadRequestException('Invalid date interval');
+    }
+
+    // Inclusive end date: clickedAt in [startDate, endDate]
+    const endExclusive = endDate.plus({ milliseconds: 1 });
+
+    const countryClicks = await db
+      .select({
+        country: linkClickModel.country,
+        countryCode: linkClickModel.countryCode,
+        clicks: count(linkClickModel.id),
+      })
+      .from(linkClickModel)
+      .where(
+        and(
+          eq(linkClickModel.linkId, link.id),
+          isNull(linkClickModel.deletedAt),
+          sql`clicked_at >= ${startDate.toJSDate()} AND clicked_at < ${endExclusive.toJSDate()}`,
+        ),
+      )
+      .groupBy(linkClickModel.country, linkClickModel.countryCode);
+
+    return countryClicks;
+  }
+
+  async getLinkDailyClicks(
+    userId: string,
+    id: string,
+    days?: number,
+  ): Promise<UrlLinkDailyClicksDTO[]> {
+    const link = await db.query.linkModel.findFirst({
+      where: and(
+        eq(linkModel.id, id),
+        eq(linkModel.userId, userId),
+        isNull(linkModel.deletedAt),
+      ),
+    });
+
+    if (!link) {
+      throw new NotFoundException(
+        this.configService.get('errorMessage.linkNotFound'),
+      );
+    }
+
+    const parsedDays = days ?? 7;
+    const daysCount =
+      Number.isFinite(parsedDays) && parsedDays > 0 ? parsedDays : 7;
+    const boundedDays = Math.min(daysCount, 90); // safety bound for performance
+
+    const startDate = DateTime.now().minus({ days: boundedDays - 1 });
+
+    const dailyClicks = await db
+      .select({
+        date: sql`to_char(clicked_at, 'YYYY-MM-DD')` as unknown as SQL<string>,
+        clicks: count(linkClickModel.id),
+      })
+      .from(linkClickModel)
+      .where(
+        and(
+          eq(linkClickModel.linkId, link.id),
+          isNull(linkClickModel.deletedAt),
+          sql`to_char(clicked_at, 'YYYY-MM-DD') >= ${startDate.toFormat('yyyy-MM-dd')}`,
+        ),
+      )
+      .groupBy(sql`to_char(clicked_at, 'YYYY-MM-DD')`)
+      .orderBy(asc(sql`to_char(clicked_at, 'YYYY-MM-DD')`));
+
+    return dailyClicks;
+  }
+
   async getLinks(userId: string): Promise<LinkDTO[]> {
     const links = await db.query.linkModel.findMany({
       where: and(eq(linkModel.userId, userId), isNull(linkModel.deletedAt)),
@@ -422,8 +529,8 @@ export class UrlService {
       if (dto.backgroundImage) {
         try {
           const image = await processImage(dto.backgroundImage.buffer, {
-            width: 1280,
-            height: 720,
+            width: 360,
+            height: 120,
           });
 
           backgroundImageUrl = await this.storageUtility.upload(
@@ -490,68 +597,12 @@ export class UrlService {
     ipAddress: string,
     requestUserAgent: string,
     requestReferrer?: string,
-  ): Promise<string> {
-    const link = await db.query.linkModel.findFirst({
-      where: eq(linkModel.id, id),
+  ): Promise<void> {
+    await this.clickQueue.add(EJobName.CLICK_LINK, {
+      linkId: id,
+      ipAddress,
+      requestUserAgent,
+      requestReferrer,
     });
-
-    if (!link) {
-      throw new NotFoundException(
-        this.configService.get('errorMessage.linkNotFound'),
-      );
-    }
-
-    let ipData: IUrlIpApiResponse;
-
-    try {
-      const { data } = await this.httpService.axiosRef.get<IUrlIpApiResponse>(
-        `${this.configService.get('ipApi.baseUrl')}/api/json/${ipAddress}`,
-        {
-          transformResponse: (data) => {
-            return JSON.parse(data);
-          },
-        },
-      );
-
-      ipData = data;
-    } catch (error) {
-      this.logger.error(
-        `Error getting IP data for ${ipAddress}: ${(error as Error).message}`,
-        (error as Error).stack,
-      );
-      throw new BadRequestException(
-        this.configService.get('errorMessage.ipProxy'),
-      );
-    }
-
-    if (ipData.isProxy) {
-      throw new BadRequestException(
-        this.configService.get('errorMessage.ipProxy'),
-      );
-    }
-
-    const clickedAt = new Date();
-
-    const result = new UAParser(requestUserAgent).getResult();
-
-    const userAgent = result.ua;
-    const deviceType = result.device.type;
-    const browser = result.browser.name;
-    const os = result.os.name;
-
-    await db.insert(linkClickModel).values({
-      linkId: link.id,
-      ipAddress: ipData.ipAddress,
-      country: ipData.countryName,
-      countryCode: ipData.countryCode,
-      userAgent: userAgent,
-      deviceType: deviceType,
-      browser: browser,
-      os: os,
-      referrer: requestReferrer || null,
-      clickedAt,
-    });
-
-    return link.url;
   }
 }
