@@ -21,6 +21,7 @@
       severity="contrast"
       icon="pi pi-upload"
       label="Upload"
+      aria-label="Upload cover image"
       :disabled="!coverImage || isSubmitting"
     />
   </form>

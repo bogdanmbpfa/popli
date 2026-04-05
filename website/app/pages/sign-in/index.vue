@@ -61,6 +61,7 @@
           class="default"
           type="submit"
           label="Sign In"
+          aria-label="Sign in"
           fluid
           severity="contrast"
           :loading="isSubmitting"
@@ -171,7 +172,7 @@ const onLoginSubmit = handleSubmit(async (values) => {
   flex: 1;
   overflow: hidden;
   position: relative;
-  padding: 2rem;
+  padding: 2rem 0.5rem;
 
   .heading {
     display: flex;

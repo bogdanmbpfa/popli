@@ -60,6 +60,7 @@
             class="default"
             severity="contrast"
             label="Verify"
+            aria-label="Verify email"
             :disabled="isContactInfoSubmitting"
           />
 
@@ -69,6 +70,7 @@
             class="default"
             severity="contrast"
             label="Request code"
+            aria-label="Request email verification code"
             :disabled="isContactInfoSubmitting"
             @click="onSubmitRequestEmailVerify"
           />
@@ -129,6 +131,7 @@
             class="default"
             severity="contrast"
             label="Update password"
+            aria-label="Update password"
             :disabled="isChangePasswordSubmitting"
           />
         </form>
@@ -154,6 +157,7 @@
             severity="danger"
             icon="pi pi-trash"
             label="Delete account"
+            aria-label="Delete account"
             :disabled="actionInProgress"
             @click="openConfirmDeleteAccount"
           />

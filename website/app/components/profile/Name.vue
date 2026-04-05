@@ -21,6 +21,7 @@
         fluid
         :invalid="!!errors.name"
         :disabled="isSubmitting"
+        @value-change="onNameChange"
       />
     </FormInput>
 
@@ -28,14 +29,16 @@
       class="default"
       type="submit"
       label="Save"
+      aria-label="Save name"
       severity="contrast"
       :loading="isSubmitting"
-      :disabled="isSubmitting || name === profile.name || !!errors.name"
+      :disabled="isSubmitting || !!errors.name"
     />
   </form>
 </template>
 
 <script setup lang="ts">
+import { debounce } from 'lodash';
 import * as yup from 'yup';
 
 import { EApiEndpoint } from '~~/enums';
@@ -63,6 +66,15 @@ onMounted(() => {
 watch(profile, () => {
   name.value = profile.value?.name || '';
 });
+
+const onNameChange = debounce((value?: string) => {
+  if (!value || value === profile.value.name) return;
+
+  userStore.setProfile({
+    ...profile.value,
+    name: value,
+  });
+}, 500);
 
 const onNameSubmit = handleSubmit(async (values) => {
   const { error } = await useApiJson(

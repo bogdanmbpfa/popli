@@ -72,6 +72,7 @@
             severity="contrast"
             icon="pi pi-link"
             label="Shorten URL"
+            aria-label="Shorten URL"
             fluid
             :disabled="isShortenUrlSubmitting || actionInProgress"
           />
@@ -170,6 +171,7 @@
                 severity="help"
                 icon="pi pi-pencil"
                 title="Edit"
+                aria-label="Edit"
                 :disabled="actionInProgress"
                 @click="handleUpdateShortUrl(data)"
               />
@@ -179,6 +181,7 @@
                 severity="danger"
                 icon="pi pi-trash"
                 title="Delete"
+                aria-label="Delete"
                 :disabled="actionInProgress"
                 @click="handleDeleteShortenedUrl(data.id, data.title)"
               />

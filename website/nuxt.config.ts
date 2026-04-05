@@ -19,6 +19,9 @@ export default defineNuxtConfig({
         },
       ],
     },
+    rootAttrs: {
+      lang: 'en',
+    },
   },
   compatibilityDate: 'latest',
 

@@ -9,6 +9,11 @@
 		border-radius: 0.25rem;
 		line-height: 1.5;
 
+		&.p-variant-filled {
+			background: var(--input-background);
+			background-color: var(--input-background);
+		}
+
 		&::placeholder {
 			color: var(--neutral-400);
 		}

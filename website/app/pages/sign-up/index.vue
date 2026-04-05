@@ -64,6 +64,7 @@
           class="default"
           type="submit"
           label="Create Account"
+          aria-label="Create account"
           fluid
           severity="contrast"
           :loading="isSubmitting"
@@ -192,7 +193,7 @@ const onRegisterSubmit = handleSubmit(async (values) => {
   flex: 1;
   overflow: hidden;
   position: relative;
-  padding: 2rem;
+  padding: 2rem 0.5rem;
 
   .heading {
     display: flex;

@@ -7,6 +7,7 @@
         severity="help"
         icon="pi pi-arrow-up"
         title="Move up"
+        aria-label="Move up"
         @click="onIncrementPosition"
       />
       <PButton
@@ -15,6 +16,7 @@
         severity="help"
         icon="pi pi-arrow-down"
         title="Move down"
+        aria-label="Move down"
         @click="onDecrementPosition"
       />
     </div>
@@ -44,6 +46,7 @@
       severity="danger"
       icon="pi pi-times"
       title="Delete"
+      aria-label="Delete"
       @click="onDelete"
     />
   </div>

@@ -47,6 +47,7 @@
             class="default"
             :severity="price.featured ? 'contrast' : 'secondary'"
             :label="price.button.text"
+            :aria-label="`Select ${price.name} plan`"
             fluid
             @click="onSelectPrice(price.type)"
           />

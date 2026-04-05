@@ -12,7 +12,7 @@
         <nuxt-img
           v-else
           :src="profile.coverImage"
-          :alt="profile.name"
+          :alt="profile.name || 'Cover image'"
           fetchpriority="high"
         />
       </div>
@@ -20,7 +20,7 @@
       <div v-if="profile.profileImage" class="avatar">
         <nuxt-img
           :src="profile.profileImage"
-          :alt="profile.name"
+          :alt="profile.name || 'Profile image'"
           fetchpriority="high"
         />
       </div>
@@ -59,6 +59,7 @@
               :key="link.id"
               class="default"
               :title="link.platform!"
+              aria-label="Click {{ link.platform }} link"
               @click="clickLink(link.id, link.url)"
             >
               <NuxtImg
@@ -76,6 +77,7 @@
               class="default"
               severity="secondary"
               :title="link.title!"
+              aria-label="Click {{ link.title }} link"
               :style="[
                 link.backgroundColors
                   ? link.backgroundColors.length === 1

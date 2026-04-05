@@ -19,6 +19,7 @@
         class="default"
         severity="contrast"
         label="Save"
+        aria-label="Save secondary links"
         :disabled="!areLinksValid"
         @click="onSave"
       />
@@ -28,6 +29,7 @@
         severity="secondary"
         label="Add Link"
         icon="pi pi-plus"
+        aria-label="Add secondary link"
         @click="onAddLink"
       />
     </div>

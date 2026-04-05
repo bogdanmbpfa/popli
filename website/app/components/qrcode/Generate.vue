@@ -18,6 +18,7 @@
           :options="typeOptions"
           :option-label="(option) => option.label"
           :option-value="(option) => option.value"
+          :disabled="actionInProgress"
           @value-change="qrCodeOptions.data = undefined"
         >
           <template #option="{ option }">
@@ -52,6 +53,7 @@
           overlay-class="default"
           fluid
           placeholder="https://example.com"
+          :disabled="actionInProgress"
         />
 
         <PInputText
@@ -63,6 +65,7 @@
           overlay-class="default"
           fluid
           placeholder="example@example.com"
+          :disabled="actionInProgress"
         />
 
         <PInputText
@@ -74,6 +77,7 @@
           overlay-class="default"
           fluid
           placeholder="1234567890"
+          :disabled="actionInProgress"
         />
 
         <PTextarea
@@ -85,6 +89,7 @@
           fluid
           placeholder="My QR Code"
           rows="3"
+          :disabled="actionInProgress"
         />
       </FormInput>
     </div>
@@ -117,7 +122,8 @@
       fluid
       icon="pi pi-cog"
       label="Advanced Configuration"
-      :disabled="!title || !qrCodeData"
+      aria-label="Open advanced configuration dialog"
+      :disabled="!title || !qrCodeData || actionInProgress"
       @click="openQrCodeAdvancedConfigurationDialog"
     />
 
@@ -132,7 +138,9 @@
       fluid
       icon="pi pi-plus"
       label="Create QR Code"
-      :disabled="!title || !qrCodeData"
+      aria-label="Create QR Code"
+      :loading="actionInProgress"
+      :disabled="!title || !qrCodeData || actionInProgress"
       @click="generateQRCode"
     />
   </div>
@@ -152,6 +160,7 @@ const emit = defineEmits<{
 }>();
 
 const dialog = useDialog();
+const globalStore = useGlobalStore();
 const qrCodeStore = useQrCodeStore();
 const toast = useToast();
 
@@ -218,6 +227,7 @@ const typeOptions = [
   },
 ];
 
+const actionInProgress = computed(() => globalStore.getActionInProgress);
 const data = computed(() => qrCodeStore.getData);
 
 onMounted(() => {
@@ -248,10 +258,12 @@ const openQrCodeAdvancedConfigurationDialog = () =>
   });
 
 const generateQRCode = async () => {
+  globalStore.toggleActionInProgress();
   formError.value = null;
 
   if (!qrCodeData.value) {
     formError.value = 'Please enter a valid data';
+    globalStore.toggleActionInProgress();
     return;
   }
 
@@ -259,6 +271,7 @@ const generateQRCode = async () => {
     case EQRCodeDataType.EMAIL:
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(qrCodeData.value)) {
         formError.value = 'Invalid email address';
+        globalStore.toggleActionInProgress();
         return;
       }
       break;
@@ -266,6 +279,7 @@ const generateQRCode = async () => {
     case EQRCodeDataType.PHONE:
       if (!/^[0-9]+$/.test(qrCodeData.value)) {
         formError.value = 'Invalid phone number';
+        globalStore.toggleActionInProgress();
         return;
       }
       break;
@@ -276,6 +290,7 @@ const generateQRCode = async () => {
     case EQRCodeDataType.URL:
       if (!/^https?:\/\/[^\s/$.?#].[^\s]*$/.test(qrCodeData.value)) {
         formError.value = 'Invalid URL';
+        globalStore.toggleActionInProgress();
         return;
       }
       break;
@@ -293,6 +308,7 @@ const generateQRCode = async () => {
 
   if (error) {
     formError.value = error.message;
+    globalStore.toggleActionInProgress();
     return;
   }
 
@@ -342,6 +358,8 @@ const generateQRCode = async () => {
   };
   qrCode.value = new QRCodeStyling(qrCodeOptions);
   qrCodeStore.setData(null);
+
+  globalStore.toggleActionInProgress();
 
   return emit('refresh');
 };

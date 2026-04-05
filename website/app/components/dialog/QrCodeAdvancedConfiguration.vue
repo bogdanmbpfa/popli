@@ -25,6 +25,7 @@
                 }"
                 severity="secondary"
                 :title="preset.label"
+                aria-label="Set color preset"
                 @click="setColorPreset(preset.value)"
               />
             </div>
@@ -244,6 +245,7 @@
               class="default"
               :options="shapeOptions"
               :option-value="(option) => option.value"
+              :option-label="(option) => option.label"
               @change="setShape($event.value)"
             >
               <template #option="{ option }">
@@ -310,6 +312,7 @@
                   class="default"
                   :severity="dotsType === dotShape.value ? 'info' : 'secondary'"
                   :label="dotShape.label"
+                  :aria-label="`Set dots shape to ${dotShape.label}`"
                   @click="setDotsShape(dotShape.value)"
                 />
               </div>
@@ -436,6 +439,7 @@
                       : 'secondary'
                   "
                   :label="cornerDotShape.label"
+                  :aria-label="`Set corner dots shape to ${cornerDotShape.label}`"
                   @click="setCornerDotsShape(cornerDotShape.value)"
                 />
               </div>
@@ -562,6 +566,7 @@
                       : 'secondary'
                   "
                   :label="cornerSquareShape.label"
+                  :aria-label="`Set corner squares shape to ${cornerSquareShape.label}`"
                   @click="setCornerSquaresShape(cornerSquareShape.value)"
                 />
               </div>
@@ -701,7 +706,7 @@
               <div class="preview-info">
                 <nuxt-img
                   :src="imageUrl"
-                  alt="Logo"
+                  alt="Logo image"
                   width="50"
                   height="50"
                   fit="contain"
@@ -719,6 +724,7 @@
                 class="default"
                 severity="danger"
                 icon="pi pi-times"
+                aria-label="Remove logo"
                 @click="removeImage"
               />
             </div>
@@ -767,6 +773,7 @@
         severity="contrast"
         label="Save QR Code"
         fluid
+        aria-label="Save QR Code"
         @click="saveQRCode"
       />
 
@@ -1458,6 +1465,7 @@ const saveQRCode = () => {
             flex-direction: row;
             flex-wrap: wrap;
             gap: 0.5rem;
+            padding: 0 0.25rem;
 
             .p-button {
               border-radius: 0.25rem;
@@ -1495,6 +1503,10 @@ const saveQRCode = () => {
 
               &.sunset {
                 background-color: oklch(55.5% 0.163 48.998);
+              }
+
+              &.active {
+                outline: 1px solid var(--primary-400);
               }
             }
           }

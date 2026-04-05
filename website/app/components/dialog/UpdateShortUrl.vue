@@ -42,6 +42,7 @@
 			severity="contrast"
 			icon="pi pi-check"
 			label="Update"
+			aria-label="Update short URL"
 			:disabled="isSubmitting" />
 	</form>
 </template>

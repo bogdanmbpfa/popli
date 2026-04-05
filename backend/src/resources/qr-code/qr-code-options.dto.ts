@@ -69,7 +69,6 @@ class ColorStopDTO {
     example: '#000000',
   })
   @IsString()
-  @IsNotEmpty()
   color: string;
 
   @ApiProperty({
@@ -78,7 +77,6 @@ class ColorStopDTO {
     example: 0,
   })
   @IsNumber()
-  @IsNotEmpty()
   offset: number;
 }
 
@@ -120,7 +118,6 @@ class DotsOptionsDTO {
   })
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
   color: string;
 
   @ApiProperty({
@@ -163,8 +160,7 @@ class CornerSquareOptionsDTO {
     example: '#000000',
   })
   @IsString()
-  @IsNotEmpty()
-  color: string;
+  color?: string;
 
   @ApiProperty({
     type: String,
@@ -207,9 +203,9 @@ class CornerDotOptionsDTO {
     description: 'The color of the corner dots',
     example: '#000000',
   })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  color: string;
+  color?: string;
 
   @ApiProperty({
     type: String,
@@ -261,9 +257,9 @@ class BackgroundOptionsDTO {
     description: 'The color of the background',
     example: '#000000',
   })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  color: string;
+  color?: string;
 
   @ApiProperty({
     type: () => GradientDTO,

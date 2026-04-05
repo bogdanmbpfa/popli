@@ -62,6 +62,7 @@
       class="default"
       type="submit"
       label="Save"
+      aria-label="Save bio"
       severity="contrast"
       :loading="isSubmitting"
       :disabled="isSubmitting || !!errors.bio"

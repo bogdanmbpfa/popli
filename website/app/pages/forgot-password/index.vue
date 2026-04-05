@@ -46,6 +46,7 @@
           class="default"
           type="submit"
           label="Reset Password"
+          aria-label="Reset password"
           fluid
           severity="contrast"
           :disabled="forgotPasswordIsSubmitting"
@@ -102,6 +103,7 @@
           class="default"
           type="submit"
           label="Reset Password"
+          aria-label="Reset password"
           fluid
           severity="contrast"
           :disabled="resetPasswordIsSubmitting"
@@ -239,7 +241,7 @@ const onResetPasswordSubmit = resetPasswordHandleSubmit(async (values) => {
   flex: 1;
   overflow: hidden;
   position: relative;
-  padding: 2rem;
+  padding: 2rem 0.5rem;
 
   .heading {
     display: flex;

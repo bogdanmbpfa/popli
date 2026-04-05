@@ -27,7 +27,7 @@
   //#region SEVERITY - SECONDARY
   &.p-button-secondary {
     border: 1px solid color-mix(in oklab, var(--neutral-400) 20%, transparent);
-    background-color: transparent;
+    background: transparent;
     color: var(--neutral-400);
 
     &:hover,
@@ -36,12 +36,13 @@
     &:not(:disabled):active,
     &:focus-visible,
     &:not(:disabled):focus-visible {
-      background-color: var(--neutral-900);
+      color: var(--neutral-100);
+      background: var(--neutral-900);
+      border: 1px solid color-mix(in oklab, var(--neutral-400) 20%, transparent);
 
       &.icon-only, &.p-button-icon-only {
-        padding: 0;
-        border: none;
-        background-color: transparent;
+        border-color: transparent;
+        background: transparent;
         outline: none;
         color: var(--neutral-400);
       }
@@ -49,8 +50,8 @@
 
     &.icon-only, &.p-button-icon-only {
       padding: 0;
-      border: none;
-      background-color: transparent;
+      border-color: transparent;
+      background: transparent;
       outline: none;
       color: var(--neutral-400);
     }
@@ -75,24 +76,22 @@
       transform: scale(1.02);
 
       &.icon-only {
-        padding: 0;
-        border: none;
-        background-color: transparent;
+        border-color: transparent;
+        background: transparent;
         color: var(--primary-950);
       }
     }
 
     &.icon-only {
-      padding: 0;
-      border: none;
-      background-color: transparent;
+      border-color: transparent;
+      background: transparent;
     }
   }
   // #endregion
 
   // #region SEVERITY - DANGER
   &.p-button-danger {
-    background-color: var(--danger);
+    background: var(--danger);
     color: var(--primary-400);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid color-mix(in oklab, var(--primary-400) 20%, transparent);
@@ -101,28 +100,26 @@
     &:not(:disabled):hover,
     &:not(:disabled):active {
       outline: none;
-      background-color: var(--primary-400);
+      background: var(--primary-400);
       color: var(--danger);
 
       &.icon-only, &.p-button-icon-only {
-        padding: 0;
-        border: none;
-        background-color: transparent;
+        border-color: transparent;
+        background: transparent;
         color: var(--primary-400);
       }
     }
 
     &.icon-only, &.p-button-icon-only {
-      padding: 0;
-      border: none;
-      background-color: transparent;
+      border-color: transparent;
+      background: transparent;
     }
   }
   // #endregion
 
   // #region SEVERITY - HELP
   &.p-button-help {
-    background-color: var(--neutral-900);
+    background: var(--neutral-900);
     color: var(--neutral-400);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid color-mix(in oklab, var(--neutral-400) 20%, transparent);
@@ -130,28 +127,27 @@
     &:hover,
     &:not(:disabled):hover,
     &:not(:disabled):active {
-      background-color: var(--neutral-800);
+      background: var(--neutral-800);
+      border: 1px solid color-mix(in oklab, var(--neutral-400) 20%, transparent);
       color: var(--neutral-400);
 
       &.icon-only {
-        padding: 0;
-        border: none;
-        background-color: transparent;
+        border-color: transparent;
+        background: transparent;
         color: var(--neutral-400);
       }
     }
 
     &.icon-only {
-      padding: 0;
-      border: none;
-      background-color: transparent;
+      border-color: transparent;
+      background: transparent;
     }
   }
   // #endregion
 
   // #region SEVERITY - INFO
   &.p-button-info {
-    background-color: var(--background-primary);
+    background: var(--background-primary);
     color: var(--neutral-100);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid transparent;
@@ -159,14 +155,13 @@
     &:hover,
     &:not(:disabled):hover,
     &:not(:disabled):active {
-      background-color: var(--background-primary);
+      background: var(--background-primary);
       color: var(--neutral-100);
     }
 
     &.icon-only {
-      padding: 0;
-      border: none;
-      background-color: transparent;
+      border-color: transparent;
+      background: transparent;
     }
   }
   // #endregion

@@ -42,6 +42,7 @@
       class="default"
       severity="info"
       label="View All"
+      aria-label="Expand countries"
       @click="toggleExpanded"
     />
   </div>

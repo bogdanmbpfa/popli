@@ -3,7 +3,7 @@
     <div class="container">
       <div class="left">
         <nuxt-link to="/">
-          <nuxt-img :src="images.logo" alt="Popli.one" loading="lazy" />
+          <nuxt-img :src="images.logo" alt="Popli.one logo" loading="lazy" />
 
           <span>Popli.one</span>
         </nuxt-link>

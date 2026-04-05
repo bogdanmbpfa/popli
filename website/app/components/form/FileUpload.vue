@@ -9,7 +9,7 @@
 			:disabled="disabled"
 			@change="onFileSelect" />
 
-		<nuxt-img v-if="file" :src="imagePreview(file)" alt="File preview" class="preview-image" />
+		<nuxt-img v-if="file" :src="imagePreview(file)" alt="File preview image" class="preview-image" />
 
 		<PButton
 			type="button"
@@ -18,6 +18,7 @@
 			icon="pi pi-upload"
 			icon-pos="left"
 			label="Choose file"
+			aria-label="Choose file"
 			:disabled="disabled"
 			@click="choose" />
 	</div>

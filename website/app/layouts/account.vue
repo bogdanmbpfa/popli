@@ -8,7 +8,7 @@
       position="left"
     >
       <template #header>
-        <nuxt-img :src="images.logo" alt="Popli.one" loading="lazy" />
+        <nuxt-img :src="images.logo" alt="Popli.one logo" loading="lazy" />
 
         <div class="title">
           <span class="name">Dashboard</span>
@@ -82,8 +82,10 @@
 
         <PButton
           class="default"
+          severity="danger icon-only"
           icon="pi pi-sign-out"
           label="Sign Out"
+          aria-label="Sign out"
           @click="signOut"
         />
       </template>
@@ -97,6 +99,8 @@
           as="a"
           variant="link"
           icon="pi pi-bars"
+          aria-label="Toggle drawer"
+          title="Toggle drawer"
           @click="toggleDrawer"
         />
 

@@ -21,6 +21,7 @@
       severity="contrast"
       icon="pi pi-upload"
       label="Upload"
+      aria-label="Upload profile image"
       :disabled="!profileImage || isSubmitting"
     />
   </form>

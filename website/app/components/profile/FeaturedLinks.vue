@@ -12,6 +12,7 @@
         class="default"
         severity="help"
         :title="platform.name"
+        :aria-label="`Add ${platform.name} link`"
         fluid
         @click="onAddLink(platform)"
       >
@@ -28,6 +29,7 @@
         severity="secondary"
         :label="`+ ${platforms.length - visiblePlatformsCount}`"
         fluid
+        aria-label="Expand platforms"
         @click="
           expandedPlatforms = true;
           visiblePlatformsCount = platforms.length;
@@ -48,6 +50,7 @@
       class="default"
       severity="contrast"
       label="Save"
+      aria-label="Save featured links"
       :disabled="!areLinksValid"
       @click="onSave"
     />

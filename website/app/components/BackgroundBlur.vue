@@ -32,6 +32,7 @@ defineProps({
   width: 24rem;
   height: 24rem;
   border-radius: 0.75rem;
+  z-index: -1;
 
   &.type-primary {
     background-color: oklch(0.7685 0.1415 8.88 / 10%);

@@ -65,6 +65,7 @@
       class="default"
       type="submit"
       label="Save"
+      aria-label="Save handle"
       severity="contrast"
       :loading="isSubmitting"
       :disabled="isSubmitting || !!errors.handle"

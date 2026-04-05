@@ -26,7 +26,7 @@
             <nuxt-img
               v-else
               :src="profile.coverImage"
-              :alt="profile.name"
+              :alt="profile.name || 'Cover image'"
               loading="lazy"
             />
           </div>
@@ -34,7 +34,7 @@
           <div v-if="profile.profileImage" class="avatar">
             <nuxt-img
               :src="profile.profileImage"
-              :alt="profile.name"
+              :alt="profile.name || 'Profile image'"
               loading="lazy"
             />
           </div>
@@ -157,6 +157,7 @@
       severity="secondary edit-profile-button"
       :icon="isConfigurationOpen ? 'pi pi-times' : 'pi pi-cog'"
       :label="isConfigurationOpen ? 'Close' : 'Edit Profile'"
+      :aria-label="isConfigurationOpen ? 'Close configuration' : 'Open configuration'"
       @click="toggleConfiguration"
     />
   </div>

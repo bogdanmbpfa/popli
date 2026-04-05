@@ -33,6 +33,7 @@
         severity="secondary"
         label="PNG"
         title="Download PNG"
+        aria-label="Download PNG"
         @click="downloadCode('png')"
       />
 
@@ -41,6 +42,7 @@
         severity="secondary"
         label="SVG"
         title="Download SVG"
+        aria-label="Download SVG"
         @click="downloadCode('svg')"
       />
 
@@ -49,6 +51,7 @@
         severity="secondary"
         label="JPEG"
         title="Download JPEG"
+        aria-label="Download JPEG"
         @click="downloadCode('jpeg')"
       />
 
@@ -57,6 +60,7 @@
         severity="secondary"
         icon="pi pi-chart-bar"
         title="Analytics"
+        aria-label="Open analytics dialog"
         @click="openAnalyticsDialog"
       />
 
@@ -65,6 +69,7 @@
         severity="danger"
         icon="pi pi-trash"
         title="Delete"
+        aria-label="Delete QR Code"
         @click="handleDeleteQrCode"
       />
     </div>

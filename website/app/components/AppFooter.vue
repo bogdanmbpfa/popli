@@ -4,7 +4,7 @@
       <div class="main">
         <div class="info">
           <div class="logo">
-            <nuxt-img :src="images.logo" alt="Popli.one" loading="lazy" />
+            <nuxt-img :src="images.logo" alt="Popli.one logo" loading="lazy" />
 
             <span class="name">Popli.one</span>
           </div>
