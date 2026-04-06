@@ -5,6 +5,7 @@
 
     <div class="heading">
       <nuxt-link to="/" class="default">
+        <nuxt-img src="/logo.png" alt="Popli.one logo" loading="lazy" />
         <h1>Popli</h1>
       </nuxt-link>
 

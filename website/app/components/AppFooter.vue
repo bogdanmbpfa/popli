@@ -4,7 +4,7 @@
       <div class="main">
         <div class="info">
           <div class="logo">
-            <nuxt-img :src="images.logo" alt="Popli.one logo" loading="lazy" />
+            <nuxt-img src="/logo.png" alt="Popli.one logo" loading="lazy" />
 
             <span class="name">Popli.one</span>
           </div>
@@ -64,12 +64,6 @@
     </div>
   </footer>
 </template>
-
-<script setup lang="ts">
-const {
-  public: { images },
-} = useRuntimeConfig();
-</script>
 
 <style scoped lang="scss">
 .app-footer {
@@ -147,6 +141,7 @@ const {
             color: var(--neutral-400);
             text-decoration: none;
             font-size: 0.875rem;
+            width: fit-content;
           }
         }
       }

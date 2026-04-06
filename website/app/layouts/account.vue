@@ -8,7 +8,7 @@
       position="left"
     >
       <template #header>
-        <nuxt-img :src="images.logo" alt="Popli.one logo" loading="lazy" />
+        <nuxt-img src="/logo.png" alt="Popli.one logo" loading="lazy" />
 
         <div class="title">
           <span class="name">Dashboard</span>
@@ -120,9 +120,6 @@
 import { EApiEndpoint } from '~~/enums';
 
 const { isMobile } = useDevice();
-const {
-  public: { images },
-} = useRuntimeConfig();
 const toast = useToast();
 const userStore = useUserStore();
 

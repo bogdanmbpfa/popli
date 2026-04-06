@@ -4,7 +4,10 @@
     <BackgroundBlur position="bottom-left" type="secondary" />
 
     <div class="heading">
-      <h1>Popli</h1>
+      <nuxt-link to="/" class="default">
+        <nuxt-img src="/logo.png" alt="Popli.one logo" loading="lazy" />
+        <h1>Popli</h1>
+      </nuxt-link>
 
       <h2>Pop your links. Amplify your <span class="contrast">REACH.</span></h2>
     </div>

@@ -18,6 +18,7 @@
               id="url"
               v-model="url"
               v-bind="urlAttributes"
+              v-keyfilter="/^[a-z0-9-?&/:_.%+~#=@]+$/"
               class="default"
               placeholder="https://very-long-url.com/campaign/v1"
               fluid

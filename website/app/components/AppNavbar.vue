@@ -3,7 +3,7 @@
     <div class="container">
       <div class="left">
         <nuxt-link to="/">
-          <nuxt-img :src="images.logo" alt="Popli.one logo" loading="lazy" />
+          <nuxt-img src="/logo.png" alt="Popli.one logo" loading="lazy" />
 
           <span>Popli.one</span>
         </nuxt-link>
@@ -37,9 +37,6 @@
 <script setup lang="ts">
 import { EApiEndpoint } from '~~/enums';
 
-const {
-  public: { images },
-} = useRuntimeConfig();
 const userStore = useUserStore();
 
 const user = computed(() => userStore.getUser);

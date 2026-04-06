@@ -80,6 +80,16 @@
           class="change-password-form"
           @submit.prevent="onSubmitChangePassword"
         >
+          <PInputText
+            class="default"
+            name="email"
+            :value="user.email"
+            autocomplete="username"
+            readonly
+            disabled
+            hidden
+          />
+
           <FormInput
             id="currentPassword"
             label="Current password"
@@ -307,13 +317,13 @@ const openConfirmDeleteAccount = () =>
     icon: 'pi pi-exclamation-triangle',
     header: 'Delete Account permanently?',
     message:
-    'This action is irreversible. All your short links, qr codes, analytics data and profile settings will be deleted forever.',
+      'This action is irreversible. All your short links, qr codes, analytics data and profile settings will be deleted forever.',
     acceptClass: 'default p-button-danger',
     acceptIcon: 'pi pi-trash',
     acceptLabel: 'Delete account',
     rejectClass: 'default p-button-help',
     rejectLabel: 'Cancel',
-    modal:true,
+    modal: true,
     position: 'center',
     blockScroll: true,
     accept: async () => {

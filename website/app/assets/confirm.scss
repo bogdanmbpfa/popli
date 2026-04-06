@@ -124,6 +124,7 @@
     &.default {
       width: 100% !important;
       max-width: calc(100lvw - 1rem) !important;
+      max-height: 60lvh !important;
     }
   }
 }

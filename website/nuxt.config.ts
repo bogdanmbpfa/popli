@@ -5,7 +5,8 @@ export default defineNuxtConfig({
     head: {
       noscript: [
         {
-          innerHTML: '<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" />',
+          innerHTML:
+            '<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" />',
         },
       ],
       link: [
@@ -18,9 +19,9 @@ export default defineNuxtConfig({
           onload: 'this.onload = null; this.rel = "stylesheet";',
         },
       ],
-    },
-    rootAttrs: {
-      lang: 'en',
+      htmlAttrs: {
+        lang: 'en',
+      },
     },
   },
   compatibilityDate: 'latest',
@@ -37,6 +38,13 @@ export default defineNuxtConfig({
     families: [{ name: 'Roboto', provider: 'google' }],
   },
 
+  googleAdsense: {
+    id: 'pub-4244824823711590',
+    onPageLoad: false,
+    pageLevelAds: false,
+    test: process.env.NUXT_PUBLIC_NODE_ENV === 'local',
+  },
+
   modules: [
     '@primevue/nuxt-module',
     '@nuxt/eslint',
@@ -50,6 +58,7 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt',
     '@vee-validate/nuxt',
     '@nuxtjs/device',
+    '@nuxtjs/google-adsense',
   ],
 
   nitro: {
@@ -98,9 +107,6 @@ export default defineNuxtConfig({
           expires: 60 * 60 * 2, // 2 hours
           httpOnly: true,
         },
-      },
-      images: {
-        logo: 'https://storage.googleapis.com/popli-public/logo.png',
       },
       nodeEnv: '',
       mapboxAccessToken: '',
