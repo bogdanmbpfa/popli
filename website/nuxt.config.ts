@@ -38,13 +38,6 @@ export default defineNuxtConfig({
     families: [{ name: 'Roboto', provider: 'google' }],
   },
 
-  googleAdsense: {
-    id: 'pub-4244824823711590',
-    onPageLoad: false,
-    pageLevelAds: false,
-    test: process.env.NUXT_PUBLIC_NODE_ENV === 'local',
-  },
-
   modules: [
     '@primevue/nuxt-module',
     '@nuxt/eslint',
@@ -58,7 +51,15 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt',
     '@vee-validate/nuxt',
     '@nuxtjs/device',
-    '@nuxtjs/google-adsense',
+    [
+      '@nuxtjs/google-adsense',
+      {
+        id: 'ca-pub-4244824823711590',
+        onPageLoad: false,
+        pageLevelAds: false,
+        test: false,
+      },
+    ],
   ],
 
   nitro: {

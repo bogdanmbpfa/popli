@@ -99,7 +99,7 @@ fi
 
 if [[ "${DEPLOY_WEBSITE}" == true ]]; then
   echo ">>> Building website (on host to avoid Docker memory limit)..."
-  (cd "${SCRIPT_DIR}/website" && bun install --frozen-lockfile && bun run build)
+  (cd "${SCRIPT_DIR}/website" && rm -rf .nuxt/ && rm -rf .output/ && export NUXT_PUBLIC_NODE_ENV=development && bun install --frozen-lockfile && bun run build)
   echo ">>> Building and pushing frontend: ${IMAGE_FRONTEND_SHA} (${PLATFORM})"
   docker buildx build \
     --platform "${PLATFORM}" \
