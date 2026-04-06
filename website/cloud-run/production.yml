@@ -1,0 +1,37 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: production-frontend
+  namespace: 'popli-465817'
+  labels:
+    environment: production
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "1"
+        run.googleapis.com/cpu-throttling: "true"
+        run.googleapis.com/container-concurrency: "80"
+        run.googleapis.com/timeout-seconds: "300"
+    spec:
+      containers:
+      - image: europe-west1-docker.pkg.dev/popli-465817/production/frontend:IMAGE_TAG
+        resources:
+          limits:
+            cpu: "2"
+            memory: "4Gi"
+        startupProbe:
+          httpGet:
+            path: /favicon.ico
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        env:
+          - name: NUXT_PUBLIC_NODE_ENV
+            value: "production"
+          - name: NUXT_API_BASE_URL
+            value: "https://api.popli.one"
+      serviceAccountName: github-service-account@popli-465817.iam.gserviceaccount.com

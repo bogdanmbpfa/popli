@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import * as yup from 'yup';
 
 import { EApiEndpoint } from '~~/enums';

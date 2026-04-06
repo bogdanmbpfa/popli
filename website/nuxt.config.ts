@@ -38,6 +38,10 @@ export default defineNuxtConfig({
     families: [{ name: 'Roboto', provider: 'google' }],
   },
 
+  image: {
+    dir: 'assets/images',
+  },
+
   modules: [
     '@primevue/nuxt-module',
     '@nuxt/eslint',

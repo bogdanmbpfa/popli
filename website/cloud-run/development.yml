@@ -21,6 +21,14 @@ spec:
           limits:
             cpu: "2"
             memory: "4Gi"
+        startupProbe:
+          httpGet:
+            path: /favicon.ico
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
         env:
           - name: NUXT_PUBLIC_NODE_ENV
             value: "development"
