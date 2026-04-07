@@ -153,7 +153,7 @@ const onRegisterSubmit = handleSubmit(async (values) => {
     {},
     {},
     {
-      Authorization: `Bearer ${data.token}`,
+      'X-User-Authorization': `Bearer ${data.token}`,
     },
   );
 
