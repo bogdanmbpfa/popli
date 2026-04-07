@@ -1,11 +1,9 @@
 export default defineNuxtRouteMiddleware(async () => {
-	const {
-		public: { cookies },
-	} = useRuntimeConfig();
+  const { isAuthenticated } = await $fetch<{ isAuthenticated: boolean }>(
+    '/api/auth-status',
+  );
 
-	const middlewareCookie = useCookie(cookies.auth.name);
-
-	if (middlewareCookie && middlewareCookie.value) {
-		return navigateTo('/');
-	}
+  if (isAuthenticated) {
+    return navigateTo('/');
+  }
 });
