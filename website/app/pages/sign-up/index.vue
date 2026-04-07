@@ -177,8 +177,6 @@ const onRegisterSubmit = handleSubmit(async (values) => {
     });
   }
 
-  useSetAuthToken(data.token, data.refreshToken);
-
   userStore.setUser(userData ? { ...userData! } : null);
 
   resetForm();

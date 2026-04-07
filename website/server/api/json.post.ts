@@ -6,7 +6,8 @@ import type { IApiError } from '~/../interfaces';
 import { apiEndpoints } from '../endpoints';
 
 const CACHE_DURATION = 1000 * 60 * 50; // 50 minutes
-const idTokenCache = new Map<string, { token: string; retrievedAt: number }>();
+let cloudRunIdToken: string | null = null;
+let cloudRunIdTokenRetrievedAt: number | null = null;
 
 async function getCloudRunIdToken(audience: string): Promise<string | null> {
   // Cloud Run provides a metadata server for minting identity tokens.
@@ -45,6 +46,7 @@ export default defineEventHandler(async (event) => {
     apiBaseUrl,
     public: { cookies, nodeEnv },
   } = useRuntimeConfig();
+  const isProduction = nodeEnv === EEnvironment.PRODUCTION;
 
   if (
     !key ||
@@ -73,28 +75,20 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // For a private Cloud Run backend, the request must include an OIDC identity token
-    // in the Authorization header. Since our app already uses Authorization for the
-    // user auth token, we forward that user token in a separate header.
-    let cloudRunIdToken = idTokenCache.get(apiBaseUrl)?.token ?? null;
-
     if (
       nodeEnv !== EEnvironment.LOCAL &&
       (!cloudRunIdToken ||
-        Date.now() - idTokenCache.get(apiBaseUrl)?.retrievedAt! >
+        Date.now() - cloudRunIdTokenRetrievedAt! >
           CACHE_DURATION)
     ) {
       cloudRunIdToken = await getCloudRunIdToken(apiBaseUrl);
 
       if (cloudRunIdToken) {
-        idTokenCache.set(apiBaseUrl, {
-          token: cloudRunIdToken,
-          retrievedAt: Date.now(),
-        });
+        cloudRunIdTokenRetrievedAt = Date.now();
       }
     }
 
-    const response = await $fetch(endpointPath, {
+    const response = await $fetch<Record<string, unknown>>(endpointPath, {
       baseURL: apiBaseUrl,
       method: endpoint.method,
       body: endpoint.method !== 'GET' && !!body ? body : undefined,
@@ -115,6 +109,29 @@ export default defineEventHandler(async (event) => {
       },
       credentials: 'include',
     });
+
+    if (response.token && response.refreshToken) {
+      setCookie(event, cookies.auth.name, response.token as string, {
+        maxAge: cookies.auth.expires,
+        httpOnly: cookies.auth.httpOnly,
+        secure: isProduction,
+        sameSite: 'lax',
+        path: '/',
+      });
+
+      setCookie(
+        event,
+        cookies.auth.refreshTokenName,
+        response.refreshToken as string,
+        {
+          maxAge: cookies.auth.refreshTokenExpires,
+          httpOnly: cookies.auth.httpOnly,
+          secure: isProduction,
+          sameSite: 'lax',
+          path: '/',
+        },
+      );
+    }
 
     return response;
   } catch (error) {

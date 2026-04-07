@@ -65,7 +65,7 @@ export class AuthService {
 
     await db.insert(authSessionModel).values({
       userId: id,
-      refreshToken: await hash(refreshToken!),
+      refreshToken: await hash(refreshToken),
       expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day
       ipAddress: request.ip!,
       userAgent: request.headers['user-agent']!,
@@ -112,7 +112,7 @@ export class AuthService {
       .insert(authSessionModel)
       .values({
         userId: account.id,
-        refreshToken: await hash(refreshToken!),
+        refreshToken: await hash(refreshToken),
         expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day
         ipAddress: request.ip!,
         userAgent: request.headers['user-agent']!,
@@ -120,7 +120,7 @@ export class AuthService {
       .onConflictDoUpdate({
         target: [authSessionModel.ipAddress],
         set: {
-          refreshToken: await hash(refreshToken!),
+          refreshToken: await hash(refreshToken),
           expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day
         },
       });
@@ -156,7 +156,7 @@ export class AuthService {
     await db
       .update(authSessionModel)
       .set({
-        refreshToken: await hash(refreshToken!),
+        refreshToken: await hash(refreshToken),
         expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day
         ipAddress: request.ip!,
         userAgent: request.headers['user-agent']!,
