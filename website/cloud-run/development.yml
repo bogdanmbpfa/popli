@@ -34,4 +34,4 @@ spec:
             value: "development"
           - name: NUXT_API_BASE_URL
             value: "https://dev.api.popli.one"
-      serviceAccountName: github-service-account@popli-465817.iam.gserviceaccount.com
+      serviceAccountName: website-service-account@popli-465817.iam.gserviceaccount.com

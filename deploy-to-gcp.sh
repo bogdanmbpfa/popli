@@ -51,6 +51,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKEND_CR="${SCRIPT_DIR}/backend/cloud-run/development.yml"
 WEBSITE_CR="${SCRIPT_DIR}/website/cloud-run/development.yml"
 
+# Service account allowed to invoke the backend (Cloud Run IAM).
+# Ensure your production-frontend service runs as this service account.
+WEBSITE_INVOKER_SA_EMAIL="${WEBSITE_INVOKER_SA_EMAIL:-website-service-account@${PROJECT_ID}.iam.gserviceaccount.com}"
+
 echo "=== Deploy to GCP (development) ==="
 echo "  Project: ${PROJECT_ID}"
 echo "  Region:  ${REGION}"
@@ -127,12 +131,13 @@ if [[ "${DEPLOY_WEBSITE}" == true ]]; then
   gcloud beta run services replace "${WEBSITE_CR_TMP}" --region="${REGION}" --platform=managed
 fi
 
-# --- 6. Allow public invoker (idempotent) ---
+# --- 6. IAM (invoker access) ---
 if [[ "${DEPLOY_BACKEND}" == true ]]; then
-  echo ">>> Setting IAM for backend (public access)..."
+  echo ">>> Setting IAM for backend (private; only website service account can invoke)..."
+  # Grant invoker to website service account
   gcloud run services add-iam-policy-binding development-backend \
     --region="${REGION}" \
-    --member=allUsers \
+    --member="serviceAccount:${WEBSITE_INVOKER_SA_EMAIL}" \
     --role=roles/run.invoker \
     --quiet 2>/dev/null || true
 fi

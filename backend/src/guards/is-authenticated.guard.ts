@@ -27,7 +27,11 @@ export class AuthenticatedGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
-    const { authorization } = request.headers;
+    // When the backend is protected by Cloud Run IAM, callers must use the
+    // Authorization header for the Cloud Run identity token. In that case, the
+    // app-level user token is forwarded in X-User-Authorization.
+    const authorization =
+      request.headers['x-user-authorization'] || request.headers.authorization;
 
     if (!authorization) {
       throw new UnauthorizedException(this.errorMessage);

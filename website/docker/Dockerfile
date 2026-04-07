@@ -13,6 +13,8 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
 RUN pnpm run build
 
 ENV PORT=8080
