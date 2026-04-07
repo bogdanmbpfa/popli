@@ -126,8 +126,6 @@ const onLoginSubmit = handleSubmit(async (values) => {
     });
   }
 
-  await useSetAuthToken(data.token, data.refreshToken);
-
   const { data: userData, error: userError } = await useApiJson(
     EApiEndpoint.ACCOUNT_ME,
     {},
@@ -147,6 +145,8 @@ const onLoginSubmit = handleSubmit(async (values) => {
       closable: false,
     });
   }
+
+  useSetAuthToken(data.token, data.refreshToken);
 
   userStore.setUser(userData ? { ...userData! } : null);
 

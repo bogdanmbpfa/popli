@@ -1,6 +1,6 @@
 import { EEnvironment } from '~~/enums';
 
-export default async function (token: string, refreshToken: string) {
+export default function (token: string, refreshToken: string) {
   const { public: { cookies, nodeEnv } } = useRuntimeConfig();
 
   const isProduction = nodeEnv === EEnvironment.PRODUCTION;

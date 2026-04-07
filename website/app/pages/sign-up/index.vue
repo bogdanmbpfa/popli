@@ -17,7 +17,12 @@
       description="Enter your details to start popping links"
     >
       <form @submit.prevent="onRegisterSubmit">
-        <FormInput id="email" label="Email address" :error="errors.email" required>
+        <FormInput
+          id="email"
+          label="Email address"
+          :error="errors.email"
+          required
+        >
           <PIconField>
             <PInputIcon class="pi pi-envelope" />
 
@@ -96,22 +101,29 @@ definePageMeta({
 const toast = useToast();
 const userStore = useUserStore();
 
-const { defineField, errors, handleSubmit, isSubmitting, resetForm, validateField, setFieldError } =
-  useForm<IAuthRegister>({
-    validationSchema: yup.object().shape({
-      email: yup
-        .string()
-        .required('Email is required')
-        .email('Invalid email address'),
-      password: yup
-        .string()
-        .required('Password is required')
-        .matches(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-          'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character',
-        ),
-    }),
-  });
+const {
+  defineField,
+  errors,
+  handleSubmit,
+  isSubmitting,
+  resetForm,
+  validateField,
+  setFieldError,
+} = useForm<IAuthRegister>({
+  validationSchema: yup.object().shape({
+    email: yup
+      .string()
+      .required('Email is required')
+      .email('Invalid email address'),
+    password: yup
+      .string()
+      .required('Password is required')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character',
+      ),
+  }),
+});
 
 const [email, emailAttributes] = defineField('email');
 const [password, passwordAttributes] = defineField('password');
@@ -145,8 +157,6 @@ const onRegisterSubmit = handleSubmit(async (values) => {
     });
   }
 
-  await useSetAuthToken(data.token, data.refreshToken);
-
   const { data: userData, error: userError } = await useApiJson(
     EApiEndpoint.ACCOUNT_ME,
     {},
@@ -166,6 +176,8 @@ const onRegisterSubmit = handleSubmit(async (values) => {
       closable: false,
     });
   }
+
+  useSetAuthToken(data.token, data.refreshToken);
 
   userStore.setUser(userData ? { ...userData! } : null);
 
