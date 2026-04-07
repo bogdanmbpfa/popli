@@ -1,17 +1,22 @@
-FROM oven/bun:alpine
+FROM node:24-alpine
 
 WORKDIR /app
 
-COPY package.json bun.lock ./
+RUN corepack enable && corepack prepare pnpm@latest --activate
+ENV PNPM_HOME=/usr/local/bin
 
-RUN bun install --frozen-lockfile
+RUN pnpm add -g typescript
+
+COPY package.json pnpm-lock.yaml ./
+
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-RUN bun run build
+RUN pnpm run build
 
 ENV PORT=8080
 
 EXPOSE 8080
 
-CMD ["bun", "run", ".output/server/index.mjs"]
+CMD ["pnpm", "run", ".output/server/index.mjs"]

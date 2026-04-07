@@ -66,10 +66,6 @@ export default defineNuxtConfig({
     ],
   ],
 
-  nitro: {
-    preset: 'bun',
-  },
-
   pinia: {
     storesDirs: ['./stores/**'],
   },
@@ -149,6 +145,8 @@ export default defineNuxtConfig({
         'luxon',
         'mapbox-gl',
         'qr-code-styling',
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
       ],
     },
   },

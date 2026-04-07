@@ -105,7 +105,7 @@ if [[ "${DEPLOY_WEBSITE}" == true ]]; then
     --sbom=false \
     -t "${IMAGE_FRONTEND_SHA}" \
     -t "${IMAGE_FRONTEND_LATEST}" \
-    -f "${SCRIPT_DIR}/website/docker/Dockerfile.gcp" \
+    -f "${SCRIPT_DIR}/website/docker/Dockerfile" \
     "${SCRIPT_DIR}/website" \
     --push
 fi
