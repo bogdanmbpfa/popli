@@ -21,4 +21,7 @@ export default function (token: string, refreshToken: string) {
 
   tokenCookie.value = token;
   refreshTokenCookie.value = refreshToken;
+
+  console.log(`Set token cookie: ${tokenCookie.value}`);
+  console.log(`Set refresh token cookie: ${refreshTokenCookie.value}`);
 }

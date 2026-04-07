@@ -6,6 +6,9 @@ export default defineNuxtRouteMiddleware(async () => {
   const middlewareCookie = useCookie(cookies.auth.name);
   const refreshTokenCookie = useCookie(cookies.auth.refreshTokenName);
 
+  console.log(`Middleware cookie: ${middlewareCookie.value}`);
+  console.log(`Refresh token cookie: ${refreshTokenCookie.value}`);
+
   if (!middlewareCookie.value && !refreshTokenCookie.value) {
     return navigateTo('/sign-in');
   }

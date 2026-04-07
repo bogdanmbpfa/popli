@@ -146,6 +146,8 @@ const onLoginSubmit = handleSubmit(async (values) => {
     });
   }
 
+  console.log(`Setting auth token: ${data.token} and refresh token: ${data.refreshToken}`);
+
   useSetAuthToken(data.token, data.refreshToken);
 
   userStore.setUser(userData ? { ...userData! } : null);
