@@ -21,4 +21,4 @@ ENV PORT=8080
 
 EXPOSE 8080
 
-CMD ["pnpm", "run", ".output/server/index.mjs"]
+CMD ["node", ".output/server/index.mjs"]
