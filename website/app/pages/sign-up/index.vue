@@ -90,7 +90,7 @@
 import debounce from 'lodash/debounce';
 import * as yup from 'yup';
 
-import { EApiEndpoint } from '~~/enums';
+import { EApiEndpoint, EEnvironment } from '~~/enums';
 import type { IAuthRegister } from '~~/interfaces';
 
 definePageMeta({
@@ -98,6 +98,9 @@ definePageMeta({
   middleware: 'is-not-logged-in',
 });
 
+const {
+  public: { nodeEnv },
+} = useRuntimeConfig();
 const toast = useToast();
 const userStore = useUserStore();
 
@@ -145,6 +148,8 @@ const onEmailChange = debounce(async (value?: string) => {
 }, 500);
 
 const onRegisterSubmit = handleSubmit(async (values) => {
+  if (nodeEnv === EEnvironment.PRODUCTION) return;
+
   const { data, error } = await useApiJson(EApiEndpoint.AUTH_REGISTER, values);
 
   if (error) {

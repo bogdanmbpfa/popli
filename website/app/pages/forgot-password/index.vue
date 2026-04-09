@@ -117,7 +117,7 @@
 <script setup lang="ts">
 import * as yup from 'yup';
 
-import { EApiEndpoint } from '~~/enums';
+import { EApiEndpoint, EEnvironment } from '~~/enums';
 import type { IAuthForgotPassword, IAuthResetPassword } from '~~/interfaces';
 
 definePageMeta({
@@ -125,6 +125,9 @@ definePageMeta({
   middleware: 'is-not-logged-in',
 });
 
+const {
+  public: { nodeEnv },
+} = useRuntimeConfig();
 const toast = useToast();
 
 const passwordResetRequested = ref(false);
@@ -174,6 +177,8 @@ const [passwordReset, passwordResetAttributes] =
   resetPasswordDefineField('password');
 
 const onForgotPasswordSubmit = forgotPasswordHandleSubmit(async (values) => {
+  if (nodeEnv === EEnvironment.PRODUCTION) return;
+
   const { error } = await useApiJson(EApiEndpoint.AUTH_REQUEST_PASSWORD_RESET, {
     email: values.email,
   });
