@@ -1,6 +1,5 @@
 import Aura from '@primeuix/themes/aura';
-
-const isProduction = process.env.NUXT_PUBLIC_NODE_ENV === 'production';
+import { EEnvironment } from './enums';
 
 export default defineNuxtConfig({
   app: {
@@ -83,10 +82,10 @@ export default defineNuxtConfig({
   },
 
   robots: {
-    allow: isProduction
+    allow: process.env.NUXT_PUBLIC_NODE_ENV === EEnvironment.PRODUCTION
       ? ['/', '/about', '/forgot-password', '/sign-in', '/sign-up', '/*$']
       : [],
-    disallow: isProduction ? ['/account', '/account/', '/s', '/s/'] : ['*'],
+    disallow: process.env.NUXT_PUBLIC_NODE_ENV === EEnvironment.PRODUCTION ? ['/account', '/account/', '/s', '/s/'] : ['*'],
     blockAiBots: false,
     sitemap: ['/sitemap.xml'],
   },
@@ -124,14 +123,6 @@ export default defineNuxtConfig({
       nodeEnv: '',
       mapboxAccessToken: '',
     },
-  },
-
-  site: {
-    indexable: isProduction,
-    url: 'https://popli.one',
-    name: 'Popli.one',
-    trailingSlash: false,
-    env: process.env.NUXT_PUBLIC_NODE_ENV,
   },
 
   sitemap: {
