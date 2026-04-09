@@ -10,6 +10,7 @@
 
       <div class="ad-container">
         <Adsbygoogle
+          v-if="isOpen"
           :key="adKey"
           ad-format="fixed"
           ad-slot="1698276428"
@@ -25,8 +26,6 @@
 const isOpen = ref(false);
 const adKey = ref(0);
 const lastOpened = ref(0);
-
-// const googleAdsense = ref();
 
 const toggleAd = () => {
   isOpen.value = !isOpen.value;
