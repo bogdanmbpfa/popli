@@ -1,5 +1,7 @@
 import Aura from '@primeuix/themes/aura';
 
+const isProduction = process.env.NUXT_PUBLIC_NODE_ENV === 'production';
+
 export default defineNuxtConfig({
   app: {
     head: {
@@ -79,6 +81,13 @@ export default defineNuxtConfig({
     },
   },
 
+  robots: {
+    allow: isProduction
+      ? ['/', '/about', '/forgot-password', '/sign-in', '/sign-up', '/*$']
+      : [],
+    disallow: isProduction ? ['/account', '/account/', '/s', '/s/'] : ['*'],
+  },
+
   primevue: {
     autoImport: true,
     components: {
@@ -114,7 +123,7 @@ export default defineNuxtConfig({
     },
   },
 
-  site: { indexable: true },
+  site: { indexable: isProduction },
 
   ssr: true,
 
@@ -136,8 +145,6 @@ export default defineNuxtConfig({
       include: [
         'vue',
         'vue-router',
-        '@vue/devtools-core',
-        '@vue/devtools-kit',
         'yup',
         'lodash/orderBy',
         'lodash/debounce',
@@ -145,8 +152,6 @@ export default defineNuxtConfig({
         'luxon',
         'mapbox-gl',
         'qr-code-styling',
-        '@vue/devtools-core',
-        '@vue/devtools-kit',
       ],
     },
   },
