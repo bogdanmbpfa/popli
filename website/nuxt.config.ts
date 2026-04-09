@@ -82,10 +82,8 @@ export default defineNuxtConfig({
   },
 
   robots: {
-    allow: process.env.NUXT_PUBLIC_NODE_ENV === EEnvironment.PRODUCTION
-      ? ['/', '/about', '/forgot-password', '/sign-in', '/sign-up', '/*$']
-      : [],
-    disallow: process.env.NUXT_PUBLIC_NODE_ENV === EEnvironment.PRODUCTION ? ['/account', '/account/', '/s', '/s/'] : ['*'],
+    allow: ['/', '/about', '/forgot-password', '/sign-in', '/sign-up', '/*$'],
+    disallow:['/account', '/account/', '/s', '/s/'],
     blockAiBots: false,
     sitemap: ['/sitemap.xml'],
   },
