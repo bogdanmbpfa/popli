@@ -52,11 +52,12 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/scripts',
     '@nuxtjs/robots',
-    '@nuxtjs/i18n',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     '@vee-validate/nuxt',
     '@nuxtjs/device',
+    '@nuxtjs/sitemap',
+    'nuxt-schema-org',
     [
       '@nuxtjs/google-adsense',
       {
@@ -86,6 +87,8 @@ export default defineNuxtConfig({
       ? ['/', '/about', '/forgot-password', '/sign-in', '/sign-up', '/*$']
       : [],
     disallow: isProduction ? ['/account', '/account/', '/s', '/s/'] : ['*'],
+    blockAiBots: false,
+    sitemap: ['/sitemap.xml'],
   },
 
   primevue: {
@@ -123,7 +126,18 @@ export default defineNuxtConfig({
     },
   },
 
-  site: { indexable: isProduction },
+  site: {
+    indexable: isProduction,
+    url: 'https://popli.one',
+    name: 'Popli.one',
+    trailingSlash: false,
+    env: process.env.NUXT_PUBLIC_NODE_ENV,
+  },
+
+  sitemap: {
+    sources: ['/api/__sitemap__/urls'],
+    urls: ['/', '/about', '/forgot-password', '/sign-in', '/sign-up'],
+  },
 
   ssr: true,
 

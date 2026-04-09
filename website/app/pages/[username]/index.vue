@@ -134,9 +134,6 @@ definePageMeta({
 
 const route = useRoute();
 const requestUrl = useRequestURL();
-const {
-  public: { images },
-} = useRuntimeConfig();
 const { username } = route.params;
 
 const { data: profile } = await useApiJson(
@@ -158,7 +155,8 @@ const pageDescription = computed(() =>
     : `Discover ${profileName.value}'s links and social profiles on Popli.one.`,
 );
 const previewImage = computed(
-  () => profile?.coverImage || profile?.profileImage || images.logo,
+  () =>
+    profile?.coverImage || profile?.profileImage || '/assets/images/logo.png',
 );
 const canonicalUrl = computed(() => {
   return `${requestUrl.origin}${route.fullPath}`;

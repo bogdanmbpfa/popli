@@ -8,7 +8,24 @@
 	</div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+useHead({
+	title: 'Popli.one - Pop your links',
+	meta: [{ name: 'description', content: 'Popli.one - Pop your links' }],
+	link: [{ rel: 'canonical', href: 'https://popli.one' }],
+});
+
+useSeoMeta({
+	title: 'Popli.one - Pop your links',
+	description: 'Popli.one - Pop your links',
+	applicationName: 'Popli.one',
+	ogTitle: 'Popli.one - Pop your links',
+	ogDescription: 'Popli.one - Pop your links',
+	twitterCard: 'summary_large_image',
+	twitterTitle: 'Popli.one - Pop your links',
+	twitterDescription: 'Popli.one - Pop your links',
+});
+</script>
 
 <style lang="scss" scoped>
 	.home {

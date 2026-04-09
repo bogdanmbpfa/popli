@@ -64,6 +64,19 @@ export class ProfileController {
     return this.profileService.getTotalClicks(account.id);
   }
 
+  @Get('/handles')
+  @ApiOperation({ summary: 'Get profile handles' })
+  @ApiProduces('application/json')
+  @ApiResponse({
+    status: 200,
+    description: 'Profile handles retrieved',
+    type: () => String,
+    isArray: true,
+  })
+  async getProfileHandles(): Promise<string[]> {
+    return await this.profileService.getProfileHandles();
+  }
+
   @Get('/:handle')
   @ApiOperation({ summary: 'Get profile' })
   @ApiParam({ name: 'handle', description: 'The handle of the profile' })

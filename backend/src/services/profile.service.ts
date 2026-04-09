@@ -360,4 +360,31 @@ export class ProfileService {
       })),
     };
   }
+
+  async getProfileHandles(): Promise<string[]> {
+    const handles: string[] = [];
+
+    const profiles = await db.query.profileModel.findMany({
+      where: isNull(profileModel.deletedAt),
+    });
+
+    await Promise.all(
+      profiles.map(async (profile) => {
+        if (!profile.handle) return;
+
+        const link = await db.query.linkModel.findFirst({
+          where: and(
+            eq(linkModel.userId, profile.userId),
+            isNull(linkModel.deletedAt),
+          ),
+        });
+
+        if (link) {
+          handles.push(profile.handle);
+        }
+      }),
+    );
+
+    return handles;
+  }
 }

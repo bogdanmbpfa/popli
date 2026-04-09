@@ -103,6 +103,25 @@ const {
 const toast = useToast();
 const userStore = useUserStore();
 
+useHead({
+  title: 'Sign in - Popli.one',
+  meta: [
+    { name: 'description', content: 'Sign in to your account to continue' },
+  ],
+  link: [{ rel: 'canonical', href: 'https://popli.one/sign-in' }],
+});
+
+useSeoMeta({
+  title: 'Sign in - Popli.one',
+  description: 'Sign in to your account to continue',
+  applicationName: 'Popli.one',
+  ogTitle: 'Sign in - Popli.one',
+  ogDescription: 'Sign in to your account to continue',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Sign in - Popli.one',
+  twitterDescription: 'Sign in to your account to continue',
+});
+
 const { defineField, errors, handleSubmit, isSubmitting, resetForm } =
   useForm<IAuthLogin>({
     validationSchema: yup.object().shape({
