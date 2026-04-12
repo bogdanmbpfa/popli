@@ -98,28 +98,22 @@ definePageMeta({
   middleware: 'is-not-logged-in',
 });
 
-useHead({
-  title: 'Sign up - Popli.one',
-  meta: [{ name: 'description', content: 'Sign up to create your account' }],
-  link: [{ rel: 'canonical', href: 'https://popli.one/sign-up' }],
-});
-
-useSeoMeta({
-  title: 'Sign up - Popli.one',
-  description: 'Sign up to create your account',
-  applicationName: 'Popli.one',
-  ogTitle: 'Sign up - Popli.one',
-  ogDescription: 'Sign up to create your account',
-  twitterCard: 'summary_large_image',
-  twitterTitle: 'Sign up - Popli.one',
-  twitterDescription: 'Sign up to create your account',
-});
-
+const { seo } = useAppConfig();
 const {
   public: { nodeEnv },
 } = useRuntimeConfig();
 const toast = useToast();
 const userStore = useUserStore();
+
+usePageSeo({
+  title: seo.signUpTitle,
+  description: seo.signUpDescription,
+  path: '/sign-up',
+  keywords:
+    'sign up Popli, create account, free link in bio, URL shortener signup, QR code generator',
+  ogImage: seo.defaultOgImagePath,
+  robots: 'index, follow',
+});
 
 const {
   defineField,

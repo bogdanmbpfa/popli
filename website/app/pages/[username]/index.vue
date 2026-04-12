@@ -132,8 +132,10 @@ definePageMeta({
   layout: 'profile',
 });
 
+const { seo } = useAppConfig();
 const route = useRoute();
 const requestUrl = useRequestURL();
+
 const { username } = route.params;
 
 const { data: profile } = await useApiJson(
@@ -154,36 +156,22 @@ const pageDescription = computed(() =>
     ? profileBio.value
     : `Discover ${profileName.value}'s links and social profiles on Popli.one.`,
 );
-const previewImage = computed(
-  () =>
-    profile?.coverImage || profile?.profileImage || '/assets/images/logo.png',
+const previewImageSource = computed(
+  () => profile?.coverImage || profile?.profileImage || seo.defaultOgImagePath,
 );
-const canonicalUrl = computed(() => {
-  return `${requestUrl.origin}${route.fullPath}`;
-});
+const absoluteOgImage = computed(() =>
+  toAbsoluteUrl(requestUrl.origin, previewImageSource.value),
+);
 
-useHead({
-  link: [
-    {
-      rel: 'canonical',
-      href: canonicalUrl,
-    },
-  ],
-});
-
-useSeoMeta({
-  title: pageTitle,
-  description: pageDescription,
+usePageSeo({
+  title: pageTitle.value,
+  description: pageDescription.value,
+  path: route.fullPath,
+  keywords:
+    'Popli.one, profile, link in bio, URL shortener, QR codes, creator platform',
+  ogImage: absoluteOgImage.value,
   ogType: 'profile',
-  ogTitle: pageTitle,
-  ogDescription: pageDescription,
-  ogUrl: canonicalUrl,
-  ogImage: previewImage,
-  twitterCard: 'summary_large_image',
-  twitterTitle: pageTitle,
-  twitterDescription: pageDescription,
-  twitterImage: previewImage,
-  robots: () => (profile ? 'index, follow' : 'noindex, nofollow'),
+  robots: 'index, follow',
 });
 
 onMounted(() => {

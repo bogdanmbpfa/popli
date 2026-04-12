@@ -9,6 +9,12 @@
 		layout: 'auth',
 	});
 
+	useHead({ title: 'Redirecting…' });
+	useSeoMeta({
+		robots: 'noindex, nofollow',
+		description: 'Short link redirect on Popli.one.',
+	});
+
 	onBeforeMount(async () => {
 		const {
 			params: { shortUrlCode },

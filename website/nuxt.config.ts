@@ -1,5 +1,4 @@
 import Aura from '@primeuix/themes/aura';
-import { EEnvironment } from './enums';
 
 export default defineNuxtConfig({
   app: {
@@ -109,6 +108,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     apiBaseUrl: '',
     public: {
+      siteUrl: 'https://popli.one',
       cookies: {
         auth: {
           name: 'POPLI_AUTH_TOKEN',

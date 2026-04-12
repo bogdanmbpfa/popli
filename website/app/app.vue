@@ -13,22 +13,31 @@
 <script setup lang="ts">
 	import { configure } from 'vee-validate';
 
-	useHead({
-		title: 'Popli.one - Pop your links',
-		meta: [{ name: 'description', content: 'Popli.one - Pop your links' }],
-		link: [{ rel: 'canonical', href: 'https://popli.one' }],
+	const { seo } = useAppConfig();
+
+	const route = useRoute();
+	const {
+		public: { siteUrl },
+	} = useRuntimeConfig();
+
+	const siteOrigin = computed(() =>
+		String(siteUrl || 'https://popli.one').replace(/\/$/, ''),
+	);
+
+	const canonicalHref = computed(() => {
+		const raw = route.path;
+		const path =
+			raw.length > 1 && raw.endsWith('/') ? raw.slice(0, -1) : raw;
+		return `${siteOrigin.value}${path === '' ? '/' : path}`;
 	});
 
-	useSeoMeta({
-		title: 'Popli.one - Pop your links',
-		description: 'Popli.one - Pop your links',
-		applicationName: 'Popli.one',
-		ogTitle: 'Popli.one - Pop your links',
-		ogDescription: 'Popli.one - Pop your links',
-		twitterCard: 'summary_large_image',
-		twitterTitle: 'Popli.one - Pop your links',
-		twitterDescription: 'Popli.one - Pop your links',
-		twitterImage: 'https://popli.one/logo.png',
+	usePageSeo({
+		title: seo.siteName,
+		description: seo.homeDescription,
+		path: '/',
+		keywords: seo.homeKeywords,
+		ogImage: seo.defaultOgImagePath,
+		robots: 'index, follow',
 	});
 
 	configure({

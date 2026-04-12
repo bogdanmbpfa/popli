@@ -125,35 +125,18 @@ definePageMeta({
   middleware: 'is-not-logged-in',
 });
 
+const { seo } = useAppConfig();
 const {
   public: { nodeEnv },
 } = useRuntimeConfig();
 const toast = useToast();
 
-useHead({
-  title: 'Forgot password - Popli.one',
-  meta: [
-    {
-      name: 'description',
-      content:
-        "Forgot your password? No worries, it happens. Enter your email below and we'll send you instructions to reset your password.",
-    },
-  ],
-  link: [{ rel: 'canonical', href: 'https://popli.one/forgot-password' }],
-});
-
-useSeoMeta({
-  title: 'Forgot password - Popli.one',
-  description:
-    "Forgot your password? No worries, it happens. Enter your email below and we'll send you instructions to reset your password.",
-  applicationName: 'Popli.one',
-  ogTitle: 'Forgot password - Popli.one',
-  ogDescription:
-    "Forgot your password? No worries, it happens. Enter your email below and we'll send you instructions to reset your password.",
-  twitterCard: 'summary_large_image',
-  twitterTitle: 'Forgot password - Popli.one',
-  twitterDescription:
-    "Forgot your password? No worries, it happens. Enter your email below and we'll send you instructions to reset your password.",
+usePageSeo({
+  title: seo.forgotPasswordTitle,
+  description: seo.forgotPasswordDescription,
+  path: '/forgot-password',
+  ogImage: seo.defaultOgImagePath,
+  robots: 'index, follow',
 });
 
 const passwordResetRequested = ref(false);

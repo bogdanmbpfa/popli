@@ -97,29 +97,20 @@ definePageMeta({
   middleware: 'is-not-logged-in',
 });
 
+const { seo } = useAppConfig();
 const {
   public: { nodeEnv },
 } = useRuntimeConfig();
 const toast = useToast();
 const userStore = useUserStore();
 
-useHead({
-  title: 'Sign in - Popli.one',
-  meta: [
-    { name: 'description', content: 'Sign in to your account to continue' },
-  ],
-  link: [{ rel: 'canonical', href: 'https://popli.one/sign-in' }],
-});
-
-useSeoMeta({
-  title: 'Sign in - Popli.one',
-  description: 'Sign in to your account to continue',
-  applicationName: 'Popli.one',
-  ogTitle: 'Sign in - Popli.one',
-  ogDescription: 'Sign in to your account to continue',
-  twitterCard: 'summary_large_image',
-  twitterTitle: 'Sign in - Popli.one',
-  twitterDescription: 'Sign in to your account to continue',
+usePageSeo({
+  title: seo.signInTitle,
+  description: seo.signInDescription,
+  path: '/sign-in',
+  keywords: 'Popli login, sign in, account access',
+  ogImage: seo.defaultOgImagePath,
+  robots: 'index, follow',
 });
 
 const { defineField, errors, handleSubmit, isSubmitting, resetForm } =

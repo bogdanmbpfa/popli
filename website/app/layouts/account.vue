@@ -49,6 +49,15 @@
             <Icon name="material-symbols:settings-outline" size="1.5rem" />
             Settings
           </nuxt-link>
+
+          <nuxt-link
+            class="default sidebar-link"
+            to="/account/billing"
+            @click="toggleDrawer"
+          >
+            <Icon name="mdi:credit-card-outline" size="1.5rem" />
+            Billing
+          </nuxt-link>
         </div>
 
         <div class="link-group">
@@ -119,6 +128,7 @@
 <script setup lang="ts">
 import { EApiEndpoint } from '~~/enums';
 
+const { seo } = useAppConfig();
 const { isMobile } = useDevice();
 const toast = useToast();
 const userStore = useUserStore();
@@ -170,6 +180,16 @@ const heading = computed(() => {
       };
   }
 });
+
+useHead({
+  title: () => `${heading.value.name} — ${seo.siteName}`,
+});
+
+useSeoMeta({
+  robots: 'noindex, nofollow',
+  description: () => heading.value.description,
+});
+
 const profile = computed(() => userStore.getProfile!);
 
 onMounted(async () => {
