@@ -3,7 +3,7 @@
     <div v-if="user" class="container">
       <FormContainer
         title="Account information"
-        title-icon="mdi:shield-outline"
+        title-icon="popli:shield-outline"
         description="Update your account information."
       >
         <form @submit.prevent="onSubmitVerifyEmail">
@@ -23,12 +23,12 @@
             class="default text-left"
             severity="success"
           >
-            <Icon name="mdi:checkbox-marked-circle-outline" class="success" />
+            <Icon name="popli:checkbox-marked-circle-outline" class="success" />
             Email verified
           </PMessage>
 
           <PMessage v-else class="default text-left" severity="error">
-            <Icon name="mdi:alert-circle-outline" class="danger" />
+            <Icon name="popli:alert-circle-outline" class="danger" />
             Email not verified.
           </PMessage>
 
@@ -149,7 +149,7 @@
 
       <div class="danger-zone">
         <div class="heading">
-          <Icon name="pixel:octagon-times-solid" class="danger" size="1.5rem" />
+          <Icon name="popli:octagon-times-solid" class="danger" size="1.5rem" />
           <span>Danger Zone</span>
         </div>
 

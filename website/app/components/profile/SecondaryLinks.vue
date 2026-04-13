@@ -1,7 +1,7 @@
 <template>
   <div class="secondary-links">
     <div class="heading">
-      <Icon class="info" name="material-symbols:link" size="1rem" />
+      <Icon class="info" name="popli:link-2" size="1rem" />
       <span>Secondary Links</span>
     </div>
 

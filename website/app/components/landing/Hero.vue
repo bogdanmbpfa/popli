@@ -29,11 +29,11 @@
 
 <script setup lang="ts">
 const features = ref([
-  { icon: 'akar-icons:link-chain', name: 'Link-in-Bio' },
-  { icon: 'charm:lightning-bolt', name: 'Shorten URLs' },
-  { icon: 'ic:outline-qr-code-scanner', name: 'QR Codes' },
+  { icon: 'popli:link-chain', name: 'Link-in-Bio' },
+  { icon: 'popli:lightning-bolt', name: 'Shorten URLs' },
+  { icon: 'popli:outline-qr-code-scanner', name: 'QR Codes' },
   // {
-  //   icon: 'material-symbols:shopping-bag-outline-sharp',
+  //   icon: 'popli:shopping-bag-outline',
   //   name: 'Digital Products',
   // },
 ]);

@@ -42,13 +42,21 @@ export default defineNuxtConfig({
     dir: 'assets/images',
   },
 
+  icon: {
+    customCollections: [
+      {
+        prefix: 'popli',
+        dir: './app/assets/icon',
+      },
+    ],
+  },
+
   modules: [
     '@primevue/nuxt-module',
     '@nuxt/eslint',
     '@nuxt/fonts',
     '@nuxt/icon',
     '@nuxt/image',
-    '@nuxt/scripts',
     '@nuxtjs/robots',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',

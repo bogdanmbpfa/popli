@@ -5,7 +5,7 @@
           <PTab value="generate">
             <Icon
               :class="tab === 'generate' ? 'danger' : 'default'"
-              name="mdi:plus"
+              name="popli:plus"
               size="1rem"
             />
             Create new
@@ -13,7 +13,7 @@
           <PTab value="manage">
             <Icon
               :class="tab === 'manage' ? 'danger' : 'default'"
-              name="mdi:qrcode"
+              name="popli:qrcode"
               size="1rem"
             />
             Manage QR Codes

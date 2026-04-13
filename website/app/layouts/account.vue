@@ -28,7 +28,7 @@
             to="/account/link-in-bio"
             @click="toggleDrawer"
           >
-            <Icon name="akar-icons:link-chain" size="1.5rem" />
+            <Icon name="popli:link-chain" size="1.5rem" />
             Link in Bio
           </nuxt-link>
 
@@ -37,7 +37,7 @@
             to="/account/analytics"
             @click="toggleDrawer"
           >
-            <Icon name="material-symbols:analytics-outline" size="1.5rem" />
+            <Icon name="popli:analytics-outline" size="1.5rem" />
             Analytics
           </nuxt-link>
 
@@ -46,7 +46,7 @@
             to="/account/settings"
             @click="toggleDrawer"
           >
-            <Icon name="material-symbols:settings-outline" size="1.5rem" />
+            <Icon name="popli:settings-outline" size="1.5rem" />
             Settings
           </nuxt-link>
 
@@ -55,7 +55,7 @@
             to="/account/billing"
             @click="toggleDrawer"
           >
-            <Icon name="mdi:credit-card-outline" size="1.5rem" />
+            <Icon name="popli:credit-card-outline" size="1.5rem" />
             Billing
           </nuxt-link>
         </div>
@@ -68,7 +68,7 @@
             to="/account/url-shortener"
             @click="toggleDrawer"
           >
-            <Icon name="akar-icons:link-chain" size="1.5rem" />
+            <Icon name="popli:link-chain" size="1.5rem" />
             URL Shortener
           </nuxt-link>
 
@@ -77,7 +77,7 @@
             to="/account/qr-code"
             @click="toggleDrawer"
           >
-            <Icon name="ic:outline-qr-code-scanner" size="1.5rem" />
+            <Icon name="popli:outline-qr-code-scanner" size="1.5rem" />
             QR Code
           </nuxt-link>
         </div>
@@ -85,7 +85,7 @@
 
       <template #footer>
         <nuxt-link class="default sidebar-link" to="/" @click="toggleDrawer">
-          <Icon name="material-symbols:home-outline" size="1.5rem" />
+          <Icon name="popli:home-outline" size="1.5rem" />
           Home
         </nuxt-link>
 

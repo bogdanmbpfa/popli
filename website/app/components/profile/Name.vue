@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="onNameSubmit">
     <div class="heading">
-      <Icon class="info" name="material-symbols:shield-person-outline-rounded" size="1rem" />
+      <Icon class="info" name="popli:shield-person-outline-rounded" size="1rem" />
       <span>Name</span>
     </div>
 

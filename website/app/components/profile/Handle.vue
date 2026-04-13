@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="onHandleSubmit">
     <div class="heading">
-      <Icon class="info" name="material-symbols:alternate-email" size="1rem" />
+      <Icon class="info" name="popli:alternate-email" size="1rem" />
       <span>Handle</span>
     </div>
 

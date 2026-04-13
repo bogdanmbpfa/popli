@@ -3,7 +3,7 @@
     <div class="heading">
       <Icon
         class="danger"
-        name="emojione-monotone:globe-showing-europe-africa"
+        name="popli:globe-showing-europe-africa"
         size="1rem"
       />
       <span class="title"> Global Distribution </span>

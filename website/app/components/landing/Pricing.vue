@@ -61,8 +61,8 @@
               <Icon
                 :name="
                   price.featured
-                    ? 'material-symbols:check-circle-rounded'
-                    : 'material-symbols:check-circle-outline'
+                    ? 'popli:check-circle-rounded'
+                    : 'popli:check-circle-outline'
                 "
                 size="1rem"
               />

@@ -5,7 +5,7 @@
         <Icon
           v-if="!profile.coverImage"
           class="info"
-          name="material-symbols:person"
+          name="popli:person"
           size="14rem"
         />
 

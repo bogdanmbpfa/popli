@@ -1,7 +1,7 @@
 <template>
   <div class="click-type-distribution">
     <div class="heading">
-      <Icon class="danger" name="material-symbols:donut-small" size="1rem" />
+      <Icon class="danger" name="popli:donut-small" size="1rem" />
       <span class="title"> Click Type Distribution </span>
     </div>
 

@@ -11,13 +11,13 @@
     <span v-if="caption" class="caption">{{ caption }}</span>
 
     <div v-if="error" class="error">
-      <Icon class="danger" name="mdi:alert-circle-outline" size="0.75rem" />
+      <Icon class="danger" name="popli:alert-circle-outline" size="0.75rem" />
 
       <span>{{ error }}</span>
     </div>
 
     <div v-if="successCaption" class="success">
-      <Icon class="success" name="mdi:check-circle-outline" size="0.75rem" />
+      <Icon class="success" name="popli:check-circle-outline-2" size="0.75rem" />
 
       <span>{{ successCaption }}</span>
     </div>

@@ -689,7 +689,7 @@
             />
 
             <Icon
-              name="material-symbols:add-photo-alternate-outline-rounded"
+              name="popli:add-photo-alternate-outline-rounded"
               size="2rem"
             />
 
@@ -965,8 +965,8 @@ const shape = ref<'circle' | 'square'>('square');
 const shapeOptions = ref<
   { label: string; value: 'circle' | 'square'; icon: string }[]
 >([
-  { label: 'Circle', value: 'circle', icon: 'mdi:circle' },
-  { label: 'Square', value: 'square', icon: 'mdi:square' },
+  { label: 'Circle', value: 'circle', icon: 'popli:circle' },
+  { label: 'Square', value: 'square', icon: 'popli:square' },
 ]);
 const tab = ref<'colors' | 'shapes' | 'logo'>('colors');
 const width = ref<number>(128);

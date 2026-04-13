@@ -8,9 +8,9 @@
           <div class="dynamic-island" />
 
           <div class="network-battery">
-            <Icon class="info" name="material-symbols:android-wifi-3-bar" size="1rem" />
+            <Icon class="info" name="popli:android-wifi-3-bar" size="1rem" />
 
-            <Icon class="info" name="material-symbols-light:battery-android-5" size="1rem" />
+            <Icon class="info" name="popli:battery-android-5" size="1rem" />
           </div>
         </div>
 
@@ -19,7 +19,7 @@
             <Icon
               v-if="!profile.coverImage"
               class="info"
-              name="material-symbols:person"
+              name="popli:person"
               size="14rem"
             />
 

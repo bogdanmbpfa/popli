@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="onSubmitCoverImage">
     <div class="heading">
-      <Icon class="info" name="material-symbols:image" size="1rem" />
+      <Icon class="info" name="popli:image" size="1rem" />
       <span>Cover</span>
     </div>
     

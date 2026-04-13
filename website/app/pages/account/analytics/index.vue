@@ -5,7 +5,7 @@
         <div class="heading">
           <Icon
             class="danger"
-            name="material-symbols:ads-click"
+            name="popli:ads-click"
             size="1.5rem"
           />
 
@@ -20,13 +20,13 @@
           <Icon
             v-if="dailyClicksChangePercentage >= 0"
             class="success"
-            name="streamline:graph-arrow-increase"
+            name="popli:graph-arrow-increase"
             size="1.5rem"
           />
           <Icon
             v-else
             class="danger"
-            name="streamline:graph-arrow-decrease"
+            name="popli:graph-arrow-decrease"
             size="1.5rem"
           />
 

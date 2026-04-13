@@ -16,7 +16,7 @@
 
           <div class="icon-tag">
             <div class="icon">
-              <Icon name="material-symbols-light:link" size="2rem" />
+              <Icon name="popli:link" size="2rem" />
             </div>
 
             <PTag class="default" severity="secondary">Fast & Reliable</PTag>
@@ -33,7 +33,7 @@
         <div class="feature qr-code">
           <div class="icon-tag">
             <div class="icon">
-              <Icon name="material-symbols-light:qr-code-2" size="2rem" />
+              <Icon name="popli:qr-code-2" size="2rem" />
             </div>
           </div>
 
@@ -45,14 +45,14 @@
           </span>
 
           <div class="preview">
-            <Icon name="material-symbols:qr-code-scanner" size="3rem" />
+            <Icon name="popli:qr-code-scanner" size="3rem" />
           </div>
         </div>
 
         <div class="feature link-in-bio">
           <div class="icon-tag">
             <div class="icon">
-              <Icon name="material-symbols:person-outline" size="2rem" />
+              <Icon name="popli:person-outline" size="2rem" />
             </div>
           </div>
 
@@ -67,7 +67,7 @@
         <div class="feature digital-store">
           <div class="icon-tag">
             <div class="icon">
-              <Icon name="material-symbols:shopping-bag-outline" size="2rem" />
+              <Icon name="popli:shopping-bag-outline" size="2rem" />
             </div>
 
             <PTag class="default" severity="secondary">Upcoming Feature</PTag>

@@ -3,7 +3,7 @@
     <div class="heading">
       <Icon
         class="success"
-        name="material-symbols:location-on-outline"
+        name="popli:location-on-outline"
         size="1rem"
       />
       <span class="title"> Top Countries </span>

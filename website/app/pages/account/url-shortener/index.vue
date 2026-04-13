@@ -154,7 +154,7 @@
               }}</span>
 
               <Icon
-                name="material-symbols:bar-chart"
+                name="popli:bar-chart"
                 class="success clickable"
                 size="1.25rem"
                 title="Total clicks"

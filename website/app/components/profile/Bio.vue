@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="onBioSubmit">
     <div class="heading">
-      <Icon class="info" name="solar:user-id-linear" size="1rem" />
+      <Icon class="info" name="popli:user-id-linear" size="1rem" />
       <span>Bio</span>
     </div>
 

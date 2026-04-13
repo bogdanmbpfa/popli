@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="onSubmitProfileImage">
     <div class="heading">
-      <Icon class="info" name="icon-park-outline:avatar" size="1rem" />
+      <Icon class="info" name="popli:avatar" size="1rem" />
       <span>Avatar</span>
     </div>
     

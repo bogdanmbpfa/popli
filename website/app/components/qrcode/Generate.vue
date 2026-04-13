@@ -165,10 +165,10 @@ const qrCodeStore = useQrCodeStore();
 const toast = useToast();
 
 const dataTypeIcons = ref({
-  [EQRCodeDataType.TEXT]: 'mdi:text-box-outline',
-  [EQRCodeDataType.URL]: 'material-symbols:link',
-  [EQRCodeDataType.EMAIL]: 'mdi:email-outline',
-  [EQRCodeDataType.PHONE]: 'mdi:phone-outline',
+  [EQRCodeDataType.TEXT]: 'popli:text-box-outline',
+  [EQRCodeDataType.URL]: 'popli:link-2',
+  [EQRCodeDataType.EMAIL]: 'popli:email-outline',
+  [EQRCodeDataType.PHONE]: 'popli:phone-outline',
 });
 const formError = ref<string | null>(null);
 let qrCodeOptions = reactive<Options>({
