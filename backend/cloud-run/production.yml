@@ -5,6 +5,8 @@ metadata:
   namespace: 'popli-465817'
   labels:
     environment: production
+  annotations:
+    run.googleapis.com/custom-audiences: 'https://api.popli.one'
 spec:
   template:
     metadata:
