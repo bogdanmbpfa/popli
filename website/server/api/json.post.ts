@@ -88,6 +88,8 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    console.log('cloudRunIdToken', cloudRunIdToken);
+
     const response = await $fetch<Record<string, unknown>>(endpointPath, {
       baseURL: apiBaseUrl,
       method: endpoint.method,
