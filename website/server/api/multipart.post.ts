@@ -24,6 +24,7 @@ async function getCloudRunIdToken(audience: string): Promise<string | null> {
       headers: {
         'Metadata-Flavor': 'Google',
       },
+      responseType: 'text',
     });
   } catch {
     return null;

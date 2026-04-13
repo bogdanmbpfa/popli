@@ -24,6 +24,7 @@ async function getCloudRunIdToken(audience: string): Promise<string | null> {
       headers: {
         'Metadata-Flavor': 'Google',
       },
+      responseType: 'text',
     });
   } catch {
     return null;
@@ -78,8 +79,7 @@ export default defineEventHandler(async (event) => {
     if (
       nodeEnv !== EEnvironment.LOCAL &&
       (!cloudRunIdToken ||
-        Date.now() - cloudRunIdTokenRetrievedAt! >
-          CACHE_DURATION)
+        Date.now() - cloudRunIdTokenRetrievedAt! > CACHE_DURATION)
     ) {
       cloudRunIdToken = await getCloudRunIdToken(apiBaseUrl);
 
