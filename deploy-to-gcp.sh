@@ -141,14 +141,6 @@ if [[ "${DEPLOY_BACKEND}" == true ]]; then
     --role=roles/run.invoker \
     --quiet 2>/dev/null || true
 fi
-if [[ "${DEPLOY_WEBSITE}" == true ]]; then
-  echo ">>> Setting IAM for frontend (public access)..."
-  gcloud run services add-iam-policy-binding development-popli-frontend \
-    --region="${REGION}" \
-    --member=allUsers \
-    --role=roles/run.invoker \
-    --quiet 2>/dev/null || true
-fi
 
 echo ""
 echo "=== Deployment complete ==="
