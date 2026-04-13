@@ -6,7 +6,7 @@ metadata:
   labels:
     environment: development
   annotations:
-    run.googleapis.com/custom-audiences: ['https://dev.api.popli.one']
+    run.googleapis.com/custom-audiences: '["https://dev.api.popli.one"]'
 spec:
   template:
     metadata:
