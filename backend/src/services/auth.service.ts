@@ -32,53 +32,71 @@ export class AuthService {
   ): Promise<AuthResponseDTO> {
     const email = dto.email.toLowerCase();
 
-    const existingUser = await db.query.userModel.findFirst({
-      where: eq(userModel.email, email),
-    });
+    let token: string;
+    let refreshToken: string;
 
-    if (existingUser) {
-      throw new BadRequestException(
-        this.configService.get('errorMessage.userAlreadyExists'),
-      );
-    }
+    await db.transaction(async (tx) => {
+      const existingUser = await tx.query.userModel.findFirst({
+        where: eq(userModel.email, email),
+      });
 
-    const password = await hash(dto.password);
+      if (existingUser) {
+        throw new BadRequestException(
+          this.configService.get('errorMessage.userAlreadyExists'),
+        );
+      }
 
-    const jwtSecret = randomBytes(20).toString('hex').toUpperCase();
-    const refreshTokenSecret = randomBytes(20).toString('hex').toUpperCase();
+      const password = await hash(dto.password);
 
-    const [{ id }] = await db
-      .insert(userModel)
-      .values({
-        email,
-        password,
+      const jwtSecret = randomBytes(20).toString('hex').toUpperCase();
+      const refreshTokenSecret = randomBytes(20).toString('hex').toUpperCase();
+
+      const [{ id }] = await tx
+        .insert(userModel)
+        .values({
+          email,
+          password,
+          jwtSecret,
+          refreshTokenSecret,
+        })
+        .returning({ id: userModel.id });
+
+      const tokens = await this.generateAuthTokens(
+        id,
         jwtSecret,
         refreshTokenSecret,
-      })
-      .returning({ id: userModel.id });
+      );
 
-    const { token, refreshToken } = await this.generateAuthTokens(
-      id,
-      jwtSecret,
-      refreshTokenSecret,
-    );
+      token = tokens.token;
+      refreshToken = tokens.refreshToken;
 
-    await db.insert(authSessionModel).values({
-      userId: id,
-      refreshToken: await hash(refreshToken),
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day
-      ipAddress: request.ip!,
-      userAgent: request.headers['user-agent']!,
+      const existingSession = await tx.query.authSessionModel.findFirst({
+        where: eq(authSessionModel.ipAddress, request.ip!),
+      });
+
+      if (existingSession) {
+        await tx
+          .delete(authSessionModel)
+          .where(eq(authSessionModel.id, existingSession.id));
+      }
+
+      await tx.insert(authSessionModel).values({
+        userId: id,
+        refreshToken: await hash(refreshToken),
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day
+        ipAddress: request.ip!,
+        userAgent: request.headers['user-agent']!,
+      });
+
+      await tx.insert(profileModel).values({ userId: id });
+
+      await this.emailUtilityService.sendEmail(
+        email,
+        this.configService.get('brevo.templates.welcome') as number,
+      );
     });
 
-    await db.insert(profileModel).values({ userId: id });
-
-    await this.emailUtilityService.sendEmail(
-      email,
-      this.configService.get('brevo.templates.welcome') as number,
-    );
-
-    return { token, refreshToken };
+    return { token: token!, refreshToken: refreshToken! };
   }
 
   async login(dto: AuthLoginDTO, request: Request): Promise<AuthResponseDTO> {
