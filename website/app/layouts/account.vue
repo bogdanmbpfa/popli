@@ -1,21 +1,24 @@
 <template>
   <div class="account-layout">
-    <PDrawer
-      v-model:visible="drawerVisible"
-      class="default sidebar"
-      :show-close-icon="false"
-      :close-on-escape="false"
-      position="left"
+    <UiDrawer
+      :visible="drawerVisible"
+      :is-mobile="isMobile"
+      @update:visible="toggleDrawer"
     >
       <template #header>
-        <nuxt-img src="/logo.png" alt="Popli.one logo" loading="lazy" />
+        <nuxt-img
+          src="/logo.png"
+          alt="Popli.one logo"
+          loading="lazy"
+          width="40"
+        />
 
         <div class="title">
           <span class="name">Dashboard</span>
 
-          <span v-if="profile?.handle" class="handle"
-            >@{{ profile.handle }}</span
-          >
+          <span v-if="profile?.handle" class="handle">
+            @{{ profile.handle }}
+          </span>
         </div>
       </template>
 
@@ -84,32 +87,32 @@
       </template>
 
       <template #footer>
-        <nuxt-link class="default sidebar-link" to="/" @click="toggleDrawer">
-          <Icon name="popli:home-outline" size="1.5rem" />
-          Home
-        </nuxt-link>
+        <div class="actions">
+          <nuxt-link class="default sidebar-link" to="/" @click="toggleDrawer">
+            <Icon name="popli:home-outline" size="1.25rem" />
+            Home
+          </nuxt-link>
 
-        <PButton
-          class="default"
-          severity="danger icon-only"
-          icon="pi pi-sign-out"
-          label="Sign Out"
-          aria-label="Sign out"
-          @click="signOut"
-        />
+          <UiButton
+            class="naked"
+            severity="danger"
+            icon="popli:sign-out"
+            label="Sign Out"
+            aria-label="Sign out"
+            @click="signOut"
+          />
+        </div>
       </template>
-    </PDrawer>
+    </UiDrawer>
 
     <div class="wrapper" :class="{ 'drawer-open': drawerVisible }">
       <div class="top-bar">
-        <PButton
+        <UiButton
           v-if="isMobile"
-          class="default"
-          as="a"
-          variant="link"
-          icon="pi pi-bars"
+          class="naked"
+          severity="secondary"
+          icon="popli:bars"
           aria-label="Toggle drawer"
-          title="Toggle drawer"
           @click="toggleDrawer"
         />
 
@@ -130,15 +133,14 @@ import { EApiEndpoint } from '~~/enums';
 
 const { seo } = useAppConfig();
 const { isMobile } = useDevice();
-const toast = useToast();
+const route = useRoute();
+const uiToast = useUiToast();
 const userStore = useUserStore();
 
 const drawerVisible = ref(true);
 
 const heading = computed(() => {
-  const { path } = useRoute();
-
-  switch (path) {
+  switch (route.path) {
     case '/account/link-in-bio':
       return {
         name: 'Link in Bio',
@@ -214,7 +216,7 @@ const signOut = async () => {
   try {
     await useSignOut();
   } catch {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Error',
       detail: 'Failed to sign out. Please try again.',
@@ -226,7 +228,7 @@ const signOut = async () => {
   userStore.setUser(null);
   userStore.setProfile(null);
 
-  toast.add({
+  uiToast.add({
     severity: 'success',
     summary: 'Signed Out',
     detail: 'You have been signed out successfully.',
@@ -246,6 +248,74 @@ const signOut = async () => {
   min-height: 100lvh;
   position: relative;
   width: 100%;
+
+  :deep(.ui-drawer-overlay) {
+    .ui-drawer {
+      .header {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+
+        .title {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+
+          .name {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--neutral-100);
+          }
+
+          .handle {
+            font-size: 0.875rem;
+            color: var(--neutral-400);
+          }
+        }
+      }
+
+      .content {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        .link-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+
+          .title {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--neutral-100);
+          }
+
+          .sidebar-link {
+            display: flex;
+            flex-direction: row;
+            gap: 0.5rem;
+            align-items: center;
+          }
+        }
+      }
+
+      .footer {
+        .actions {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+
+          .sidebar-link {
+            width: fit-content;
+          }
+
+          .ui-button {
+            width: fit-content;
+          }
+        }
+      }
+    }
+  }
 
   .wrapper {
     display: flex;
@@ -297,12 +367,12 @@ const signOut = async () => {
         .name {
           font-size: 1.25rem;
           font-weight: 500;
-          color: var(--color-neutral-100);
+          color: var(--neutral-100);
         }
 
         .description {
           font-size: 0.875rem;
-          color: var(--color-neutral-400);
+          color: var(--neutral-400);
         }
       }
     }
@@ -323,11 +393,11 @@ const signOut = async () => {
     }
   }
 
-  .p-drawer-mask:has(.sidebar) {
+  .ui-drawer-overlay:has(.ui-drawer) {
     position: fixed !important;
     max-height: 100lvh !important;
 
-    .p-drawer {
+    .ui-drawer {
       background-color: oklch(0.1773 0.0133 264.14);
     }
   }

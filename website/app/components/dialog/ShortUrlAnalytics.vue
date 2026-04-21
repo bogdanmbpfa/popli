@@ -51,8 +51,6 @@
 </template>
 
 <script setup lang="ts">
-import type { DynamicDialogInstance } from 'primevue/dynamicdialogoptions';
-
 import worldCountryCoordinates from '~~/constants/world-countries.json';
 import { EApiEndpoint } from '~~/enums';
 import type {
@@ -62,21 +60,20 @@ import type {
   IWorldCountry,
 } from '~~/interfaces';
 
-const dialogRef = inject<{ value: DynamicDialogInstance }>('dialogRef');
+const props = defineProps<{
+  shortUrl: IUrlShortUrl;
+}>();
 
 const dailyClicks = ref<IUrlShortUrlDailyClicks[]>([]);
 const countryClicks = ref<IUrlShortUrlCountryClicks[]>([]);
-const shortUrl = ref<IUrlShortUrl>();
 
 onMounted(async () => {
-  shortUrl.value = dialogRef?.value.data.shortUrl;
-
-  if (shortUrl.value) {
+  if (props.shortUrl) {
     const { data: dailyClicksData } = await useApiJson(
       EApiEndpoint.URL_SHORT_URL_DAILY_CLICKS,
       {},
       {},
-      { id: shortUrl.value.id },
+      { id: props.shortUrl.id },
     );
 
     if (dailyClicksData) {
@@ -87,7 +84,7 @@ onMounted(async () => {
       EApiEndpoint.URL_SHORT_URL_COUNTRY_CLICKS,
       {},
       {},
-      { id: shortUrl.value.id },
+      { id: props.shortUrl.id },
     );
 
     if (countryClicksData) {

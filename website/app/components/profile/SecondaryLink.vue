@@ -4,20 +4,20 @@
       v-if="Number.isFinite(link.position) && (link.position! > 0 || link.position! < lastPosition)"
       class="position-buttons"
     >
-      <PButton
+      <UiButton
         v-if="Number.isFinite(link.position) && link.position! > 0"
-        class="default up-button"
+        class="up-button"
         severity="help"
-        icon="pi pi-arrow-up"
+        icon="popli:arrow-up"
         title="Move up"
         aria-label="Move up"
         @click="onIncrementPosition"
       />
-      <PButton
+      <UiButton
         v-if="Number.isFinite(link.position) && link.position! < lastPosition"
-        class="default down-button"
+        class="down-button"
         severity="help"
-        icon="pi pi-arrow-down"
+        icon="popli:arrow-down"
         title="Move down"
         aria-label="Move down"
         @click="onDecrementPosition"
@@ -26,10 +26,9 @@
 
     <div class="content">
       <FormInput id="title" label="Title" required>
-        <PInputText
+        <UiInputText
           v-model="title"
           name="title"
-          class="default"
           fluid
           placeholder="Title"
           @update:model-value="onTitleChange"
@@ -39,24 +38,21 @@
       <div class="title-colors">
         <span class="title">Title Colors</span>
 
-        <PSelectButton
+        <UiSelectButton
           v-model="titleColorType"
-          class="default"
           :options="titleColorTypeOptions"
-          :option-label="(option) => option.label"
-          :option-value="(option) => option.value"
+          option-label="label"
+          option-value="value"
         />
 
         <div v-if="titleColorType === 'solid'" class="color-picker-container">
-          <PColorPicker
+          <UiColorPicker
             v-model="titleColors[0]"
-            class="default"
-            overlay-class="default"
             fluid
             format="hex"
-            @change="setTitleColor($event, 0)"
+            @update:model-value="setTitleColor($event, 0)"
           />
-          <PInputText
+          <UiInputText
             :value="titleColors[0] ? `#${titleColors[0]}` : ''"
             class="default"
             readonly
@@ -66,20 +62,17 @@
         <div v-if="titleColorType === 'gradient'" class="gradient-controls">
           <div class="gradient-stop">
             <div class="color-picker-container">
-              <PColorPicker
-                id="title-color-gradient-0"
+              <UiColorPicker
                 v-model="titleColors[0]"
-                class="default"
-                overlay-class="default"
+                id="title-color-gradient-0"
                 fluid
                 format="hex"
-                @change="setTitleColor($event, 0)"
+                @update:model-value="setTitleColor($event, 0)"
               />
             </div>
 
-            <PInputText
-              class="default"
-              input-class="default"
+            <UiInputText
+              name="title-color-gradient-0"
               readonly
               :value="titleColors[0] ? `#${titleColors[0]}` : ''"
             />
@@ -87,20 +80,17 @@
 
           <div class="gradient-stop">
             <div class="color-picker-container">
-              <PColorPicker
-                id="title-color-gradient-1"
+              <UiColorPicker
                 v-model="titleColors[1]"
-                class="default"
-                overlay-class="default"
+                id="title-color-gradient-1"
                 fluid
                 format="hex"
-                @change="setTitleColor($event, 1)"
+                @update:model-value="setTitleColor($event, 1)"
               />
             </div>
 
-            <PInputText
-              class="default"
-              input-class="default"
+            <UiInputText
+              name="title-color-gradient-1"
               readonly
               :value="titleColors[1] ? `#${titleColors[1]}` : ''"
             />
@@ -109,10 +99,9 @@
       </div>
 
       <FormInput id="url" label="URL" required>
-        <PInputText
+        <UiInputText
           v-model="url"
           name="url"
-          class="default"
           fluid
           placeholder="URL"
           @update:model-value="onUrlChange"
@@ -137,29 +126,27 @@
       <div class="background-colors">
         <span class="title">Background Colors</span>
 
-        <PSelectButton
+        <UiSelectButton
           v-model="backgroundColorType"
-          class="default"
           :options="backgroundColorTypeOptions"
-          :option-label="(option) => option.label"
-          :option-value="(option) => option.value"
+          option-label="label"
+          option-value="value"
         />
 
         <div
           v-if="backgroundColorType === 'solid'"
           class="color-picker-container"
         >
-          <PColorPicker
+          <UiColorPicker
             v-model="backgroundColors[0]"
-            class="default"
-            overlay-class="default"
+            id="background-color-solid-0"
             fluid
             format="hex"
-            @change="setBackgroundColor($event, 0)"
+            @update:model-value="setBackgroundColor($event, 0)"
           />
-          <PInputText
+          <UiInputText
             :value="backgroundColors[0] ? `#${backgroundColors[0]}` : ''"
-            class="default"
+            name="background-color-solid-0"
             readonly
           />
         </div>
@@ -170,20 +157,18 @@
         >
           <div class="gradient-stop">
             <div class="color-picker-container">
-              <PColorPicker
+              <UiColorPicker
                 id="background-color-gradient-0"
                 v-model="backgroundColors[0]"
-                class="default"
-                overlay-class="default"
                 fluid
                 format="hex"
-                @change="setBackgroundColor($event, 0)"
+                @update:model-value="setBackgroundColor($event, 0)"
               />
             </div>
 
-            <PInputText
+            <UiInputText
               class="default"
-              input-class="default"
+              name="background-color-gradient-0"
               readonly
               :value="backgroundColors[0] ? `#${backgroundColors[0]}` : ''"
             />
@@ -191,20 +176,17 @@
 
           <div class="gradient-stop">
             <div class="color-picker-container">
-              <PColorPicker
+              <UiColorPicker
                 id="background-color-gradient-1"
                 v-model="backgroundColors[1]"
-                class="default"
-                overlay-class="default"
                 fluid
                 format="hex"
-                @change="setBackgroundColor($event, 1)"
+                @update:model-value="setBackgroundColor($event, 1)"
               />
             </div>
 
-            <PInputText
-              class="default"
-              input-class="default"
+            <UiInputText
+              name="background-color-gradient-1"
               readonly
               :value="backgroundColors[1] ? `#${backgroundColors[1]}` : ''"
             />
@@ -213,11 +195,12 @@
       </div>
     </div>
 
-    <PButton
-      class="default"
+    <UiButton
+      class="naked"
       severity="danger"
-      icon="pi pi-times"
-      title="Delete"
+      icon="popli:times-outline"
+      icon-position="left"
+      icon-size="1.5rem"
       aria-label="Delete"
       @click="onDelete"
     />
@@ -226,7 +209,6 @@
 
 <script setup lang="ts">
 import debounce from 'lodash/debounce';
-import type { ColorPickerChangeEvent } from 'primevue/colorpicker';
 
 import type FileUpload from '~/components/form/FileUpload.vue';
 import { EApiEndpoint } from '~~/enums';
@@ -237,7 +219,7 @@ const props = defineProps<{
   lastPosition: number;
 }>();
 
-const toast = useToast();
+const uiToast = useUiToast();
 const urlStore = useUrlStore();
 
 const backgroundImageUpload = ref<InstanceType<typeof FileUpload>>();
@@ -304,16 +286,16 @@ const onTitleChange = debounce(
   200,
 );
 
-const setTitleColor = (event: ColorPickerChangeEvent, index: number) => {
-  titleColors.value[index] = event.value;
+const setTitleColor = (value: string, index: number) => {
+  titleColors.value[index] = value;
   urlStore.updateLink(props.link.type, {
     ...props.link,
     titleColors: titleColors.value,
   });
 };
 
-const setBackgroundColor = (event: ColorPickerChangeEvent, index: number) => {
-  backgroundColors.value[index] = event.value;
+const setBackgroundColor = (value: string, index: number) => {
+  backgroundColors.value[index] = value;
   urlStore.updateLink(props.link.type, {
     ...props.link,
     backgroundColors: backgroundColors.value,
@@ -346,7 +328,7 @@ const onDelete = async () => {
   );
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Error',
       detail: error.message,
@@ -356,7 +338,7 @@ const onDelete = async () => {
 
   urlStore.deleteLink(props.link.type, props.link);
 
-  return toast.add({
+  return uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'Link deleted successfully',
@@ -376,10 +358,10 @@ const onDelete = async () => {
     flex-direction: column;
     gap: 0.5rem;
 
-    :deep(.p-button) {
+    :deep(.ui-button) {
       padding: 0.25rem 0.5rem;
 
-      .p-button-icon {
+      .iconify {
         font-size: 0.75rem;
       }
     }

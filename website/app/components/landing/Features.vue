@@ -19,7 +19,7 @@
               <Icon name="popli:link" size="2rem" />
             </div>
 
-            <PTag class="default" severity="secondary">Fast & Reliable</PTag>
+            <UiTag severity="secondary">Fast & Reliable</UiTag>
           </div>
 
           <span class="title"> URL Shortener </span>
@@ -70,7 +70,7 @@
               <Icon name="popli:shopping-bag-outline" size="2rem" />
             </div>
 
-            <PTag class="default" severity="secondary">Upcoming Feature</PTag>
+            <UiTag severity="secondary">Upcoming Feature</UiTag>
           </div>
 
           <span class="title"> Digital Store </span>
@@ -81,9 +81,9 @@
           </span>
 
           <div class="sub-features">
-            <span class="sub-feature"> Instant Payouts </span>
+            <UiTag severity="primary"> Instant Payouts </UiTag>
 
-            <span class="sub-feature"> Customizable Pricing </span>
+            <UiTag severity="primary"> Customizable Pricing </UiTag>
           </div>
         </div>
       </div>
@@ -151,12 +151,6 @@
             padding: 1rem;
             border-radius: 1rem;
           }
-
-          .p-tag {
-            padding: 0.25rem 0.5rem;
-            border: none;
-            border-radius: 1rem;
-          }
         }
 
         .title {
@@ -205,15 +199,6 @@
                   saturate(462%) hue-rotate(301deg) brightness(101%)
                   contrast(101%);
               }
-            }
-
-            .p-tag {
-              background-color: color-mix(
-                in oklab,
-                var(--primary-400) 10%,
-                transparent
-              );
-              color: var(--primary-400);
             }
           }
         }
@@ -278,18 +263,9 @@
           max-width: calc(70% - 0.5rem);
           border: 1px solid
             color-mix(in oklab, var(--primary-400) 20%, transparent);
-					background-color: var(--background-primary);
+          background-color: var(--background-primary);
 
           .icon-tag {
-            .p-tag {
-              background-color: color-mix(
-                in oklab,
-                var(--primary-400) 10%,
-                transparent
-              );
-              color: var(--primary-400);
-            }
-
             .icon {
               border: 1px solid
                 color-mix(in oklab, var(--primary-400) 20%, transparent);
@@ -318,7 +294,7 @@
                 transparent
               );
               color: var(--neutral-300);
-							padding: 0.5rem 1rem;
+              padding: 0.5rem 1rem;
             }
           }
         }

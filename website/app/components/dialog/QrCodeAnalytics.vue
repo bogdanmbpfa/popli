@@ -61,26 +61,23 @@
 </template>
 
 <script setup lang="ts">
-import type { DynamicDialogInstance } from 'primevue/dynamicdialogoptions';
-
 import worldCountryCoordinates from '~~/constants/world-countries.json';
 import { EApiEndpoint } from '~~/enums';
 import type { IQrCodeAnalytics, IWorldCountry } from '~~/interfaces';
 
-const dialogRef = inject<{ value: DynamicDialogInstance }>('dialogRef');
+const props = defineProps<{
+  qrCodeId: string;
+}>();
 
 const qrCodeAnalytics = ref<IQrCodeAnalytics | null>(null);
-const qrCodeId = ref<string | null>(null);
 
 onMounted(async () => {
-  qrCodeId.value = dialogRef?.value.data.qrCodeId;
-
-  if (qrCodeId.value) {
+  if (props.qrCodeId) {
     const { data, error } = await useApiJson(
       EApiEndpoint.QR_CODE_ANALYTICS,
       {},
       {},
-      { id: qrCodeId.value },
+      { id: props.qrCodeId },
     );
 
     if (error) return;

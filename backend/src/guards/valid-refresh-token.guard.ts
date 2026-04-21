@@ -52,7 +52,6 @@ export class ValidRefreshTokenGuard implements CanActivate {
       where: and(
         eq(authSessionModel.userId, userId),
         eq(authSessionModel.ipAddress, request.ip),
-        eq(authSessionModel.userAgent, request.headers['user-agent']),
       ),
     });
 

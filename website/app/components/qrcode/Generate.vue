@@ -10,16 +10,15 @@
 
     <div class="content">
       <FormInput id="data-type" label="Type" size="half" required>
-        <PSelectButton
-          id="data-type"
+        <UiSelectButton
           v-model="type"
-          class="default"
+          class="type-select-button"
           fluid
           :options="typeOptions"
-          :option-label="(option) => option.label"
-          :option-value="(option) => option.value"
+          option-label="label"
+          option-value="value"
           :disabled="actionInProgress"
-          @value-change="qrCodeOptions.data = undefined"
+          @update:model-value="qrCodeOptions.data = undefined"
         >
           <template #option="{ option }">
             <Icon
@@ -29,63 +28,53 @@
             />
             <span class="label">{{ option.label }}</span>
           </template>
-        </PSelectButton>
+        </UiSelectButton>
       </FormInput>
 
       <FormInput id="title" label="Title" size="half" required>
-        <PInputText
+        <UiInputText
           id="title"
           v-model="title"
-          class="default"
-          overlay-class="default"
           fluid
           placeholder="My QR Code"
         />
       </FormInput>
 
       <FormInput id="data" label="Destination" required>
-        <PInputText
-          v-if="type === 'url'"
-          id="data"
+        <UiInputText
+          v-if="type === EQRCodeDataType.URL"
           v-model="qrCodeData"
+          id="data"
           type="url"
-          class="default"
-          overlay-class="default"
           fluid
           placeholder="https://example.com"
           :disabled="actionInProgress"
         />
 
-        <PInputText
-          v-else-if="type === 'email'"
+        <UiInputText
+          v-else-if="type === EQRCodeDataType.EMAIL"
           id="data"
           v-model="qrCodeData"
           type="email"
-          class="default"
-          overlay-class="default"
           fluid
           placeholder="example@example.com"
           :disabled="actionInProgress"
         />
 
-        <PInputText
-          v-else-if="type === 'phone'"
+        <UiInputText
+          v-else-if="type === EQRCodeDataType.PHONE"
           id="data"
           v-model="qrCodeData"
           type="tel"
-          class="default"
-          overlay-class="default"
           fluid
           placeholder="1234567890"
           :disabled="actionInProgress"
         />
 
-        <PTextarea
+        <UiTextarea
           v-else
           id="data"
           v-model="qrCodeData"
-          class="default"
-          overlay-class="default"
           fluid
           placeholder="My QR Code"
           rows="3"
@@ -115,28 +104,24 @@
       </div>
     </div>
 
-    <PButton
-      type="button"
-      class="default"
+    <UiButton
       severity="secondary"
       fluid
-      icon="pi pi-cog"
+      icon="popli:settings-outline"
       label="Advanced Configuration"
       aria-label="Open advanced configuration dialog"
       :disabled="!title || !qrCodeData || actionInProgress"
-      @click="openQrCodeAdvancedConfigurationDialog"
+      @click="openQrCodeAdvancedConfigurationDialog()"
     />
 
-    <PMessage v-if="formError" class="default" severity="error" fluid>
+    <UiMessage v-if="formError" severity="error" fluid>
       {{ formError }}
-    </PMessage>
+    </UiMessage>
 
-    <PButton
-      type="button"
-      class="default"
+    <UiButton
       severity="contrast"
       fluid
-      icon="pi pi-plus"
+      icon="popli:plus"
       label="Create QR Code"
       aria-label="Create QR Code"
       :loading="actionInProgress"
@@ -149,20 +134,17 @@
 <script setup lang="ts">
 import QRCodeStyling, { type Options } from 'qr-code-styling';
 
+import QrCodeAdvancedConfigurationDialog from '~/components/dialog/QrCodeAdvancedConfiguration.vue';
 import { EApiEndpoint, EQRCodeDataType } from '~~/enums';
-
-const QrCodeAdvancedConfigurationDialog = defineAsyncComponent(
-  () => import('~/components/dialog/QrCodeAdvancedConfiguration.vue'),
-);
 
 const emit = defineEmits<{
   (e: 'refresh'): void;
 }>();
 
-const dialog = useDialog();
+const uiDynamicDialog = useUiDynamicDialog();
 const globalStore = useGlobalStore();
 const qrCodeStore = useQrCodeStore();
-const toast = useToast();
+const uiToast = useUiToast();
 
 const dataTypeIcons = ref({
   [EQRCodeDataType.TEXT]: 'popli:text-box-outline',
@@ -240,21 +222,18 @@ onMounted(() => {
 });
 
 const openQrCodeAdvancedConfigurationDialog = () =>
-  dialog.open(QrCodeAdvancedConfigurationDialog, {
-    data: qrCodeOptions,
+  uiDynamicDialog.open({
+    component: markRaw(QrCodeAdvancedConfigurationDialog),
+    header: 'Advanced QR Code Configuration',
     props: {
-      blockScroll: true,
-      closable: false,
-      closeOnEscape: false,
-      dismissableMask: false,
-      draggable: false,
-      header: 'Advanced QR Code Configuration',
-      modal: true,
-      position: 'center',
-      pt: { root: { class: 'default' } },
-      style: { width: '40rem' },
+      qrCodeOptions,
     },
-    onClose: () => {},
+    onClose: () => {
+      qrCode.value = new QRCodeStyling(qrCodeOptions);
+      qrCode.value?.append(
+        document.getElementById('qr-code-canvas') as HTMLElement,
+      );
+    },
   });
 
 const generateQRCode = async () => {
@@ -312,7 +291,7 @@ const generateQRCode = async () => {
     return;
   }
 
-  toast.add({
+  uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'QR Code created successfully',
@@ -465,6 +444,27 @@ watch(
         font-weight: 400;
         color: var(--neutral-400);
         text-align: center;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .qrcode-generate {
+    .content {
+      flex-direction: column;
+
+      :deep(.form-input) {
+        width: 100%;
+        max-width: 100%;
+
+        .type-select-button {
+          width: 100%;
+
+          button {
+            padding: 0.25rem 0.5rem;
+          }
+        }
       }
     }
   }

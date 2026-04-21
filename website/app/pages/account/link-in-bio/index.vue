@@ -14,7 +14,7 @@
           </div>
         </div>
 
-        <div class="preview-body">
+        <div v-if="profile" class="preview-body">
           <div class="background">
             <Icon
               v-if="!profile.coverImage"
@@ -23,7 +23,7 @@
               size="14rem"
             />
 
-            <nuxt-img
+            <NuxtImg
               v-else
               :src="profile.coverImage"
               :alt="profile.name || 'Cover image'"
@@ -32,7 +32,7 @@
           </div>
 
           <div v-if="profile.profileImage" class="avatar">
-            <nuxt-img
+            <NuxtImg
               :src="profile.profileImage"
               :alt="profile.name || 'Profile image'"
               loading="lazy"
@@ -48,8 +48,8 @@
                   class="handle"
                   :style="{
                     color: profile.handleColor
-                      ? `#${profile.handleColor}`
-                      : 'var(--text-300)',
+                      ? profile.handleColor
+                      : 'var(--neutral-400)',
                   }"
                   @click="copyProfileLink"
                 >
@@ -62,8 +62,8 @@
                 class="bio"
                 :style="{
                   color: profile.bioColor
-                    ? `#${profile.bioColor}`
-                    : 'var(--text-300)',
+                    ? profile.bioColor
+                    : 'var(--neutral-400)',
                 }"
               >
                 {{ profile.bio }}
@@ -98,9 +98,9 @@
                   :style="[
                     link.backgroundColors
                       ? link.backgroundColors.length === 1
-                        ? `background-color: #${link.backgroundColors[0]}`
+                        ? `background-color: ${link.backgroundColors[0]}`
                         : `background-image: linear-gradient(to right, ${link.backgroundColors
-                            .map((color) => `#${color}`)
+                            .map((color) => color)
                             .join(', ')});`
                       : 'background-color: transparent',
                   ]"
@@ -118,11 +118,11 @@
                     :style="[
                       link.titleColors && link.titleColors.length
                         ? link.titleColors.length === 1
-                          ? `color: #${link.titleColors[0]}`
+                          ? `color: ${link.titleColors[0]}`
                           : `color: transparent; background-image: linear-gradient(to right, ${link.titleColors
-                              .map((color) => `#${color}`)
+                              .map((color) => color)
                               .join(', ')}); background-clip: text;`
-                        : 'color: var(--text-100)',
+                        : 'color: var(--neutral-100)',
                     ]"
                   >
                     {{ link.title }}
@@ -151,11 +151,11 @@
       <ProfileSecondaryLinks />
     </div>
 
-    <PButton
+    <UiButton
       v-if="isMobile"
-      class="default"
-      severity="secondary edit-profile-button"
-      :icon="isConfigurationOpen ? 'pi pi-times' : 'pi pi-cog'"
+      class="edit-profile-button"
+      severity="secondary"
+      :icon="isConfigurationOpen ? 'popli:times-outline' : 'popli:settings-outline'"
       :label="isConfigurationOpen ? 'Close' : 'Edit Profile'"
       :aria-label="isConfigurationOpen ? 'Close configuration' : 'Open configuration'"
       @click="toggleConfiguration"
@@ -172,7 +172,7 @@ definePageMeta({
 });
 
 const { isMobile } = useDevice();
-const toast = useToast();
+const uiToast = useUiToast();
 const urlStore = useUrlStore();
 const userStore = useUserStore();
 
@@ -210,7 +210,7 @@ const copyProfileLink = () => {
     `${window.location.origin}/${profile.value.handle}`,
   );
 
-  toast.add({
+  uiToast.add({
     severity: 'success',
     summary: 'Profile Link Copied',
     detail: 'The profile link has been copied to your clipboard.',

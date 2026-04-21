@@ -1,52 +1,52 @@
 <template>
   <div v-if="link" class="featured-link">
     <div class="position-buttons">
-      <PButton
+      <UiButton
         v-if="Number.isFinite(link.position) && link.position! > 0"
-        class="default up-button"
+        class="up-button"
         severity="help"
-        icon="pi pi-arrow-up"
+        icon="popli:arrow-up"
         title="Move up"
         aria-label="Move up"
         @click="onIncrementPosition"
       />
-      <PButton
+      <UiButton
         v-if="Number.isFinite(link.position) && link.position! < lastPosition"
-        class="default down-button"
+        class="down-button"
         severity="help"
-        icon="pi pi-arrow-down"
+        icon="popli:arrow-down"
         title="Move down"
         aria-label="Move down"
         @click="onDecrementPosition"
       />
     </div>
 
-    <PInputGroup class="default">
-      <PInputGroupAddon>
+    <UiInputGroup>
+      <template #prepend>
         <NuxtImg
           :src="`/${link.platform}.svg`"
           :alt="link.platform"
           :title="link.platform"
           loading="lazy"
         />
-      </PInputGroupAddon>
+      </template>
 
-      <PInputText
+      <UiInputText
         v-model="url"
         name="url"
-        class="default"
         fluid
         :placeholder="inputPlaceholder"
-        @value-change="onChange"
+        @update:model-value="onChange"
       />
-    </PInputGroup>
+    </UiInputGroup>
 
-    <PButton
-      class="default delete-button"
+    <UiButton
+      class="delete-button"
       severity="danger"
-      icon="pi pi-times"
+      icon="popli:times-outline"
       title="Delete"
       aria-label="Delete"
+      naked
       @click="onDelete"
     />
   </div>
@@ -63,7 +63,7 @@ const props = defineProps<{
   lastPosition: number;
 }>();
 
-const toast = useToast();
+const uiToast = useUiToast();
 const urlStore = useUrlStore();
 
 const url = ref<string>('');
@@ -119,7 +119,7 @@ const onDelete = async () => {
   );
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Error',
       detail: error.message,
@@ -129,7 +129,7 @@ const onDelete = async () => {
 
   urlStore.deleteLink(props.link.type, props.link);
 
-  return toast.add({
+  return uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'Link deleted successfully',
@@ -164,11 +164,11 @@ const onDelete = async () => {
       justify-content: flex-end;
     }
 
-    :deep(.p-button) {
+    :deep(.ui-button) {
       padding: 0 0.5rem;
       height: calc(50% - 0.125rem);
 
-      .p-button-icon {
+      .iconify {
         font-size: 0.75rem;
       }
     }

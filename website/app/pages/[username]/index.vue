@@ -54,10 +54,9 @@
 
         <div class="content">
           <div class="primary-links">
-            <PButton
+            <UiButton
               v-for="link in profile.primaryLinks"
               :key="link.id"
-              class="default"
               :title="link.platform!"
               aria-label="Click {{ link.platform }} link"
               @click="clickLink(link.id, link.url)"
@@ -67,14 +66,13 @@
                 :alt="link.platform"
                 loading="lazy"
               />
-            </PButton>
+            </UiButton>
           </div>
 
           <div class="secondary-links">
-            <PButton
+            <UiButton
               v-for="link in profile.secondaryLinks"
               :key="link.id"
-              class="default"
               severity="secondary"
               :title="link.title!"
               aria-label="Click {{ link.title }} link"
@@ -110,7 +108,7 @@
               >
                 {{ link.title }}
               </span>
-            </PButton>
+            </UiButton>
           </div>
 
           <div class="copyright">
@@ -317,7 +315,7 @@ const clickLink = async (id: string, url: string) => {
           gap: 0.5rem;
           padding: 1rem 0;
 
-          .p-button {
+          .ui-button {
             padding: 0;
             border: none;
             box-shadow: none;
@@ -345,7 +343,7 @@ const clickLink = async (id: string, url: string) => {
           gap: 0.5rem;
           padding: 2rem;
 
-          .p-button {
+          .ui-button {
             width: 100%;
             height: 4rem;
             overflow: hidden;

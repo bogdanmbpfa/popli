@@ -15,11 +15,11 @@
 
     <span class="caption"> Recommended size: 512x512px, JPG, PNG, WEBP </span>
 
-    <PButton
+    <UiButton
       type="submit"
-      class="default"
       severity="contrast"
-      icon="pi pi-upload"
+      icon="popli:upload-outline"
+      icon-size="1.25rem"
       label="Upload"
       aria-label="Upload profile image"
       :disabled="!profileImage || isSubmitting"
@@ -34,7 +34,7 @@ import type FileUpload from '~/components/form/FileUpload.vue';
 import { EApiEndpoint } from '~~/enums';
 
 const userStore = useUserStore();
-const toast = useToast();
+const uiToast = useUiToast();
 
 const { defineField, handleSubmit, isSubmitting } = useForm({
   validationSchema: yup.object().shape({
@@ -85,7 +85,7 @@ const onSubmitProfileImage = handleSubmit(async (values) => {
   );
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Error',
       detail: error.message,
@@ -103,7 +103,7 @@ const onSubmitProfileImage = handleSubmit(async (values) => {
   profileImageUpload.value?.remove();
   profileImage.value = null;
 
-  return toast.add({
+  return uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'Profile image uploaded successfully',

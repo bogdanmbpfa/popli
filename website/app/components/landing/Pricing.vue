@@ -43,8 +43,7 @@
             <span class="period"> / {{ price.period }} </span>
           </div>
 
-          <PButton
-            class="default"
+          <UiButton
             :severity="price.featured ? 'contrast' : 'secondary'"
             :label="price.button.text"
             :aria-label="`Select ${price.name} plan`"
@@ -215,7 +214,7 @@ const onSelectPrice = (type: 'free' | 'pro') =>
 
           .description {
             font-size: 0.875rem;
-            color: var(--text-300);
+            color: var(--neutral-400);
           }
         }
 
@@ -230,13 +229,13 @@ const onSelectPrice = (type: 'free' | 'pro') =>
           .price-value {
             font-size: 2rem;
             font-weight: 600;
-            color: var(--text-100);
+            color: var(--neutral-100);
           }
 
           .period {
             font-size: 1rem;
             font-weight: 400;
-            color: var(--text-300);
+            color: var(--neutral-400);
           }
         }
 
@@ -253,7 +252,7 @@ const onSelectPrice = (type: 'free' | 'pro') =>
 
             .name {
               font-size: 0.875rem;
-              color: var(--text-100);
+              color: var(--neutral-100);
             }
 
             .iconify {
@@ -273,11 +272,11 @@ const onSelectPrice = (type: 'free' | 'pro') =>
     .prices {
       flex-direction: column;
 
-			.price {
-				&.featured {
-					transform: scale(1);
-				}
-			}
+      .price {
+        &.featured {
+          transform: scale(1);
+        }
+      }
     }
   }
 }

@@ -27,51 +27,52 @@
       </div>
     </div>
 
-    <div class="actions">
-      <PButton
-        class="default"
-        severity="secondary"
-        label="PNG"
-        title="Download PNG"
-        aria-label="Download PNG"
-        @click="downloadCode('png')"
-      />
+    <div class="action-buttons">
+      <div class="download">
+        <UiButton
+          severity="secondary"
+          label="PNG"
+          title="Download PNG"
+          aria-label="Download PNG"
+          @click="downloadCode('png')"
+        />
 
-      <PButton
-        class="default"
-        severity="secondary"
-        label="SVG"
-        title="Download SVG"
-        aria-label="Download SVG"
-        @click="downloadCode('svg')"
-      />
+        <UiButton
+          severity="secondary"
+          label="SVG"
+          title="Download SVG"
+          aria-label="Download SVG"
+          @click="downloadCode('svg')"
+        />
 
-      <PButton
-        class="default"
-        severity="secondary"
-        label="JPEG"
-        title="Download JPEG"
-        aria-label="Download JPEG"
-        @click="downloadCode('jpeg')"
-      />
+        <UiButton
+          severity="secondary"
+          label="JPEG"
+          title="Download JPEG"
+          aria-label="Download JPEG"
+          @click="downloadCode('jpeg')"
+        />
+      </div>
 
-      <PButton
-        class="default"
-        severity="secondary"
-        icon="pi pi-chart-bar"
-        title="Analytics"
-        aria-label="Open analytics dialog"
-        @click="openAnalyticsDialog"
-      />
+      <div class="actions">
+        <UiButton
+          severity="secondary"
+          icon="popli:bar-chart"
+          icon-size="1.25rem"
+          title="Analytics"
+          aria-label="Open analytics dialog"
+          @click="openAnalyticsDialog"
+        />
 
-      <PButton
-        class="default"
-        severity="danger"
-        icon="pi pi-trash"
-        title="Delete"
-        aria-label="Delete QR Code"
-        @click="handleDeleteQrCode"
-      />
+        <UiButton
+          severity="danger"
+          icon="popli:delete-outline"
+          icon-size="1.25rem"
+          title="Delete"
+          aria-label="Delete QR Code"
+          @click="handleDeleteQrCode"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -79,12 +80,9 @@
 <script setup lang="ts">
 import QRCodeStyling from 'qr-code-styling';
 
+import QrCodeAnalyticsDialog from '~/components/dialog/QrCodeAnalytics.vue';
 import { EApiEndpoint, EQRCodeDataType } from '~~/enums';
 import type { IQrCode } from '~~/interfaces';
-
-const QrCodeAnalyticsDialog = defineAsyncComponent(
-  () => import('~/components/dialog/QrCodeAnalytics.vue'),
-);
 
 const props = defineProps<{
   qrCode: IQrCode;
@@ -94,9 +92,9 @@ const emit = defineEmits<{
   (e: 'refresh'): void;
 }>();
 
-const confirm = useConfirm();
-const dialog = useDialog();
-const toast = useToast();
+const uiConfirmDialog = useUiConfirmDialog();
+const uiDynamicDialog = useUiDynamicDialog();
+const uiToast = useUiToast();
 
 const qrCodeStyling = ref<QRCodeStyling | null>(null);
 const largeQrCodeStyling = ref<QRCodeStyling | null>(null);
@@ -146,36 +144,20 @@ const downloadCode = async (type: 'png' | 'svg' | 'jpeg') => {
 };
 
 const openAnalyticsDialog = () =>
-  dialog.open(QrCodeAnalyticsDialog, {
-    data: { qrCodeId: props.qrCode.id },
+  uiDynamicDialog.open({
+    component: markRaw(QrCodeAnalyticsDialog),
+    header: 'QR Code Analytics',
     props: {
-      blockScroll: true,
-      closable: true,
-      closeOnEscape: true,
-      dismissableMask: true,
-      draggable: false,
-      header: props.qrCode.title,
-      modal: true,
-      position: 'center',
-      closeButtonProps: {
-        class: 'default p-button-secondary',
-      },
-      pt: { root: { class: 'default' } },
-      style: { width: '50rem' },
+      qrCodeId: props.qrCode.id,
     },
   });
 
 const handleDeleteQrCode = async () => {
-  confirm.require({
+  uiConfirmDialog.require({
     header: 'Delete QR Code',
     message: 'Are you sure you want to delete this QR code?',
-    acceptClass: 'default p-button-danger',
-    acceptLabel: 'Delete',
-    blockScroll: true,
-    modal: true,
-    position: 'center',
-    rejectClass: 'default p-button-secondary',
-    rejectLabel: 'Cancel',
+    acceptSeverity: 'contrast',
+    rejectSeverity: 'help',
     accept: async () => {
       const { error } = await useApiJson(
         EApiEndpoint.QR_CODE_DELETE,
@@ -185,7 +167,7 @@ const handleDeleteQrCode = async () => {
       );
 
       if (error) {
-        return toast.add({
+        return uiToast.add({
           severity: 'error',
           summary: 'Oops!',
           detail: error.message,
@@ -194,7 +176,7 @@ const handleDeleteQrCode = async () => {
 
       emit('refresh');
 
-      return toast.add({
+      return uiToast.add({
         severity: 'success',
         summary: 'Success',
         detail: 'QR code deleted successfully',
@@ -261,10 +243,22 @@ const handleDeleteQrCode = async () => {
     }
   }
 
-  .actions {
+  .action-buttons {
     display: flex;
     flex-direction: row;
     gap: 1rem;
+
+    .download {
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+    }
   }
 }
 
@@ -272,14 +266,12 @@ const handleDeleteQrCode = async () => {
   .qrcode-item {
     flex: 1;
 
-    .actions {
+    .action-buttons {
       justify-content: space-between;
 
-      :deep(.p-button) {
-        &:not(.p-button-icon-only) {
-          padding: 0.25rem 0.5rem;
-          font-size: 0.875rem;
-        }
+      :deep(.ui-button) {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
       }
     }
   }

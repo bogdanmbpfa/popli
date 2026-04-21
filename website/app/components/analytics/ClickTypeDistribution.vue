@@ -155,7 +155,7 @@ const rows = computed(() => {
           background: linear-gradient(
             90deg,
             var(--primary-400) 0%,
-            color-mix(in oklab, var(--primary-400) 60%, var(--warning-400) 40%) 100%
+            var(--primary-600) 100%
           );
         }
       }
@@ -165,7 +165,7 @@ const rows = computed(() => {
   .empty {
     font-size: 0.75rem;
     font-weight: 400;
-    color: var(--text-300);
+    color: var(--neutral-400);
     text-align: center;
   }
 }

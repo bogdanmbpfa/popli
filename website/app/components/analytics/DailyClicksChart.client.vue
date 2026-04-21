@@ -1,6 +1,6 @@
 <template>
   <div class="analytics-chart">
-    <PChart
+    <UiChart
       v-if="data"
       id="daily-clicks-chart"
       type="line"
@@ -13,7 +13,12 @@
 </template>
 
 <script setup lang="ts">
-import type { ScriptableChartContext } from 'chart.js';
+import type {
+  ChartData,
+  ChartOptions,
+  ChartType,
+  ScriptableChartContext,
+} from 'chart.js';
 import { DateTime } from 'luxon';
 
 const props = defineProps({
@@ -28,7 +33,7 @@ const props = defineProps({
   },
 });
 
-const data = computed(() => {
+const data = computed<ChartData<ChartType>>(() => {
   const documentStyle = getComputedStyle(document.documentElement);
 
   return {
@@ -53,19 +58,22 @@ const data = computed(() => {
             chartArea.bottom,
           );
 
-					gradient.addColorStop(0, documentStyle.getPropertyValue('--primary-400'));
-					gradient.addColorStop(1, 'transparent');
+          gradient.addColorStop(
+            0,
+            documentStyle.getPropertyValue('--primary-400'),
+          );
+          gradient.addColorStop(1, 'transparent');
 
-					return gradient;
+          return gradient;
         },
       },
     ],
   };
 });
 
-const options = computed(() => {
+const options = computed<ChartOptions<ChartType>>(() => {
   const documentStyle = getComputedStyle(document.documentElement);
-	const textColorPrimary = documentStyle.getPropertyValue('--neutral-100');
+  const textColorPrimary = documentStyle.getPropertyValue('--neutral-100');
   const textColorSecondary = documentStyle.getPropertyValue('--neutral-400');
 
   return {
@@ -74,20 +82,20 @@ const options = computed(() => {
     responsive: true,
     plugins: {
       legend: { display: false },
-			title: {
-				display: true,
-				text: props.title,
-				color: textColorPrimary,
-				position: 'top',
-				align: 'start',
-				padding: {
-					bottom: 16,
-				},
-				font: {
-					size: 16,
-					weight: '500',
-				},
-			},
+      title: {
+        display: true,
+        text: props.title,
+        color: textColorPrimary,
+        position: 'top',
+        align: 'start',
+        padding: {
+          bottom: 16,
+        },
+        font: {
+          size: 16,
+          weight: 500,
+        },
+      },
       tooltip: {
         boxWidth: 0,
         boxHeight: 0,
@@ -129,7 +137,7 @@ const options = computed(() => {
   .no-data {
     font-size: 0.75rem;
     font-weight: 400;
-    color: var(--text-300);
+    color: var(--neutral-400);
     text-align: center;
   }
 

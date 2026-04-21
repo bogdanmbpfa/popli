@@ -5,9 +5,9 @@
 		</NuxtLayout>
 	</div>
 
-	<PConfirmDialog class="default" />
-	<PDynamicDialog class="default" />
-	<PToast class="default" position="top-center" />
+	<UiDynamicDialog />
+	<UiConfirmDialog />
+	<UiToast />
 </template>
 
 <script setup lang="ts">

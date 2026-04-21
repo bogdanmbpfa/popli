@@ -13,18 +13,17 @@
       required
       caption="This will be displayed on your profile"
     >
-      <PTextarea
+      <UiTextarea
         id="bio"
         v-model="bio"
         v-bind="bioAttributes"
-        class="default"
         placeholder="Write a short bio about yourself"
         fluid
         rows="3"
         auto-resize
         :invalid="!!errors.bio"
         :disabled="isSubmitting"
-        @value-change="onBioChange"
+        @update:model-value="onBioChange"
       />
     </FormInput>
 
@@ -36,30 +35,26 @@
       required
       caption="This will be the color of your bio"
     >
-      <PColorPicker
+      <UiColorPicker
         v-model="bioColor"
         v-bind="bioColorAttributes"
-        input-id="bio-color"
-        class="default"
-        overlay-class="default"
+        id="bio-color"
         fluid
         format="hex"
         :invalid="!!errors.bioColor"
         :disabled="isSubmitting"
-        @change="onBioColorChange($event.value)"
+        @update:model-value="onBioColorChange($event)"
       />
 
-      <PInputText
+      <UiInputText
         name="bio-color-hex"
-        :value="bioColor ? `#${bioColor}` : ''"
-        class="default"
+        :value="bioColor"
         readonly
         fluid
       />
     </FormInput>
 
-    <PButton
-      class="default"
+    <UiButton
       type="submit"
       label="Save"
       aria-label="Save bio"
@@ -77,7 +72,7 @@ import * as yup from 'yup';
 import { EApiEndpoint } from '~~/enums';
 
 const userStore = useUserStore();
-const toast = useToast();
+const uiToast = useUiToast();
 
 const { defineField, errors, handleSubmit, isSubmitting } = useForm({
   validationSchema: yup.object().shape({
@@ -85,8 +80,8 @@ const { defineField, errors, handleSubmit, isSubmitting } = useForm({
     bioColor: yup
       .string()
       .notRequired()
-      .length(6, 'Bio color must be 6 characters')
-      .matches(/^[0-9a-fA-F]+$/, 'Bio color must be a valid hex color'),
+      .length(7, 'Bio color must be 7 characters')
+      .matches(/^#[0-9a-fA-F]+$/, 'Bio color must be a valid hex color'),
   }),
 });
 
@@ -132,7 +127,7 @@ const onBioSubmit = handleSubmit(async (values) => {
   });
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Error',
       detail: error.message,
@@ -146,7 +141,7 @@ const onBioSubmit = handleSubmit(async (values) => {
     bioColor: values.bioColor,
   });
 
-  return toast.add({
+  return uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'Bio updated successfully',
@@ -182,7 +177,7 @@ form {
     }
   }
 
-  .p-button {
+  .ui-button {
     align-self: flex-start;
   }
 }

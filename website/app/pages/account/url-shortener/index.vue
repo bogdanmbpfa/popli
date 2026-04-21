@@ -14,12 +14,11 @@
             :error="shortenUrlErrors.url"
             :required="true"
           >
-            <PInputText
+            <UiInputText
               id="url"
               v-model="url"
               v-bind="urlAttributes"
               v-keyfilter="/^[a-z0-9-?&/:_.%+~#=@]+$/"
-              class="default"
               placeholder="https://very-long-url.com/campaign/v1"
               fluid
               :invalid="!!shortenUrlErrors.url"
@@ -34,11 +33,10 @@
             :required="true"
             size="half"
           >
-            <PInputText
+            <UiInputText
               id="title"
               v-model="title"
               v-bind="titleAttributes"
-              class="default"
               placeholder="My Short URL"
               fluid
               :invalid="!!shortenUrlErrors.title"
@@ -54,12 +52,11 @@
             size="half"
           >
             <pre>popli.one/s/</pre>
-            <PInputText
+            <UiInputText
               id="alias"
               v-model="alias"
               v-bind="aliasAttributes"
               v-keyfilter="/^[a-z-]+$/"
-              class="default"
               placeholder="my-alias"
               fluid
               :invalid="!!shortenUrlErrors.alias"
@@ -67,11 +64,10 @@
             />
           </FormInput>
 
-          <PButton
+          <UiButton
             type="submit"
-            class="default"
             severity="contrast"
-            icon="pi pi-link"
+            icon="popli:link-chain"
             label="Shorten URL"
             aria-label="Shorten URL"
             fluid
@@ -80,116 +76,107 @@
         </form>
       </FormContainer>
 
-      <PDataTable
-        class="default"
+      <UiDataTable
         :value="shortUrls"
-        always-show-paginator
-        data-key="id"
-        :default-sort-order="-1"
-        sort-field="createdAt"
-        :loading="pending"
+        :columns="[
+          { field: 'originalUrl', header: 'Original URL' },
+          { field: 'shortCodeUrl', header: 'Short Code URL' },
+          { field: 'isActive', header: 'Status' },
+          { field: 'totalClicks', header: 'Clicks' },
+          { field: 'actions', header: 'Actions' },
+        ]"
         paginator
-        :total-records="shortUrls.length"
         :rows="3"
-        paginator-template="PrevPageLink PageLinks NextPageLink"
+        data-key="id"
       >
-        <PColumn field="originalUrl" header="Original URL">
-          <template #body="{ data }">
-            <div class="content column">
-              <span class="title">
-                {{ data.title }}
-              </span>
+        <template #cell-originalUrl="{ row }">
+          <div class="content column">
+            <span class="title">
+              {{ row.title }}
+            </span>
 
-              <span class="caption">
-                {{ data.originalUrl }}
-              </span>
-            </div>
-          </template>
-        </PColumn>
+            <span class="caption">
+              {{ row.originalUrl }}
+            </span>
+          </div>
+        </template>
 
-        <PColumn field="shortCodeUrl" header="Short Code URL">
-          <template #body="{ data }">
-            <div class="content column">
-              <span
-                v-if="data.aliasUrl"
-                class="contrast clickable"
-                @click="copyToClipboard(data.aliasUrl)"
-              >
-                {{ data.aliasUrl }}
-              </span>
+        <template #cell-shortCodeUrl="{ row }">
+          <div class="content column">
+            <span
+              v-if="row.aliasUrl"
+              class="caption contrast clickable"
+              @click="copyToClipboard(row.aliasUrl)"
+            >
+              {{ row.aliasUrl }}
+            </span>
 
-              <span
-                class="caption clickable"
-                @click="copyToClipboard(data.shortCodeUrl)"
-              >
-                {{ data.shortCodeUrl }}
-              </span>
-            </div>
-          </template>
-        </PColumn>
+            <span
+              class="caption clickable"
+              @click="copyToClipboard(row.shortCodeUrl)"
+            >
+              {{ row.shortCodeUrl }}
+            </span>
+          </div>
+        </template>
 
-        <PColumn field="isActive" header="Status">
-          <template #body="{ data }">
-            <div class="content" :class="{ active: data.isActive }">
-              <PToggleSwitch
-                class="default"
-                :model-value="data.isActive"
-                :disabled="actionInProgress"
-                @update:model-value="handleToggleShortenedUrl(data.id)"
-              />
-            </div>
-          </template>
-        </PColumn>
+        <template #cell-isActive="{ row }">
+          <div class="content" :class="{ active: row.isActive }">
+            <UiToggleSwitch
+              :model-value="row.isActive"
+              :disabled="actionInProgress"
+              @update:model-value="handleToggleShortenedUrl(row.id)"
+            />
+          </div>
+        </template>
 
-        <PColumn field="totalClicks" header="Clicks">
-          <template #body="{ data }">
-            <div class="content"> 
-              <span class="value">{{
-                Intl.NumberFormat('en-US', {
-                  compactDisplay: 'short',
-                  notation: 'compact',
-                  maximumFractionDigits: 1,
-                  roundingMode: 'floor',
-                }).format(data.totalClicks)
-              }}</span>
+        <template #cell-totalClicks="{ row }">
+          <div class="content">
+            <span class="value">{{
+              Intl.NumberFormat('en-US', {
+                compactDisplay: 'short',
+                notation: 'compact',
+                maximumFractionDigits: 1,
+                roundingMode: 'floor',
+              }).format(row.totalClicks)
+            }}</span>
 
-              <Icon
-                name="popli:bar-chart"
-                class="success clickable"
-                size="1.25rem"
-                title="Total clicks"
-                @click="openAnalyticsDialog(data)"
-              />
-            </div>
-          </template>
-        </PColumn>
+            <Icon
+              name="popli:bar-chart"
+              class="success clickable"
+              size="1.25rem"
+              title="Total clicks"
+              @click="openAnalyticsDialog(row as IUrlShortUrl)"
+            />
+          </div>
+        </template>
 
-        <PColumn header="Actions">
-          <template #body="{ data }">
-            <div class="content">
-              <PButton
-                class="default icon-only"
-                severity="help"
-                icon="pi pi-pencil"
-                title="Edit"
-                aria-label="Edit"
-                :disabled="actionInProgress"
-                @click="handleUpdateShortUrl(data)"
-              />
+        <template #cell-actions="{ row }">
+          <div class="content">
+            <UiButton
+              class="naked"
+              severity="help"
+              icon="popli:pencil-rounded"
+              icon-size="1.25rem"
+              title="Edit"
+              aria-label="Edit"
+              :disabled="actionInProgress"
+              @click="handleUpdateShortUrl(row as IUrlShortUrl)"
+            />
 
-              <PButton
-                class="default icon-only"
-                severity="danger"
-                icon="pi pi-trash"
-                title="Delete"
-                aria-label="Delete"
-                :disabled="actionInProgress"
-                @click="handleDeleteShortenedUrl(data.id, data.title)"
-              />
-            </div>
-          </template>
-        </PColumn>
-      </PDataTable>
+            <UiButton
+              class="naked"
+              severity="danger"
+              icon="popli:trash-outline"
+              icon-size="1.25rem"
+              title="Delete"
+              aria-label="Delete"
+              :disabled="actionInProgress"
+              @click="handleDeleteShortenedUrl(row.id, row.title)"
+            />
+          </div>
+        </template>
+      </UiDataTable>
     </div>
   </div>
 </template>
@@ -197,26 +184,20 @@
 <script setup lang="ts">
 import * as yup from 'yup';
 
+import ShortUrlAnalyticsDialog from '~/components/dialog/ShortUrlAnalytics.vue';
+import UpdateShortUrlDialog from '~/components/dialog/UpdateShortUrl.vue';
 import { EApiEndpoint } from '~~/enums';
 import type { IUrlShortenUrl, IUrlShortUrl } from '~~/interfaces';
-
-const UpdateShortUrlDialog = defineAsyncComponent(
-  () => import('~/components/dialog/UpdateShortUrl.vue'),
-);
-
-const ShortUrlAnalyticsDialog = defineAsyncComponent(
-  () => import('~/components/dialog/ShortUrlAnalytics.vue'),
-);
 
 definePageMeta({
   layout: 'account',
   middleware: 'is-logged-in',
 });
 
-const confirm = useConfirm();
-const dialog = useDialog();
+const uiConfirmDialog = useUiConfirmDialog();
+const uiDynamicDialog = useUiDynamicDialog();
 const globalStore = useGlobalStore();
-const toast = useToast();
+const uiToast = useUiToast();
 
 const actionInProgress = computed(() => globalStore.getActionInProgress);
 
@@ -264,7 +245,7 @@ const onSubmitShortenUrl = handleShortenUrlSubmit(async (values) => {
   const { error } = await useApiJson(EApiEndpoint.URL_SHORT_URL_CREATE, values);
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Oops!',
       detail: error.message,
@@ -276,7 +257,7 @@ const onSubmitShortenUrl = handleShortenUrlSubmit(async (values) => {
 
   await refreshShortUrls();
 
-  return toast.add({
+  return uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'URL shortened successfully',
@@ -287,7 +268,7 @@ const onSubmitShortenUrl = handleShortenUrlSubmit(async (values) => {
 const copyToClipboard = (text: string) => {
   navigator.clipboard.writeText(text);
 
-  toast.add({
+  uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'Copied to clipboard',
@@ -296,18 +277,16 @@ const copyToClipboard = (text: string) => {
 };
 
 const handleDeleteShortenedUrl = (id: string, title: string) =>
-  confirm.require({
+  uiConfirmDialog.require({
     header: 'Delete Shortened URL',
-    icon: 'pi pi-exclamation-triangle',
     message: `Are you sure you want to delete "${title}"? Once deleted, it cannot be recovered.`,
-    acceptClass: 'default p-button-danger',
     acceptLabel: 'Delete',
-    blockScroll: true,
-    modal: true,
-    position: 'center',
-    rejectClass: 'default p-button-help',
+    acceptSeverity: 'contrast',
     rejectLabel: 'Cancel',
+    rejectSeverity: 'help',
     accept: async () => {
+      globalStore.toggleActionInProgress();
+
       const { error } = await useApiJson(
         EApiEndpoint.URL_SHORT_URL_DELETE,
         {},
@@ -316,7 +295,7 @@ const handleDeleteShortenedUrl = (id: string, title: string) =>
       );
 
       if (error) {
-        return toast.add({
+        return uiToast.add({
           severity: 'error',
           summary: 'Oops!',
           detail: error.message,
@@ -324,9 +303,11 @@ const handleDeleteShortenedUrl = (id: string, title: string) =>
         });
       }
 
+      globalStore.toggleActionInProgress();
+
       await refreshShortUrls();
 
-      return toast.add({
+      return uiToast.add({
         severity: 'success',
         summary: 'Success',
         detail: 'Shortened URL deleted successfully',
@@ -346,7 +327,7 @@ const handleToggleShortenedUrl = async (id: string) => {
   );
 
   if (error) {
-    toast.add({
+    uiToast.add({
       severity: 'error',
       summary: 'Oops!',
       detail: error.message,
@@ -358,7 +339,7 @@ const handleToggleShortenedUrl = async (id: string) => {
 
   await refreshShortUrls();
 
-  toast.add({
+  uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'Shortened URL status updated successfully',
@@ -369,55 +350,29 @@ const handleToggleShortenedUrl = async (id: string) => {
 };
 
 const handleUpdateShortUrl = (shortUrl: IUrlShortUrl) =>
-  dialog.open(UpdateShortUrlDialog, {
-    data: {
+  uiDynamicDialog.open({
+    component: markRaw(UpdateShortUrlDialog),
+    header: 'Update Short URL',
+    props: {
       id: shortUrl.id,
       url: shortUrl.originalUrl,
       alias: shortUrl.alias,
       title: shortUrl.title,
     },
-    props: {
-      blockScroll: true,
-      closable: true,
-      closeOnEscape: true,
-      dismissableMask: true,
-      draggable: false,
-      header: 'Update Short URL',
-      modal: true,
-      position: 'center',
-      closeButtonProps: {
-        class: 'default p-button-secondary',
-      },
-      pt: { root: { class: 'default' } },
-      style: { width: '30rem' },
-    },
     onClose: () => refreshShortUrls(),
   });
 
 const openAnalyticsDialog = (shortUrl: IUrlShortUrl) =>
-  dialog.open(ShortUrlAnalyticsDialog, {
-    data: { shortUrl },
+  uiDynamicDialog.open({
+    component: markRaw(ShortUrlAnalyticsDialog),
+    header: shortUrl.title,
     props: {
-      blockScroll: true,
-      closable: true,
-      closeOnEscape: true,
-      dismissableMask: true,
-      draggable: false,
-      header: shortUrl.title,
-      modal: true,
-      position: 'center',
-      closeButtonProps: {
-        class: 'default p-button-secondary',
-      },
-      pt: { root: { class: 'default' } },
-      style: { width: '50rem' },
+      shortUrl,
     },
   });
 </script>
 
 <style lang="scss" scoped>
-@use '../../../assets/mixins.scss' as *;
-
 .url-shortener-page {
   display: flex;
   flex-direction: row;
@@ -439,6 +394,58 @@ const openAnalyticsDialog = (shortUrl: IUrlShortUrl) =>
       form {
         flex-direction: row;
         flex-wrap: wrap;
+      }
+    }
+  }
+
+  :deep(.ui-data-table) {
+    .table-wrapper {
+      table {
+        tbody {
+          tr {
+            &:not(:has(.active)) {
+              opacity: 0.5;
+            }
+
+            td {
+              .content {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 0.25rem;
+              }
+
+              .column {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: center;
+                gap: 0.25rem;
+
+                .title {
+                  font-size: 1rem;
+                  font-weight: 500;
+                  color: var(--neutral-100);
+                }
+
+                .caption {
+                  font-size: 0.75rem;
+                  font-weight: 400;
+                  color: var(--neutral-400);
+                }
+
+                .contrast {
+                  color: var(--primary-400);
+                }
+
+                .clickable {
+                  cursor: pointer;
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

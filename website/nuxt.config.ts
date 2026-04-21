@@ -1,5 +1,3 @@
-import Aura from '@primeuix/themes/aura';
-
 export default defineNuxtConfig({
   app: {
     head: {
@@ -26,7 +24,7 @@ export default defineNuxtConfig({
   },
   compatibilityDate: 'latest',
 
-  css: ['primeicons/primeicons.css', '~/assets/main.scss'],
+  css: ['~/assets/main.scss'],
 
   devtools: { enabled: true },
 
@@ -52,7 +50,6 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@primevue/nuxt-module',
     '@nuxt/eslint',
     '@nuxt/fonts',
     '@nuxt/icon',
@@ -95,24 +92,6 @@ export default defineNuxtConfig({
     sitemap: ['/sitemap.xml'],
   },
 
-  primevue: {
-    autoImport: true,
-    components: {
-      prefix: 'P',
-    },
-    options: {
-      ripple: true,
-      inputVariant: 'filled',
-      theme: {
-        preset: Aura,
-        options: {
-          darkModeSelector: '.dark-mode',
-        },
-      },
-    },
-    usePrimeVue: true,
-  },
-
   runtimeConfig: {
     apiBaseUrl: '',
     public: {
@@ -143,7 +122,7 @@ export default defineNuxtConfig({
       preprocessorOptions: {
         scss: {
           additionalData:
-            '@use "~/assets/variables.scss" as *; @use "~/assets/mixins.scss" as *;',
+            '@use "~/assets/variables.scss" as *;',
         },
       },
     },
@@ -163,6 +142,7 @@ export default defineNuxtConfig({
         'luxon',
         'mapbox-gl',
         'qr-code-styling',
+        'chart.js',
       ],
     },
   },

@@ -23,22 +23,23 @@
           :error="errors.email"
           required
         >
-          <PIconField>
-            <PInputIcon class="pi pi-envelope" />
+          <UiInputGroup>
+            <template #prepend>
+              <Icon name="popli:email-outline" class="default" size="1.25rem" />
+            </template>
 
-            <PInputText
+            <UiInputText
               id="email"
               v-model="email"
               v-bind="emailAttributes"
-              class="default"
               placeholder="hello@example.com"
               fluid
               autocomplete="username"
               :invalid="!!errors.email"
               :disabled="isSubmitting"
-              @value-change="onEmailChange"
+              @update:model-value="onEmailChange"
             />
-          </PIconField>
+          </UiInputGroup>
         </FormInput>
 
         <FormInput
@@ -47,32 +48,32 @@
           :error="errors.password"
           required
         >
-          <PIconField>
-            <PInputIcon class="pi pi-lock" />
+          <UiInputGroup>
+            <template #prepend>
+              <Icon name="popli:lock-outline" class="default" size="1.25rem" />
+            </template>
 
-            <PPassword
+            <UiInputText
+              id="password"
               v-model="password"
               v-bind="passwordAttributes"
-              input-id="password"
-              input-class="default"
-              placeholder="Password"
+              type="password"
+              placeholder="Enter your password"
               fluid
-              :feedback="false"
+              autocomplete="new-password"
               toggle-mask
-              :input-props="{ autocomplete: 'current-password' }"
               :invalid="!!errors.password"
               :disabled="isSubmitting"
             />
-          </PIconField>
+          </UiInputGroup>
         </FormInput>
 
-        <PButton
-          class="default"
+        <UiButton
           type="submit"
           label="Create Account"
           aria-label="Create account"
-          fluid
           severity="contrast"
+          fluid
           :loading="isSubmitting"
           :disabled="isSubmitting"
         />
@@ -102,7 +103,7 @@ const { seo } = useAppConfig();
 const {
   public: { nodeEnv },
 } = useRuntimeConfig();
-const toast = useToast();
+const uiToast = useUiToast();
 const userStore = useUserStore();
 
 usePageSeo({
@@ -164,7 +165,7 @@ const onRegisterSubmit = handleSubmit(async (values) => {
   const { data, error } = await useApiJson(EApiEndpoint.AUTH_REGISTER, values);
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Oops!',
       detail: error.message,
@@ -184,7 +185,7 @@ const onRegisterSubmit = handleSubmit(async (values) => {
   );
 
   if (userError) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Oops!',
       detail: userError.message,
@@ -197,7 +198,7 @@ const onRegisterSubmit = handleSubmit(async (values) => {
 
   resetForm();
 
-  toast.add({
+  uiToast.add({
     severity: 'success',
     summary: 'Welcome!',
     detail: 'You have been registered successfully',

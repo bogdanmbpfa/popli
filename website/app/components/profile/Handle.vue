@@ -13,14 +13,15 @@
       required
       caption="This will be your popli.one/handle URL"
     >
-      <PIconField>
-        <PInputIcon class="pi pi-at" />
+      <UiInputGroup>
+        <template #prepend>
+          <Icon name="popli:alternate-email" size="1.25rem" />
+        </template>
 
-        <PInputText
+        <UiInputText
           id="handle"
           v-model="handle"
           v-bind="handleAttributes"
-          class="default"
           placeholder="Choose your unique handle"
           fluid
           autocomplete="handle"
@@ -28,7 +29,7 @@
           :disabled="isSubmitting"
           @value-change="onHandleChange"
         />
-      </PIconField>
+      </UiInputGroup>
     </FormInput>
 
     <FormInput
@@ -39,30 +40,26 @@
       required
       caption="This will be the color of your handle"
     >
-      <PColorPicker
+      <UiColorPicker
         v-model="handleColor"
         v-bind="handleColorAttributes"
-        input-id="handle-color"
-        class="default"
-        overlay-class="default"
+        id="handle-color"
         fluid
         format="hex"
         :invalid="!!errors.handleColor"
         :disabled="isSubmitting"
-        @change="onHandleColorChange($event.value)"
+        @update:model-value="onHandleColorChange($event)"
       />
-
-      <PInputText
+      
+      <UiInputText
         name="handle-color-hex"
-        :value="handleColor ? `#${handleColor}` : ''"
-        class="default"
+        :value="handleColor"
         readonly
         fluid
       />
     </FormInput>
 
-    <PButton
-      class="default"
+    <UiButton
       type="submit"
       label="Save"
       aria-label="Save handle"
@@ -80,7 +77,7 @@ import * as yup from 'yup';
 import { EApiEndpoint } from '~~/enums';
 
 const userStore = useUserStore();
-const toast = useToast();
+const uiToast = useUiToast();
 
 const {
   defineField,
@@ -103,8 +100,8 @@ const {
     handleColor: yup
       .string()
       .notRequired()
-      .length(6, 'Handle color must be 6 characters')
-      .matches(/^[0-9a-fA-F]+$/, 'Handle color must be a valid hex color'),
+      .length(7, 'Handle color must be 7 characters')
+      .matches(/^#[0-9a-fA-F]+$/, 'Handle color must be a valid hex color'),
   }),
 });
 
@@ -164,7 +161,7 @@ const onHandleSubmit = handleSubmit(async (values) => {
   });
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Error',
       detail: error.message,
@@ -180,7 +177,7 @@ const onHandleSubmit = handleSubmit(async (values) => {
 
   successCaption.value = '';
 
-  return toast.add({
+  return uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'Handle updated successfully',
@@ -216,7 +213,7 @@ form {
     }
   }
 
-  .p-button {
+  .ui-button {
     align-self: flex-start;
   }
 }

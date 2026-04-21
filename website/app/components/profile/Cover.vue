@@ -15,11 +15,11 @@
 
     <span class="caption"> Recommended size: 1280x720px, JPG, PNG, WEBP </span>
 
-    <PButton
+    <UiButton
       type="submit"
-      class="default"
       severity="contrast"
-      icon="pi pi-upload"
+      icon="popli:upload-outline"
+      icon-size="1.25rem"
       label="Upload"
       aria-label="Upload cover image"
       :disabled="!coverImage || isSubmitting"
@@ -34,7 +34,7 @@ import type FileUpload from '~/components/form/FileUpload.vue';
 import { EApiEndpoint } from '~~/enums';
 
 const userStore = useUserStore();
-const toast = useToast();
+const uiToast = useUiToast();
 
 const { defineField, handleSubmit, isSubmitting } = useForm({
   validationSchema: yup.object().shape({
@@ -84,7 +84,7 @@ const onSubmitCoverImage = handleSubmit(async (values) => {
   );
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Error',
       detail: error.message,
@@ -102,7 +102,7 @@ const onSubmitCoverImage = handleSubmit(async (values) => {
   coverImageUpload.value?.remove();
   coverImage.value = null;
 
-  return toast.add({
+  return uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'Cover image uploaded successfully',

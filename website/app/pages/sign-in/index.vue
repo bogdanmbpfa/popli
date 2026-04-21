@@ -18,21 +18,22 @@
     >
       <form @submit.prevent="onLoginSubmit">
         <FormInput id="email" label="Email" :error="errors.email" required>
-          <PIconField>
-            <PInputIcon class="pi pi-envelope" />
+          <UiInputGroup>
+            <template #prepend>
+              <Icon name="popli:email-outline" class="default" size="1.25rem" />
+            </template>
 
-            <PInputText
+            <UiInputText
               id="email"
               v-model="email"
               v-bind="emailAttributes"
-              class="default"
               placeholder="Email"
               fluid
               autocomplete="username"
               :invalid="!!errors.email"
               :disabled="isSubmitting"
             />
-          </PIconField>
+          </UiInputGroup>
         </FormInput>
 
         <FormInput
@@ -41,27 +42,27 @@
           :error="errors.password"
           required
         >
-          <PIconField>
-            <PInputIcon class="pi pi-lock" />
+          <UiInputGroup>
+            <template #prepend>
+              <Icon name="popli:lock-outline" class="default" size="1.25rem" />
+            </template>
 
-            <PPassword
+            <UiInputText
+              id="password"
               v-model="password"
               v-bind="passwordAttributes"
-              input-id="password"
-              input-class="default"
-              placeholder="Password"
+              type="password"
+              placeholder="Enter your password"
               fluid
-              :feedback="false"
+              autocomplete="current-password"
               toggle-mask
-              :input-props="{ autocomplete: 'current-password' }"
               :invalid="!!errors.password"
               :disabled="isSubmitting"
             />
-          </PIconField>
+          </UiInputGroup>
         </FormInput>
 
-        <PButton
-          class="default"
+        <UiButton
           type="submit"
           label="Sign In"
           aria-label="Sign in"
@@ -101,7 +102,7 @@ const { seo } = useAppConfig();
 const {
   public: { nodeEnv },
 } = useRuntimeConfig();
-const toast = useToast();
+const uiToast = useUiToast();
 const userStore = useUserStore();
 
 usePageSeo({
@@ -133,7 +134,7 @@ const onLoginSubmit = handleSubmit(async (values) => {
   const { data, error } = await useApiJson(EApiEndpoint.AUTH_LOGIN, values);
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Oops!',
       detail: error.message,
@@ -153,7 +154,7 @@ const onLoginSubmit = handleSubmit(async (values) => {
   );
 
   if (userError) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Oops!',
       detail: userError.message,
@@ -164,7 +165,7 @@ const onLoginSubmit = handleSubmit(async (values) => {
 
   userStore.setUser(userData ? { ...userData! } : null);
 
-  toast.add({
+  uiToast.add({
     severity: 'success',
     summary: 'Welcome back!',
     detail: 'You have been logged in successfully',

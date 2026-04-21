@@ -26,25 +26,25 @@
           :error="forgotPasswordErrors.email"
           required
         >
-          <PIconField>
-            <PInputIcon class="pi pi-envelope" />
+          <UiInputGroup>
+            <template #prepend>
+              <Icon name="popli:email-outline" class="default" size="1.25rem" />
+            </template>
 
-            <PInputText
+            <UiInputText
               id="email"
               v-model="email"
               v-bind="emailAttributes"
-              class="default"
               placeholder="Enter your email address"
               fluid
               autocomplete="username"
               :invalid="!!forgotPasswordErrors.email"
               :disabled="forgotPasswordIsSubmitting"
             />
-          </PIconField>
+          </UiInputGroup>
         </FormInput>
 
-        <PButton
-          class="default"
+        <UiButton
           type="submit"
           label="Reset Password"
           aria-label="Reset password"
@@ -61,13 +61,10 @@
           :error="resetPasswordErrors.code"
           required
         >
-          <PInputOtp
+          <UiInputOtp
             id="code"
             v-model="codeReset"
             v-bind="codeResetAttributes"
-            input-class="default"
-            class="default"
-            placeholder="Enter the code"
             fluid
             :length="6"
             :invalid="!!resetPasswordErrors.code"
@@ -81,32 +78,32 @@
           :error="resetPasswordErrors.password"
           required
         >
-          <PIconField>
-            <PInputIcon class="pi pi-lock" />
+          <UiInputGroup>
+            <template #prepend>
+              <Icon name="popli:lock-outline" class="default" size="1.25rem" />
+            </template>
 
-            <PPassword
+            <UiInputText
+              id="password"
               v-model="passwordReset"
               v-bind="passwordResetAttributes"
-              input-id="password"
-              input-class="default"
               placeholder="Enter your new password"
               fluid
               toggle-mask
-              :feedback="false"
-              :input-props="{ autocomplete: 'new-password' }"
+              autocomplete="new-password"
               :invalid="!!resetPasswordErrors.password"
               :disabled="resetPasswordIsSubmitting"
             />
-          </PIconField>
+          </UiInputGroup>
         </FormInput>
 
-        <PButton
-          class="default"
+        <UiButton
           type="submit"
           label="Reset Password"
           aria-label="Reset password"
           fluid
           severity="contrast"
+          :loading="resetPasswordIsSubmitting"
           :disabled="resetPasswordIsSubmitting"
         />
       </form>
@@ -129,7 +126,7 @@ const { seo } = useAppConfig();
 const {
   public: { nodeEnv },
 } = useRuntimeConfig();
-const toast = useToast();
+const uiToast = useUiToast();
 
 usePageSeo({
   title: seo.forgotPasswordTitle,
@@ -193,7 +190,7 @@ const onForgotPasswordSubmit = forgotPasswordHandleSubmit(async (values) => {
   });
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Oops!',
       detail: error.message,
@@ -203,7 +200,7 @@ const onForgotPasswordSubmit = forgotPasswordHandleSubmit(async (values) => {
 
   passwordResetRequested.value = true;
 
-  toast.add({
+  uiToast.add({
     severity: 'success',
     summary: 'Success!',
     detail: 'Please check your email for a password reset code',
@@ -221,7 +218,7 @@ const onResetPasswordSubmit = resetPasswordHandleSubmit(async (values) => {
   });
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Oops!',
       detail: error.message,
@@ -229,7 +226,7 @@ const onResetPasswordSubmit = resetPasswordHandleSubmit(async (values) => {
     });
   }
 
-  toast.add({
+  uiToast.add({
     severity: 'success',
     summary: 'Success!',
     detail:

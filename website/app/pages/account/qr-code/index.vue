@@ -1,35 +1,20 @@
 <template>
   <div class="qr-code-page">
-      <PTabs v-model:value="tab" class="default">
-        <PTabList>
-          <PTab value="generate">
-            <Icon
-              :class="tab === 'generate' ? 'danger' : 'default'"
-              name="popli:plus"
-              size="1rem"
-            />
-            Create new
-          </PTab>
-          <PTab value="manage">
-            <Icon
-              :class="tab === 'manage' ? 'danger' : 'default'"
-              name="popli:qrcode"
-              size="1rem"
-            />
-            Manage QR Codes
-          </PTab>
-        </PTabList>
+    <UiTabs
+      v-model:value="tab"
+      :tabs="[
+        { value: 'generate', label: 'Generate' },
+        { value: 'manage', label: 'Manage' },
+      ]"
+    >
+      <template #panel-generate>
+        <QrcodeGenerate @refresh="refreshQrCodes" />
+      </template>
 
-        <PTabPanels>
-          <PTabPanel value="generate">
-            <QrcodeGenerate @refresh="refreshQrCodes" />
-          </PTabPanel>
-
-          <PTabPanel value="manage">
-            <QrcodeManage ref="qrCodeManage" />
-          </PTabPanel>
-        </PTabPanels>
-      </PTabs>
+      <template #panel-manage>
+        <QrcodeManage ref="qrCodeManage" />
+      </template>
+    </UiTabs>
   </div>
 </template>
 

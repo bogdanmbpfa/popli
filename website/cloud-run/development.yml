@@ -35,4 +35,6 @@ spec:
               value: 'development'
             - name: NUXT_API_BASE_URL
               value: 'https://dev.api.popli.one'
+            - name: NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN
+              value: 'pk.eyJ1IjoiYm9nZGFubWloYWlidWN1cnBmYSIsImEiOiJjbW4xcGpkczEwdmcxMnFyM2hpYTJmcWc1In0.y32vxEzn0LqlMDd9VBUj6g'
       serviceAccountName: website-service-account@popli-465817.iam.gserviceaccount.com

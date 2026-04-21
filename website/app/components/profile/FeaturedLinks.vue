@@ -6,14 +6,13 @@
     </div>
 
     <div class="platforms">
-      <PButton
+      <UiButton
         v-for="platform in platforms.slice(0, visiblePlatformsCount)"
         :key="platform.type"
-        class="default"
         severity="help"
+        fluid
         :title="platform.name"
         :aria-label="`Add ${platform.name} link`"
-        fluid
         @click="onAddLink(platform)"
       >
         <NuxtImg
@@ -21,15 +20,14 @@
           :alt="platform.name"
           loading="lazy"
         />
-      </PButton>
+      </UiButton>
 
-      <PButton
+      <UiButton
         v-if="!expandedPlatforms"
-        class="default"
         severity="secondary"
         :label="`+ ${platforms.length - visiblePlatformsCount}`"
-        fluid
         aria-label="Expand platforms"
+        fluid
         @click="
           expandedPlatforms = true;
           visiblePlatformsCount = platforms.length;
@@ -46,8 +44,7 @@
       />
     </div>
 
-    <PButton
-      class="default"
+    <UiButton
       severity="contrast"
       label="Save"
       aria-label="Save featured links"
@@ -62,7 +59,7 @@ import { v7 as uuidv7 } from 'uuid';
 
 import { EApiEndpoint, ELinkPlatform, ELinkType } from '~~/enums';
 
-const toast = useToast();
+const uiToast = useUiToast();
 const urlStore = useUrlStore();
 
 const visiblePlatformsCount = ref(4);
@@ -177,7 +174,7 @@ const onSave = async () => {
   );
 
   if (createdLinks.some((result) => result.error)) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Error',
       detail: createdLinks.find((result) => result.error)?.error?.message,
@@ -185,7 +182,7 @@ const onSave = async () => {
     });
   }
 
-  return toast.add({
+  return uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'Links created successfully',
@@ -195,8 +192,6 @@ const onSave = async () => {
 </script>
 
 <style lang="scss" scoped>
-@use '../../assets/mixins.scss' as *;
-
 .featured-links {
   display: flex;
   flex-direction: column;
@@ -213,7 +208,7 @@ const onSave = async () => {
     span {
       font-size: 1rem;
       font-weight: 500;
-      color: var(--color-neutral-100);
+      color: var(--neutral-100);
     }
 
     .iconify {
@@ -228,7 +223,7 @@ const onSave = async () => {
     flex-wrap: wrap;
     gap: 1rem;
 
-    .p-button {
+    .ui-button {
       min-width: unset;
       max-width: 6.35rem;
 
@@ -249,7 +244,7 @@ const onSave = async () => {
 @media (max-width: 768px) {
   .featured-links {
     .platforms {
-      .p-button {
+      .ui-button {
         max-width: 3.275rem;
       }
     }

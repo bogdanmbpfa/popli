@@ -126,24 +126,20 @@ onUnmounted(() => {
     gap: 0.5rem;
 
     .title {
-      color: var(--text-100);
+      color: var(--neutral-100);
       font-size: 0.875rem;
       font-weight: 500;
     }
   }
 
   .map-error {
-    color: var(--text-300);
+    color: var(--neutral-300);
     font-size: 0.75rem;
     font-weight: 500;
     text-align: center;
   }
 
   :deep(.mapboxgl-map) {
-    // width: 100%;
-    // height: 100%;
-    // min-height: 20rem;
-
     .mapboxgl-popup {
       position: absolute;
       top: 0;
@@ -152,11 +148,11 @@ onUnmounted(() => {
       pointer-events: none;
 
       .mapboxgl-popup-content {
-        background-color: var(--background-1);
+        background-color: var(--background-primary);
         padding: 0.5rem;
         border-radius: 0.5rem;
         font-size: 0.875rem;
-        color: var(--text-100);
+        color: var(--neutral-100);
       }
     }
 

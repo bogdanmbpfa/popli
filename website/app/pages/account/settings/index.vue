@@ -8,29 +8,28 @@
       >
         <form @submit.prevent="onSubmitVerifyEmail">
           <FormInput id="email" label="Email Address" required>
-            <PInputText
+            <UiInputText
               id="email"
-              class="default"
-              placeholder="Enter your current password"
+              v-model="user.email"
               fluid
-              :value="user.email"
               readonly
+              autocomplete="off"
             />
           </FormInput>
 
-          <PMessage
+          <UiMessage
             v-if="user.emailConfirmedAt"
             class="default text-left"
             severity="success"
           >
             <Icon name="popli:checkbox-marked-circle-outline" class="success" />
             Email verified
-          </PMessage>
+          </UiMessage>
 
-          <PMessage v-else class="default text-left" severity="error">
+          <UiMessage v-else class="default text-left" severity="error">
             <Icon name="popli:alert-circle-outline" class="danger" />
             Email not verified.
-          </PMessage>
+          </UiMessage>
 
           <FormInput
             v-if="isEmailVerifyRequested && !user.emailConfirmedAt"
@@ -40,21 +39,18 @@
             :error="contactInfoErrors.code"
             :required="false"
           >
-            <PInputOtp
+            <UiInputOtp
               id="code"
               v-model="code"
-              name="code"
               v-bind="codeAttributes"
-              class="default"
               fluid
-              integer-only
               :length="6"
               :invalid="!!contactInfoErrors.code"
               :disabled="isContactInfoSubmitting"
             />
           </FormInput>
 
-          <PButton
+          <UiButton
             v-if="isEmailVerifyRequested && !user.emailConfirmedAt"
             type="submit"
             class="default"
@@ -64,7 +60,7 @@
             :disabled="isContactInfoSubmitting"
           />
 
-          <PButton
+          <UiButton
             v-if="!user.emailConfirmedAt && !isEmailVerifyRequested"
             type="button"
             class="default"
@@ -80,10 +76,10 @@
           class="change-password-form"
           @submit.prevent="onSubmitChangePassword"
         >
-          <PInputText
-            class="default"
+          <UiInputText
             name="email"
-            :value="user.email"
+            v-model="user.email"
+            fluid
             autocomplete="username"
             readonly
             disabled
@@ -97,17 +93,15 @@
             size="half"
             required
           >
-            <PPassword
+            <UiInputText
+              id="currentPassword"
+              type="password"
               v-model="currentPassword"
               v-bind="currentPasswordAttributes"
-              class="default"
-              input-id="currentPassword"
-              input-class="default"
               placeholder="Enter your current password"
               fluid
-              :feedback="false"
+              autocomplete="current-password"
               toggle-mask
-              :input-props="{ autocomplete: 'current-password' }"
               :invalid="!!changePasswordErrors.currentPassword"
               :disabled="isChangePasswordSubmitting"
             />
@@ -120,25 +114,22 @@
             size="half"
             required
           >
-            <PPassword
+            <UiInputText
+              id="newPassword"
               v-model="newPassword"
               v-bind="newPasswordAttributes"
-              class="default"
-              input-id="newPassword"
-              input-class="default"
+              type="password"
               placeholder="Enter your new password"
+              autocomplete="new-password"
               fluid
               toggle-mask
-              :feedback="false"
-              :input-props="{ autocomplete: 'new-password' }"
               :invalid="!!changePasswordErrors.newPassword"
               :disabled="isChangePasswordSubmitting"
             />
           </FormInput>
 
-          <PButton
+          <UiButton
             type="submit"
-            class="default"
             severity="contrast"
             label="Update password"
             aria-label="Update password"
@@ -161,13 +152,13 @@
             be undone.
           </span>
 
-          <PButton
-            type="submit"
-            class="default"
+          <UiButton
+            type="button"
             severity="danger"
-            icon="pi pi-trash"
+            icon="popli:delete-outline"
             label="Delete account"
             aria-label="Delete account"
+            :loading="actionInProgress"
             :disabled="actionInProgress"
             @click="openConfirmDeleteAccount"
           />
@@ -188,9 +179,9 @@ definePageMeta({
   middleware: 'is-logged-in',
 });
 
-const confirm = useConfirm();
+const uiConfirmDialog = useUiConfirmDialog();
 const globalStore = useGlobalStore();
-const toast = useToast();
+const uiToast = useUiToast();
 const userStore = useUserStore();
 
 const isEmailVerifyRequested = ref(false);
@@ -241,7 +232,7 @@ const onSubmitRequestEmailVerify = async () => {
   );
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Error',
       detail: error.message,
@@ -251,7 +242,7 @@ const onSubmitRequestEmailVerify = async () => {
 
   isEmailVerifyRequested.value = true;
 
-  return toast.add({
+  return uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'Email verification code sent',
@@ -265,7 +256,7 @@ const onSubmitVerifyEmail = handleContactInfoSubmit(async (values) => {
   });
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Error',
       detail: error.message,
@@ -279,7 +270,7 @@ const onSubmitVerifyEmail = handleContactInfoSubmit(async (values) => {
 
   userStore.setUser(userData ? { ...userData! } : null);
 
-  return toast.add({
+  return uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'Email verified successfully',
@@ -294,7 +285,7 @@ const onSubmitChangePassword = handleChangePasswordSubmit(async (values) => {
   });
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Error',
       detail: error.message,
@@ -304,7 +295,7 @@ const onSubmitChangePassword = handleChangePasswordSubmit(async (values) => {
 
   resetChangePasswordForm();
 
-  return toast.add({
+  return uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'Password changed successfully',
@@ -313,26 +304,21 @@ const onSubmitChangePassword = handleChangePasswordSubmit(async (values) => {
 });
 
 const openConfirmDeleteAccount = () =>
-  confirm.require({
-    icon: 'pi pi-exclamation-triangle',
+  uiConfirmDialog.require({
     header: 'Delete Account permanently?',
     message:
       'This action is irreversible. All your short links, qr codes, analytics data and profile settings will be deleted forever.',
-    acceptClass: 'default p-button-danger',
-    acceptIcon: 'pi pi-trash',
     acceptLabel: 'Delete account',
-    rejectClass: 'default p-button-help',
+    acceptSeverity: 'help',
     rejectLabel: 'Cancel',
-    modal: true,
-    position: 'center',
-    blockScroll: true,
+    rejectSeverity: 'contrast',
     accept: async () => {
       globalStore.toggleActionInProgress();
 
       const { error } = await useApiJson(EApiEndpoint.ACCOUNT_DELETE, {});
 
       if (error) {
-        toast.add({
+        uiToast.add({
           severity: 'error',
           summary: 'Error',
           detail: error.message,
@@ -342,11 +328,11 @@ const openConfirmDeleteAccount = () =>
         return globalStore.toggleActionInProgress();
       }
 
-      useSignOut();
+      await useSignOut();
 
       userStore.setUser(null);
 
-      toast.add({
+      uiToast.add({
         severity: 'success',
         summary: 'Success',
         detail: 'Account deleted successfully',

@@ -37,9 +37,8 @@
       </div>
     </div>
 
-    <PButton
+    <UiButton
       v-if="!expanded && countries.length > 5"
-      class="default"
       severity="info"
       label="View All"
       aria-label="Expand countries"

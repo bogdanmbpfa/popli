@@ -1,31 +1,31 @@
 <template>
   <div v-if="qrCode" class="qr-code-advanced-configuration">
-    <PTabs v-model:value="tab" class="default">
-      <PTabList>
-        <PTab value="colors">Colors</PTab>
-        <PTab value="shapes">Shapes</PTab>
-        <PTab value="logo">Logo</PTab>
-      </PTabList>
-
-      <PTabPanels>
-        <PTabPanel value="colors">
+    <div class="content">
+      <UiTabs
+        v-model:value="tab"
+        :tabs="[
+          { value: 'colors', label: 'Colors' },
+          { value: 'shapes', label: 'Shapes' },
+          { value: 'logo', label: 'Logo' },
+        ]"
+      >
+        <template #panel-colors>
           <div class="section">
             <div class="section-title">
               <span>Color presets</span>
             </div>
 
             <div class="section-items">
-              <PButton
+              <UiButton
                 v-for="preset in colorPresets"
                 :key="`color-reset-${preset.value}`"
-                class="default"
                 :class="{
                   active: colorPreset === preset.value,
                   [preset.value]: true,
                 }"
                 severity="secondary"
                 :title="preset.label"
-                aria-label="Set color preset"
+                :aria-label="`Set color preset to ${preset.label}`"
                 @click="setColorPreset(preset.value)"
               />
             </div>
@@ -38,12 +38,11 @@
               <span>Background Color</span>
             </div>
 
-            <PSelectButton
+            <UiSelectButton
               v-model="backgroundColorType"
-              class="default"
               :options="backgroundColorTypeOptions"
-              :option-label="(option) => option.label"
-              :option-value="(option) => option.value"
+              option-label="label"
+              option-value="value"
               @change="setBackgroundColorType"
             />
 
@@ -51,19 +50,17 @@
               v-if="backgroundColorType === 'solid'"
               class="color-picker-container"
             >
-              <PColorPicker
+              <UiColorPicker
                 id="background-color-solid"
                 v-model="backgroundColor"
-                class="default"
-                overlay-class="default"
                 fluid
                 format="hex"
-                @change="setBackgroundColor"
+                @update:model-value="setBackgroundColor"
               />
 
-              <PInputText
+              <UiInputText
+                name="background-color-solid"
                 :value="`#${backgroundColor}`"
-                class="default"
                 readonly
               />
             </div>
@@ -75,10 +72,8 @@
               <div class="angle">
                 <span class="title">Angle: </span>
 
-                <PInputNumber
+                <UiInputNumber
                   v-model="backgroundGradient.rotation"
-                  class="default"
-                  input-class="default"
                   :min="0"
                   :max="360"
                   show-buttons
@@ -89,20 +84,19 @@
               <div class="gradient-stops">
                 <div class="gradient-stop">
                   <div class="color-picker-container">
-                    <PColorPicker
+                    <UiColorPicker
                       id="background-color-gradient-0"
                       v-model="backgroundGradient.stops[0]!.color"
-                      class="default"
-                      overlay-class="default"
                       fluid
                       format="hex"
-                      @change="setBackgroundGradientStopColor($event, 0)"
+                      @update:model-value="
+                        setBackgroundGradientStopColor($event, 0)
+                      "
                     />
                   </div>
 
-                  <PInputText
-                    class="default"
-                    input-class="default"
+                  <UiInputText
+                    name="background-color-gradient-0"
                     readonly
                     :value="`#${backgroundGradient.stops[0]!.color}`"
                   />
@@ -110,20 +104,19 @@
 
                 <div class="gradient-stop">
                   <div class="color-picker-container">
-                    <PColorPicker
+                    <UiColorPicker
                       id="background-color-gradient-1"
                       v-model="backgroundGradient.stops[1]!.color"
-                      class="default"
-                      overlay-class="default"
                       fluid
                       format="hex"
-                      @change="setBackgroundGradientStopColor($event, 1)"
+                      @update:model-value="
+                        setBackgroundGradientStopColor($event, 1)
+                      "
                     />
                   </div>
 
-                  <PInputText
-                    class="default"
-                    input-class="default"
+                  <UiInputText
+                    name="background-color-gradient-1"
                     readonly
                     :value="`#${backgroundGradient.stops[1]!.color}`"
                   />
@@ -139,12 +132,11 @@
               <span>Foreground Color</span>
             </div>
 
-            <PSelectButton
+            <UiSelectButton
               v-model="foregroundColorType"
-              class="default"
               :options="foregroundColorTypeOptions"
-              :option-label="(option) => option.label"
-              :option-value="(option) => option.value"
+              option-label="label"
+              option-value="value"
               @change="setForegroundColorType"
             />
 
@@ -152,19 +144,17 @@
               v-if="foregroundColorType === 'solid'"
               class="color-picker-container"
             >
-              <PColorPicker
+              <UiColorPicker
                 id="foreground-color-solid"
                 v-model="foregroundColor"
-                class="default"
-                overlay-class="default"
                 fluid
                 format="hex"
-                @change="setForegroundColor"
+                @update:model-value="setForegroundColor"
               />
 
-              <PInputText
+              <UiInputText
                 :value="`#${foregroundColor}`"
-                class="default"
+                name="foreground-color-solid"
                 readonly
               />
             </div>
@@ -176,10 +166,8 @@
               <div class="angle">
                 <span class="title">Angle: </span>
 
-                <PInputNumber
+                <UiInputNumber
                   v-model="foregroundGradient.rotation"
-                  class="default"
-                  input-class="default"
                   :min="0"
                   :max="360"
                   show-buttons
@@ -190,20 +178,19 @@
               <div class="gradient-stops">
                 <div class="gradient-stop">
                   <div class="color-picker-container">
-                    <PColorPicker
+                    <UiColorPicker
                       id="foreground-color-gradient-0"
                       v-model="foregroundGradient.stops[0]!.color"
-                      class="default"
-                      overlay-class="default"
                       fluid
                       format="hex"
-                      @change="setForegroundGradientStopColor($event, 0)"
+                      @update:model-value="
+                        setForegroundGradientStopColor($event, 0)
+                      "
                     />
                   </div>
 
-                  <PInputText
-                    class="default"
-                    input-class="default"
+                  <UiInputText
+                    name="foreground-color-gradient-0"
                     readonly
                     :value="`#${foregroundGradient.stops[0]!.color}`"
                   />
@@ -211,20 +198,19 @@
 
                 <div class="gradient-stop">
                   <div class="color-picker-container">
-                    <PColorPicker
+                    <UiColorPicker
                       id="foreground-color-gradient-1"
                       v-model="foregroundGradient.stops[1]!.color"
-                      class="default"
-                      overlay-class="default"
                       fluid
                       format="hex"
-                      @change="setForegroundGradientStopColor($event, 1)"
+                      @update:model-value="
+                        setForegroundGradientStopColor($event, 1)
+                      "
                     />
                   </div>
 
-                  <PInputText
-                    class="default"
-                    input-class="default"
+                  <UiInputText
+                    name="foreground-color-gradient-1"
                     readonly
                     :value="`#${foregroundGradient.stops[1]!.color}`"
                   />
@@ -240,19 +226,18 @@
               <span>Shape</span>
             </div>
 
-            <PSelectButton
+            <UiSelectButton
               v-model="shape"
-              class="default"
               :options="shapeOptions"
-              :option-value="(option) => option.value"
-              :option-label="(option) => option.label"
+              option-value="value"
+              option-label="label"
               @change="setShape($event.value)"
             >
               <template #option="{ option }">
-                <Icon class="default" :name="option.icon" />
+                <Icon class="default" :name="(option.icon as string)" />
                 <span>{{ option.label }}</span>
               </template>
-            </PSelectButton>
+            </UiSelectButton>
           </div>
 
           <hr />
@@ -263,10 +248,9 @@
               <span>{{ backgroundBorderRadius }}</span>
             </div>
 
-            <PSlider
+            <UiSlider
               id="background"
               v-model="backgroundBorderRadius"
-              class="default"
               fluid
               :min="0"
               :max="1"
@@ -283,19 +267,18 @@
               <span>{{ width }}px</span>
             </div>
 
-            <PSlider
+            <UiSlider
               id="size"
               v-model="width"
-              class="default"
               fluid
               :min="128"
               :max="512"
               @value-change="setSize"
             />
           </div>
-        </PTabPanel>
+        </template>
 
-        <PTabPanel value="shapes">
+        <template #panel-shapes>
           <div class="section-container">
             <span class="title"> Dots </span>
 
@@ -305,11 +288,10 @@
               </div>
 
               <div class="subsection-items">
-                <PButton
+                <UiButton
                   v-for="dotShape in dotsShapes"
                   :key="dotShape.value"
                   type="button"
-                  class="default"
                   :severity="dotsType === dotShape.value ? 'info' : 'secondary'"
                   :label="dotShape.label"
                   :aria-label="`Set dots shape to ${dotShape.label}`"
@@ -323,12 +305,11 @@
                 <span>Color</span>
               </div>
 
-              <PSelectButton
+              <UiSelectButton
                 v-model="dotsColorType"
-                class="default"
                 :options="dotsColorTypeOptions"
-                :option-label="(option) => option.label"
-                :option-value="(option) => option.value"
+                option-label="label"
+                option-value="value"
                 @change="setDotsColorType($event.value)"
               />
 
@@ -336,19 +317,16 @@
                 v-if="dotsColorType === 'solid'"
                 class="color-picker-container"
               >
-                <PColorPicker
+                <UiColorPicker
                   id="dots-color"
                   v-model="dotsColor"
-                  class="default"
-                  overlay-class="default"
                   fluid
                   format="hex"
-                  @change="setDotsColor"
+                  @update:model-value="setDotsColor"
                 />
 
-                <PInputText
-                  class="default"
-                  input-class="default"
+                <UiInputText
+                  name="dots-color"
                   readonly
                   :value="`#${dotsColor}`"
                 />
@@ -361,10 +339,8 @@
                 <div class="angle">
                   <span class="title">Angle: </span>
 
-                  <PInputNumber
+                  <UiInputNumber
                     v-model="dotsGradient.rotation"
-                    class="default"
-                    input-class="default"
                     :min="0"
                     :max="360"
                     show-buttons
@@ -375,20 +351,19 @@
                 <div class="gradient-stops">
                   <div class="gradient-stop">
                     <div class="color-picker-container">
-                      <PColorPicker
+                      <UiColorPicker
                         id="dots-color-gradient-0"
                         v-model="dotsGradient.stops[0]!.color"
-                        class="default"
-                        overlay-class="default"
                         fluid
                         format="hex"
-                        @change="setDotsGradientStopColor($event, 0)"
+                        @update:model-value="
+                          setDotsGradientStopColor($event, 0)
+                        "
                       />
                     </div>
 
-                    <PInputText
-                      class="default"
-                      input-class="default"
+                    <UiInputText
+                      name="dots-color-gradient-0"
                       readonly
                       :value="`#${dotsGradient.stops[0]!.color}`"
                     />
@@ -396,20 +371,19 @@
 
                   <div class="gradient-stop">
                     <div class="color-picker-container">
-                      <PColorPicker
+                      <UiColorPicker
                         id="dots-color-gradient-1"
                         v-model="dotsGradient.stops[1]!.color"
-                        class="default"
-                        overlay-class="default"
                         fluid
                         format="hex"
-                        @change="setDotsGradientStopColor($event, 1)"
+                        @update:model-value="
+                          setDotsGradientStopColor($event, 1)
+                        "
                       />
                     </div>
 
-                    <PInputText
-                      class="default"
-                      input-class="default"
+                    <UiInputText
+                      name="dots-color-gradient-1"
                       readonly
                       :value="`#${dotsGradient.stops[1]!.color}`"
                     />
@@ -428,11 +402,10 @@
               </div>
 
               <div class="subsection-items">
-                <PButton
+                <UiButton
                   v-for="cornerDotShape in cornerDotsShapes"
                   :key="cornerDotShape.value"
                   type="button"
-                  class="default"
                   :severity="
                     cornerDotsType === cornerDotShape.value
                       ? 'info'
@@ -450,12 +423,11 @@
                 <span>Color</span>
               </div>
 
-              <PSelectButton
+              <UiSelectButton
                 v-model="cornerDotsColorType"
-                class="default"
                 :options="cornerDotsColorTypeOptions"
-                :option-label="(option) => option.label"
-                :option-value="(option) => option.value"
+                option-label="label"
+                option-value="value"
                 @change="setCornerDotsColorType($event.value)"
               />
 
@@ -463,19 +435,16 @@
                 v-if="cornerDotsColorType === 'solid'"
                 class="color-picker-container"
               >
-                <PColorPicker
+                <UiColorPicker
                   id="corner-dots-color"
                   v-model="cornerDotsColor"
-                  class="default"
-                  overlay-class="default"
                   fluid
                   format="hex"
                   @change="setCornerDotsColor"
                 />
 
-                <PInputText
-                  class="default"
-                  input-class="default"
+                <UiInputText
+                  name="corner-dots-color"
                   readonly
                   :value="`#${cornerDotsColor}`"
                 />
@@ -488,10 +457,8 @@
                 <div class="angle">
                   <span class="title">Angle: </span>
 
-                  <PInputNumber
+                  <UiInputNumber
                     v-model="cornerDotsGradient.rotation"
-                    class="default"
-                    input-class="default"
                     :min="0"
                     :max="360"
                     show-buttons
@@ -502,20 +469,19 @@
                 <div class="gradient-stops">
                   <div class="gradient-stop">
                     <div class="color-picker-container">
-                      <PColorPicker
+                      <UiColorPicker
                         id="corner-dots-color-gradient-0"
                         v-model="cornerDotsGradient.stops[0]!.color"
-                        class="default"
-                        overlay-class="default"
                         fluid
                         format="hex"
-                        @change="setCornerDotsGradientStopColor($event, 0)"
+                        @update:model-value="
+                          setCornerDotsGradientStopColor($event, 0)
+                        "
                       />
                     </div>
 
-                    <PInputText
-                      class="default"
-                      input-class="default"
+                    <UiInputText
+                      name="corner-dots-color-gradient-0"
                       readonly
                       :value="`#${cornerDotsGradient.stops[0]!.color}`"
                     />
@@ -523,20 +489,19 @@
 
                   <div class="gradient-stop">
                     <div class="color-picker-container">
-                      <PColorPicker
+                      <UiColorPicker
                         id="corner-dots-color-gradient-1"
                         v-model="cornerDotsGradient.stops[1]!.color"
-                        class="default"
-                        overlay-class="default"
                         fluid
                         format="hex"
-                        @change="setCornerDotsGradientStopColor($event, 1)"
+                        @update:model-value="
+                          setCornerDotsGradientStopColor($event, 1)
+                        "
                       />
                     </div>
 
-                    <PInputText
-                      class="default"
-                      input-class="default"
+                    <UiInputText
+                      name="corner-dots-color-gradient-1"
                       readonly
                       :value="`#${cornerDotsGradient.stops[1]!.color}`"
                     />
@@ -555,11 +520,10 @@
               </div>
 
               <div class="subsection-items">
-                <PButton
+                <UiButton
                   v-for="cornerSquareShape in cornerSquaresShapes"
                   :key="cornerSquareShape.value"
                   type="button"
-                  class="default"
                   :severity="
                     cornerSquaresType === cornerSquareShape.value
                       ? 'info'
@@ -577,12 +541,11 @@
                 <span>Color</span>
               </div>
 
-              <PSelectButton
+              <UiSelectButton
                 v-model="cornerSquaresColorType"
-                class="default"
                 :options="cornerSquaresColorTypeOptions"
-                :option-label="(option) => option.label"
-                :option-value="(option) => option.value"
+                option-label="label"
+                option-value="value"
                 @change="setCornerSquaresColorType($event.value)"
               />
 
@@ -590,19 +553,16 @@
                 v-if="cornerSquaresColorType === 'solid'"
                 class="color-picker-container"
               >
-                <PColorPicker
+                <UiColorPicker
                   id="corner-squares-color"
                   v-model="cornerSquaresColor"
-                  class="default"
-                  overlay-class="default"
                   fluid
                   format="hex"
-                  @change="setCornerSquaresColor"
+                  @update:model-value="setCornerSquaresColor"
                 />
 
-                <PInputText
-                  class="default"
-                  input-class="default"
+                <UiInputText
+                  name="corner-squares-color"
                   readonly
                   :value="`#${cornerSquaresColor}`"
                 />
@@ -615,10 +575,8 @@
                 <div class="angle">
                   <span class="title">Angle: </span>
 
-                  <PInputNumber
+                  <UiInputNumber
                     v-model="cornerSquaresGradient.rotation"
-                    class="default"
-                    input-class="default"
                     :min="0"
                     :max="360"
                     show-buttons
@@ -629,20 +587,19 @@
                 <div class="gradient-stops">
                   <div class="gradient-stop">
                     <div class="color-picker-container">
-                      <PColorPicker
+                      <UiColorPicker
                         id="corner-squares-color-gradient-0"
                         v-model="cornerSquaresGradient.stops[0]!.color"
-                        class="default"
-                        overlay-class="default"
                         fluid
                         format="hex"
-                        @change="setCornerSquaresGradientStopColor($event, 0)"
+                        @update:model-value="
+                          setCornerSquaresGradientStopColor($event, 0)
+                        "
                       />
                     </div>
 
-                    <PInputText
-                      class="default"
-                      input-class="default"
+                    <UiInputText
+                      name="corner-squares-color-gradient-0"
                       readonly
                       :value="`#${cornerSquaresGradient.stops[0]!.color}`"
                     />
@@ -650,20 +607,19 @@
 
                   <div class="gradient-stop">
                     <div class="color-picker-container">
-                      <PColorPicker
+                      <UiColorPicker
                         id="corner-squares-color-gradient-1"
                         v-model="cornerSquaresGradient.stops[1]!.color"
-                        class="default"
-                        overlay-class="default"
                         fluid
                         format="hex"
-                        @change="setCornerSquaresGradientStopColor($event, 1)"
+                        @update:model-value="
+                          setCornerSquaresGradientStopColor($event, 1)
+                        "
                       />
                     </div>
 
-                    <PInputText
-                      class="default"
-                      input-class="default"
+                    <UiInputText
+                      name="corner-squares-color-gradient-1"
                       readonly
                       :value="`#${cornerSquaresGradient.stops[1]!.color}`"
                     />
@@ -672,9 +628,9 @@
               </div>
             </div>
           </div>
-        </PTabPanel>
+        </template>
 
-        <PTabPanel value="logo">
+        <template #panel-logo>
           <div
             v-if="!image"
             class="file-upload-area"
@@ -704,7 +660,7 @@
           <div v-if="imageUrl" class="file-preview">
             <div class="preview-content">
               <div class="preview-info">
-                <nuxt-img
+                <NuxtImg
                   :src="imageUrl"
                   alt="Logo image"
                   width="50"
@@ -719,11 +675,11 @@
                 </div>
               </div>
 
-              <PButton
+              <UiButton
+                class="naked"
                 type="button"
-                class="default"
                 severity="danger"
-                icon="pi pi-times"
+                icon="popli:times-outline"
                 aria-label="Remove logo"
                 @click="removeImage"
               />
@@ -732,10 +688,9 @@
             <div class="control-section">
               <span class="title">Image Size: {{ imageSizePercentage }}%</span>
 
-              <PSlider
+              <UiSlider
                 id="image-size"
                 v-model="imageSize"
-                class="default"
                 fluid
                 :min="0"
                 :max="0.4"
@@ -744,51 +699,48 @@
               />
             </div>
           </div>
-        </PTabPanel>
-      </PTabPanels>
-    </PTabs>
+        </template>
+      </UiTabs>
 
-    <div class="preview">
-      <span class="title">Preview</span>
+      <div class="preview">
+        <span class="title">Preview</span>
 
-      <div class="container">
-        <div
-          id="qr-code-advanced-canvas"
-          :style="`width: ${qrCodeOptions.width}px; height: ${qrCodeOptions.height}px;`"
-        />
+        <div class="container">
+          <div
+            id="qr-code-advanced-canvas"
+            :style="`width: ${qrCodeOptions.width}px; height: ${qrCodeOptions.height}px;`"
+          />
 
-        <span class="caption-title"> Sample QR Code Preview </span>
+          <span class="caption-title"> Sample QR Code Preview </span>
 
-        <span class="caption-description">
-          This QR Code is generated with sample content for preview purposes.
-          <br />
-          The actual content will be set when you generate the QR Code.
-        </span>
+          <span class="caption-description">
+            This QR Code is generated with sample content for preview purposes.
+            <br />
+            The actual content will be set when you generate the QR Code.
+          </span>
+        </div>
       </div>
     </div>
 
     <div class="submit">
-      <PButton
-        class="default"
+      <UiMessage severity="info">
+        Use colors that are visible on the background to ensure the QR Code is
+        readable.
+      </UiMessage>
+
+      <UiButton
         severity="contrast"
         label="Save QR Code"
         fluid
         aria-label="Save QR Code"
         @click="saveQRCode"
       />
-
-      <PMessage class="default" severity="info">
-        Use colors that are visible on the background to ensure the QR Code is
-        readable.
-      </PMessage>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import debounce from 'lodash/debounce';
-import type { ColorPickerChangeEvent } from 'primevue/colorpicker';
-import type { DynamicDialogInstance } from 'primevue/dynamicdialogoptions';
 import QRCodeStyling, {
   type CornerDotType,
   type CornerSquareType,
@@ -797,8 +749,11 @@ import QRCodeStyling, {
 } from 'qr-code-styling';
 
 const qrCodeStore = useQrCodeStore();
+const uiDynamicDialog = useUiDynamicDialog();
 
-const dialogRef = inject<{ value: DynamicDialogInstance }>('dialogRef');
+const props = defineProps<{
+  qrCodeOptions: Options;
+}>();
 
 const backgroundBorderRadius = ref<number>(0);
 const backgroundColor = ref<string>('ffffff');
@@ -977,7 +932,7 @@ const imageSizePercentage = computed(() =>
 );
 
 onMounted(() => {
-  qrCodeOptions.value = dialogRef?.value.data;
+  qrCodeOptions.value = props.qrCodeOptions;
   qrCode.value = new QRCodeStyling(qrCodeOptions.value);
 
   if (data.value) {
@@ -1124,8 +1079,8 @@ const setBackgroundColorType = () => {
   }
 };
 
-const setBackgroundColor = (event: ColorPickerChangeEvent) => {
-  qrCodeOptions.value.backgroundOptions!.color = `#${event.value}`;
+const setBackgroundColor = (value: string) => {
+  qrCodeOptions.value.backgroundOptions!.color = value;
   qrCodeOptions.value.backgroundOptions!.gradient = undefined;
 };
 
@@ -1135,11 +1090,10 @@ const setBackgroundGradientAngle = debounce((value: number | number[]) => {
 }, 100);
 
 const setBackgroundGradientStopColor = debounce(
-  (event: ColorPickerChangeEvent, index: number) => {
-    backgroundGradient.value.stops[index]!.color = event.value;
-    qrCodeOptions.value.backgroundOptions!.gradient!.colorStops[
-      index
-    ]!.color = `#${event.value}`;
+  (value: string, index: number) => {
+    backgroundGradient.value.stops[index]!.color = value;
+    qrCodeOptions.value.backgroundOptions!.gradient!.colorStops[index]!.color =
+      value;
   },
   100,
 );
@@ -1161,8 +1115,8 @@ const setForegroundColorType = () => {
   }
 };
 
-const setForegroundColor = (event: ColorPickerChangeEvent) => {
-  qrCodeOptions.value.dotsOptions!.color = `#${event.value}`;
+const setForegroundColor = (value: string) => {
+  qrCodeOptions.value.dotsOptions!.color = value;
   qrCodeOptions.value.dotsOptions!.gradient = undefined;
 };
 
@@ -1172,11 +1126,9 @@ const setForegroundGradientAngle = debounce((value: number | number[]) => {
 }, 100);
 
 const setForegroundGradientStopColor = debounce(
-  (event: ColorPickerChangeEvent, index: number) => {
-    foregroundGradient.value.stops[index]!.color = event.value;
-    qrCodeOptions.value.dotsOptions!.gradient!.colorStops[
-      index
-    ]!.color = `#${event.value}`;
+  (value: string, index: number) => {
+    foregroundGradient.value.stops[index]!.color = value;
+    qrCodeOptions.value.dotsOptions!.gradient!.colorStops[index]!.color = value;
   },
   100,
 );
@@ -1226,8 +1178,8 @@ const setDotsColorType = (value: 'solid' | 'gradient') => {
   }
 };
 
-const setDotsColor = (event: ColorPickerChangeEvent) => {
-  qrCodeOptions.value.dotsOptions!.color = `#${event.value}`;
+const setDotsColor = (value: string) => {
+  qrCodeOptions.value.dotsOptions!.color = value;
 };
 
 const setDotsGradientAngle = debounce((value: number | number[]) => {
@@ -1235,14 +1187,9 @@ const setDotsGradientAngle = debounce((value: number | number[]) => {
     ((value as number) / 180) * Math.PI;
 }, 100);
 
-const setDotsGradientStopColor = debounce(
-  (event: ColorPickerChangeEvent, index: number) => {
-    qrCodeOptions.value.dotsOptions!.gradient!.colorStops[
-      index
-    ]!.color = `#${event.value}`;
-  },
-  100,
-);
+const setDotsGradientStopColor = debounce((value: string, index: number) => {
+  qrCodeOptions.value.dotsOptions!.gradient!.colorStops[index]!.color = value;
+}, 100);
 
 const setCornerDotsColorType = (value: 'solid' | 'gradient') => {
   if (value === 'solid') {
@@ -1261,8 +1208,8 @@ const setCornerDotsColorType = (value: 'solid' | 'gradient') => {
   }
 };
 
-const setCornerDotsColor = (event: ColorPickerChangeEvent) => {
-  qrCodeOptions.value.cornersDotOptions!.color = `#${event.value}`;
+const setCornerDotsColor = (value: string) => {
+  qrCodeOptions.value.cornersDotOptions!.color = value;
 };
 
 const setCornerDotsGradientAngle = debounce((value: number | number[]) => {
@@ -1271,11 +1218,10 @@ const setCornerDotsGradientAngle = debounce((value: number | number[]) => {
 }, 100);
 
 const setCornerDotsGradientStopColor = debounce(
-  (event: ColorPickerChangeEvent, index: number) => {
-    cornerDotsGradient.value.stops[index]!.color = event.value;
-    qrCodeOptions.value.cornersDotOptions!.gradient!.colorStops[
-      index
-    ]!.color = `#${event.value}`;
+  (value: string, index: number) => {
+    cornerDotsGradient.value.stops[index]!.color = value;
+    qrCodeOptions.value.cornersDotOptions!.gradient!.colorStops[index]!.color =
+      value;
   },
   100,
 );
@@ -1297,8 +1243,8 @@ const setCornerSquaresColorType = (value: 'solid' | 'gradient') => {
   }
 };
 
-const setCornerSquaresColor = (event: ColorPickerChangeEvent) => {
-  qrCodeOptions.value.cornersSquareOptions!.color = `#${event.value}`;
+const setCornerSquaresColor = (value: string) => {
+  qrCodeOptions.value.cornersSquareOptions!.color = value;
 };
 
 const setCornerSquaresGradientAngle = debounce((value: number | number[]) => {
@@ -1307,11 +1253,11 @@ const setCornerSquaresGradientAngle = debounce((value: number | number[]) => {
 }, 100);
 
 const setCornerSquaresGradientStopColor = debounce(
-  (event: ColorPickerChangeEvent, index: number) => {
-    cornerSquaresGradient.value.stops[index]!.color = event.value;
+  (value: string, index: number) => {
+    cornerSquaresGradient.value.stops[index]!.color = value;
     qrCodeOptions.value.cornersSquareOptions!.gradient!.colorStops[
       index
-    ]!.color = `#${event.value}`;
+    ]!.color = value;
   },
   100,
 );
@@ -1365,37 +1311,40 @@ const saveQRCode = () => {
     width: width.value,
   });
 
-  return dialogRef?.value.close(qrCodeOptions.value);
+  return uiDynamicDialog.close();
 };
 </script>
 
 <style lang="scss" scoped>
 .qr-code-advanced-configuration {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  position: relative;
-  max-height: 40rem;
-  overflow-y: auto;
-  padding-bottom: 6rem;
 
-  /* Hide scrollbars in configuration dialog */
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-height: 40rem;
+    overflow-y: auto;
+    padding-bottom: 2rem;
 
-  hr {
-    border: none;
-    border-top: 1px solid
-      color-mix(in oklab, var(--neutral-400) 20%, transparent);
-    margin: 0;
-  }
+    /* Hide scrollbars in configuration dialog */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 
-  :deep(.p-tabs) {
-    .p-tabpanels {
-      .p-tabpanel {
+    hr {
+      border: none;
+      border-top: 1px solid
+        color-mix(in oklab, var(--neutral-400) 20%, transparent);
+      margin: 0;
+    }
+
+    :deep(.ui-tabs) {
+      .tabs-panel {
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
@@ -1467,7 +1416,7 @@ const saveQRCode = () => {
             gap: 0.5rem;
             padding: 0 0.25rem;
 
-            .p-button {
+            .ui-button {
               border-radius: 0.25rem;
               height: 3rem;
               flex: 1;
@@ -1516,13 +1465,13 @@ const saveQRCode = () => {
             flex-direction: row;
             gap: 1rem;
           }
+        }
 
-          .color-picker-container {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 0.5rem;
-          }
+        .color-picker-container {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 0.5rem;
         }
 
         .section-container {
@@ -1660,57 +1609,54 @@ const saveQRCode = () => {
         }
       }
     }
-  }
 
-  .preview {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-
-    .title {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--neutral-100);
-    }
-
-    .container {
+    .preview {
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 2rem;
-      background-color: var(--background-secondary);
-      border-radius: 0.25rem;
-      border: 2px dashed
-        color-mix(in oklab, var(--neutral-400) 20%, transparent);
+      gap: 1rem;
 
-      #qr-code-advanced-canvas {
-        overflow: hidden;
-        height: fit-content;
-        width: fit-content;
-        line-height: 1;
+      .title {
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--neutral-100);
       }
 
-      .caption-title {
-        font-size: 0.75rem;
-        font-weight: 400;
-        color: var(--neutral-400);
-      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 2rem;
+        background-color: var(--background-secondary);
+        border-radius: 0.25rem;
+        border: 2px dashed
+          color-mix(in oklab, var(--neutral-400) 20%, transparent);
 
-      .caption-description {
-        font-size: 0.75rem;
-        font-weight: 400;
-        color: var(--neutral-400);
-        text-align: center;
+        #qr-code-advanced-canvas {
+          overflow: hidden;
+          height: fit-content;
+          width: fit-content;
+          line-height: 1;
+        }
+
+        .caption-title {
+          font-size: 0.75rem;
+          font-weight: 400;
+          color: var(--neutral-400);
+        }
+
+        .caption-description {
+          font-size: 0.75rem;
+          font-weight: 400;
+          color: var(--neutral-400);
+          text-align: center;
+        }
       }
     }
   }
 
   .submit {
-    position: fixed;
-    bottom: 0;
-    left: 0;
     width: 100%;
     padding: 1rem;
     display: flex;
@@ -1718,7 +1664,11 @@ const saveQRCode = () => {
     align-items: center;
     gap: 0.5rem;
     background-color: var(--background-primary);
-    box-shadow: var(--box-shadow-primary);
+
+    :deep(.ui-message) {
+      width: 60%;
+      font-size: 1rem;
+    }
   }
 }
 

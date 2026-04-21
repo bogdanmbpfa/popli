@@ -12,11 +12,10 @@
       required
       caption="This will be displayed on your profile"
     >
-      <PInputText
+      <UiInputText
         id="name"
         v-model="name"
         v-bind="nameAttributes"
-        class="default"
         placeholder="Enter your name"
         fluid
         :invalid="!!errors.name"
@@ -25,8 +24,7 @@
       />
     </FormInput>
 
-    <PButton
-      class="default"
+    <UiButton
       type="submit"
       label="Save"
       aria-label="Save name"
@@ -44,7 +42,7 @@ import * as yup from 'yup';
 import { EApiEndpoint } from '~~/enums';
 
 const userStore = useUserStore();
-const toast = useToast();
+const uiToast = useUiToast();
 
 const { defineField, errors, handleSubmit, isSubmitting } = useForm({
   validationSchema: yup.object().shape({
@@ -83,7 +81,7 @@ const onNameSubmit = handleSubmit(async (values) => {
   );
 
   if (error) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Error',
       detail: error.message,
@@ -96,7 +94,7 @@ const onNameSubmit = handleSubmit(async (values) => {
     name: values.name,
   });
 
-  return toast.add({
+  return uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'Name updated successfully',
@@ -126,7 +124,7 @@ form {
     }
   }
 
-  .p-button {
+  .ui-button {
     align-self: flex-start;
   }
 }

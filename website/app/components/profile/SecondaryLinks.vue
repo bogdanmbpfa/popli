@@ -15,8 +15,7 @@
     </div>
 
     <div class="actions">
-      <PButton
-        class="default"
+      <UiButton
         severity="contrast"
         label="Save"
         aria-label="Save secondary links"
@@ -24,11 +23,10 @@
         @click="onSave"
       />
 
-      <PButton
-        class="default"
+      <UiButton
         severity="secondary"
         label="Add Link"
-        icon="pi pi-plus"
+        icon="popli:plus"
         aria-label="Add secondary link"
         @click="onAddLink"
       />
@@ -41,7 +39,7 @@ import { v7 as uuidv7 } from 'uuid';
 
 import { EApiEndpoint, ELinkType } from '~~/enums';
 
-const toast = useToast();
+const uiToast = useUiToast();
 const urlStore = useUrlStore();
 
 const links = computed(() => urlStore.getSecondaryLinks);
@@ -88,7 +86,7 @@ const onSave = async () => {
   );
 
   if (createdLinks.some((result) => result.error)) {
-    return toast.add({
+    return uiToast.add({
       severity: 'error',
       summary: 'Error',
       detail: createdLinks.find((result) => result.error)?.error?.message,
@@ -96,7 +94,7 @@ const onSave = async () => {
     });
   }
 
-  return toast.add({
+  return uiToast.add({
     severity: 'success',
     summary: 'Success',
     detail: 'Links created successfully',

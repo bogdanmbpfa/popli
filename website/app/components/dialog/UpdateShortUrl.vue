@@ -1,11 +1,10 @@
 <template>
 	<form @submit.prevent="onSubmit">
 		<FormInput id="url" label="URL" :error="errors.url" :required="true">
-			<PInputText
+			<UiInputText
 				id="url"
 				v-model="url"
 				v-bind="urlAttributes"
-				class="default"
 				fluid
 				placeholder="https://example.com/long-url"
 				:invalid="!!errors.url"
@@ -13,11 +12,10 @@
 		</FormInput>
 
 		<FormInput id="alias" label="Alias" :error="errors.alias" :required="false">
-			<PInputText
+			<UiInputText
 				id="alias"
 				v-model="alias"
 				v-bind="aliasAttributes"
-				class="default"
 				fluid
 				placeholder="my-short-url"
 				:invalid="!!errors.alias"
@@ -25,22 +23,21 @@
 		</FormInput>
 
 		<FormInput id="title" label="Title" :error="errors.title" :required="false">
-			<PInputText
+			<UiInputText
 				id="title"
 				v-model="title"
 				v-bind="titleAttributes"
-				class="default"
 				fluid
 				placeholder="My Short URL"
 				:invalid="!!errors.title"
 				:disabled="isSubmitting" />
 		</FormInput>
 
-		<PButton
+		<UiButton
 			type="submit"
-			class="default"
 			severity="contrast"
-			icon="pi pi-check"
+			icon="popli:check"
+			icon-size="1.25rem"
 			label="Update"
 			aria-label="Update short URL"
 			:disabled="isSubmitting" />
@@ -48,17 +45,17 @@
 </template>
 
 <script setup lang="ts">
-	import type { DynamicDialogInstance } from 'primevue/dynamicdialogoptions';
 	import * as yup from 'yup';
 
-	import { EApiEndpoint } from '~/../enums';
-	import type { IUpdateShortUrl } from '~/../interfaces';
+	import { EApiEndpoint } from '~~/enums';
+	import type { IUpdateShortUrl, IUrlShortUrl } from '~~/interfaces';
 
-	const dialogRef = inject<{ value: DynamicDialogInstance }>('dialogRef');
+	const props = defineProps<{
+		shortUrl: IUrlShortUrl;
+	}>();
 
-	const toast = useToast();
-
-	const id = ref<string | undefined>(undefined);
+	const uiToast = useUiToast();
+	const uiDynamicDialog = useUiDynamicDialog();
 
 	const { defineField, errors, handleSubmit, resetForm, isSubmitting } = useForm<IUpdateShortUrl>({
 		validationSchema: yup.object().shape({
@@ -81,20 +78,19 @@
 	const [title, titleAttributes] = defineField('title');
 
 	onMounted(() => {
-		id.value = dialogRef?.value.data.id;
-		url.value = dialogRef?.value.data.url;
-		alias.value = dialogRef?.value.data.alias;
-		title.value = dialogRef?.value.data.title;
+		url.value = props.shortUrl.originalUrl;
+		alias.value = props.shortUrl.alias ?? undefined;
+		title.value = props.shortUrl.title ?? undefined;
 	});
 
 	const onSubmit = handleSubmit(async (values) => {
 		const { error } = await useApiJson(EApiEndpoint.URL_SHORT_URL_UPDATE, {
 			...values,
-			id: id.value,
+			id: props.shortUrl.id,
 		});
 
 		if (error) {
-			return toast.add({
+			return uiToast.add({
 				severity: 'error',
 				summary: 'Oops!',
 				detail: error.message,
@@ -102,7 +98,7 @@
 			});
 		}
 
-		toast.add({
+		uiToast.add({
 			severity: 'success',
 			summary: 'Success',
 			detail: 'Short URL updated successfully',
@@ -111,6 +107,6 @@
 
 		resetForm();
 
-		return dialogRef?.value.close();
+		return uiDynamicDialog.close();
 	});
 </script>
