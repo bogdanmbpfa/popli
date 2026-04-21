@@ -7,9 +7,21 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { hash, verify } from 'argon2';
 import { randomBytes } from 'crypto';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 
-import { db, profileModel, userModel } from '@database';
+import {
+  authSessionModel,
+  db,
+  linkClickModel,
+  linkModel,
+  profileAccessModel,
+  profileModel,
+  qrCodeModel,
+  qrCodeScanModel,
+  shortUrlClickModel,
+  shortUrlModel,
+  userModel,
+} from '@database';
 import {
   AccountChangePasswordDTO,
   AccountDTO,
@@ -340,10 +352,166 @@ export class AccountService {
   }
 
   async deleteAccount(account: AccountDTO): Promise<void> {
-    await db
-      .update(userModel)
-      .set({ deletedAt: new Date() })
-      .where(eq(userModel.id, account.id));
+    const now = new Date();
+    const anonymizedToken = randomBytes(12).toString('hex');
+    const anonymizedEmail = `deleted+${account.id}@popli.invalid`;
+    const anonymizedPassword = await hash(
+      `deleted-account-${account.id}-${randomBytes(16).toString('hex')}`,
+    );
+    const anonymizedIp = '0.0.0.0';
+    const anonymizedText = '[deleted]';
+
+    const profile = await db.query.profileModel.findFirst({
+      where: eq(profileModel.userId, account.id),
+    });
+    const links = await db.query.linkModel.findMany({
+      where: eq(linkModel.userId, account.id),
+    });
+    const qrCodes = await db.query.qrCodeModel.findMany({
+      where: eq(qrCodeModel.userId, account.id),
+    });
+    const shortUrls = await db.query.shortUrlModel.findMany({
+      where: eq(shortUrlModel.userId, account.id),
+    });
+
+    const imageKeys = [
+      profile?.profileImage,
+      profile?.coverImage,
+      ...links.map((link) => link.backgroundImage),
+      ...qrCodes.map((qrCode) => qrCode.imageUrl),
+    ].filter((key): key is string => Boolean(key));
+
+    for (const imageKey of imageKeys) {
+      try {
+        await this.storageUtility.delete(imageKey);
+      } catch (error) {
+        this.logger.warn(
+          `Failed deleting image from storage: ${imageKey}`,
+          error,
+        );
+      }
+    }
+
+    await db.transaction(async (tx) => {
+      await tx
+        .update(userModel)
+        .set({
+          email: anonymizedEmail,
+          password: anonymizedPassword,
+          emailConfirmationCode: null,
+          emailConfirmationCodeExpiresAt: null,
+          emailConfirmedAt: null,
+          passwordResetCode: null,
+          passwordResetCodeExpiresAt: null,
+          jwtSecret: randomBytes(20).toString('hex'),
+          refreshTokenSecret: randomBytes(20).toString('hex'),
+          deletedAt: now,
+        })
+        .where(eq(userModel.id, account.id));
+
+      await tx
+        .delete(authSessionModel)
+        .where(eq(authSessionModel.userId, account.id));
+
+      await tx
+        .update(profileModel)
+        .set({
+          handle: null,
+          name: anonymizedText,
+          profileImage: null,
+          coverImage: null,
+          handleColor: null,
+          bio: null,
+          bioColor: null,
+          deletedAt: now,
+        })
+        .where(eq(profileModel.userId, account.id));
+
+      await tx
+        .update(linkModel)
+        .set({
+          url: `https://deleted.popli.invalid/${anonymizedToken}`,
+          title: anonymizedText,
+          backgroundImage: null,
+          titleColors: [],
+          backgroundColors: [],
+          deletedAt: now,
+        })
+        .where(eq(linkModel.userId, account.id));
+
+      await tx
+        .update(qrCodeModel)
+        .set({
+          title: anonymizedText,
+          imageUrl: null,
+          options: {},
+          deletedAt: now,
+        })
+        .where(eq(qrCodeModel.userId, account.id));
+
+      await tx
+        .update(shortUrlModel)
+        .set({
+          url: `https://deleted.popli.invalid/${anonymizedToken}`,
+          alias: null,
+          title: anonymizedText,
+          isActive: false,
+          deletedAt: now,
+        })
+        .where(eq(shortUrlModel.userId, account.id));
+
+      await tx
+        .update(profileAccessModel)
+        .set({
+          ipAddress: anonymizedIp,
+          country: anonymizedText,
+          countryCode: 'XX',
+          deviceType: null,
+          browser: null,
+          userAgent: anonymizedText,
+          os: null,
+          referrer: null,
+        })
+        .where(eq(profileAccessModel.userId, account.id));
+
+      await tx
+        .update(qrCodeScanModel)
+        .set({
+          ipAddress: anonymizedIp,
+          deletedAt: now,
+        })
+        .where(eq(qrCodeScanModel.userId, account.id));
+
+      if (links.length) {
+        await tx
+          .update(linkClickModel)
+          .set({
+            ipAddress: anonymizedIp,
+            deletedAt: now,
+          })
+          .where(
+            inArray(
+              linkClickModel.linkId,
+              links.map((link) => link.id),
+            ),
+          );
+      }
+
+      if (shortUrls.length) {
+        await tx
+          .update(shortUrlClickModel)
+          .set({
+            ipAddress: anonymizedIp,
+            deletedAt: now,
+          })
+          .where(
+            inArray(
+              shortUrlClickModel.shortUrlId,
+              shortUrls.map((shortUrl) => shortUrl.id),
+            ),
+          );
+      }
+    });
   }
 
   async getProfile(id: string): Promise<AccountProfileDTO> {

@@ -60,6 +60,7 @@ export const qrCodeScanModel = qrCodeSchema.table(
     referrer: text('referrer'),
     scannedAt: timestamp('scanned_at').notNull().defaultNow(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
+    deletedAt: timestamp('deleted_at'),
   },
   (table) => [
     uniqueIndex('idx_qr_code_scans_id').on(table.id),

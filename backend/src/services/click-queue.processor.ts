@@ -116,8 +116,8 @@ export class ClickQueueProcessor extends WorkerHost {
   private async getIpData(ipAddress: string): Promise<IUrlIpApiResponse> {
     try {
       const { data } = await this.httpService.axiosRef.get<IUrlIpApiResponse>(
-        // `${this.configService.get('ipApi.baseUrl')}/api/json/${ipAddress}`,
-        `${this.configService.get('ipApi.baseUrl')}/api/json/82.78.167.144`,
+        `${this.configService.get('ipApi.baseUrl')}/api/json/${ipAddress}`,
+        // `${this.configService.get('ipApi.baseUrl')}/api/json/82.78.167.144`,
         {
           transformResponse: (responseData) => JSON.parse(responseData),
         },

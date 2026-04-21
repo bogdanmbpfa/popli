@@ -62,6 +62,7 @@ export const shortUrlClickModel = urlManagementSchema.table(
     referrer: text('referrer'),
     clickedAt: timestamp('clicked_at').notNull().defaultNow(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
+    deletedAt: timestamp('deleted_at'),
   },
   (table) => [
     uniqueIndex('idx_short_url_clicks_id').on(table.id),

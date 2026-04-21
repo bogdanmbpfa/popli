@@ -1,11 +1,15 @@
+import { InjectQueue } from '@nestjs/bullmq';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Queue } from 'bullmq';
 import { and, count, desc, eq, gte, inArray, isNull, sql } from 'drizzle-orm';
 import { randomBytes } from 'node:crypto';
 
 import { db, qrCodeModel, qrCodeScanModel } from '@database';
 import {
   CreateQrCodeDTO,
+  EJobName,
+  EQueueName,
   EQRCodeDataType,
   QrCodeAnalyticsDTO,
   QrCodeDTO,
@@ -20,6 +24,8 @@ export class QrCodeService {
   constructor(
     private readonly configService: ConfigService,
     private readonly storageUtility: StorageUtility,
+    @InjectQueue(EQueueName.QR_CODE_SCAN)
+    private readonly qrCodeScanQueue: Queue,
   ) {}
 
   async createQrCode(userId: string, dto: CreateQrCodeDTO): Promise<void> {
@@ -94,7 +100,10 @@ export class QrCodeService {
           title: qrCode.title,
           imageUrl,
           dataType: qrCode.dataType as EQRCodeDataType,
-          options: qrCode.options as Record<string, unknown>,
+          options: {
+            ...(qrCode.options as Record<string, unknown>),
+            data: `${this.configService.get('app.baseUrl')}/qr-code/${qrCode.id}/scan`,
+          },
           totalScans: totalScansMap.get(qrCode.id) ?? 0,
           createdAt: qrCode.createdAt,
           updatedAt: qrCode.updatedAt,
@@ -204,5 +213,60 @@ export class QrCodeService {
       .update(qrCodeModel)
       .set({ deletedAt: new Date() })
       .where(eq(qrCodeModel.id, qrCodeId));
+  }
+
+  async scanQrCode(
+    id: string,
+    ipAddress: string,
+    requestUserAgent: string,
+    requestReferrer?: string,
+  ): Promise<string> {
+    const qrCode = await db.query.qrCodeModel.findFirst({
+      where: and(eq(qrCodeModel.id, id), isNull(qrCodeModel.deletedAt)),
+    });
+
+    if (!qrCode) {
+      throw new BadRequestException('QR code not found');
+    }
+
+    await this.qrCodeScanQueue.add(EJobName.SCAN_QR_CODE, {
+      qrCodeId: id,
+      ipAddress,
+      requestUserAgent,
+      requestReferrer,
+    });
+
+    return this.getQrCodeData(
+      qrCode.dataType as EQRCodeDataType,
+      qrCode.options as Record<string, unknown>,
+    );
+  }
+
+  private getQrCodeData(
+    dataType: EQRCodeDataType,
+    options: Record<string, unknown>,
+  ): string {
+    const data = typeof options.data === 'string' ? options.data : '';
+
+    if (!data) {
+      throw new BadRequestException('QR code data not found');
+    }
+
+    switch (dataType) {
+      case EQRCodeDataType.TEXT:
+        return data;
+      case EQRCodeDataType.URL:
+        try {
+          return new URL(data).href;
+        } catch {
+          return data;
+        }
+      case EQRCodeDataType.EMAIL:
+        return `mailto:${data}`;
+      case EQRCodeDataType.PHONE:
+        return `tel:${data}`;
+      default:
+        return data;
+    }
   }
 }

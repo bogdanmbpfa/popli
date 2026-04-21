@@ -99,34 +99,15 @@ const uiToast = useUiToast();
 const qrCodeStyling = ref<QRCodeStyling | null>(null);
 const largeQrCodeStyling = ref<QRCodeStyling | null>(null);
 
-const computedData = computed(() => {
-  if (!props.qrCode.options.data) return '';
-
-  switch (props.qrCode.dataType) {
-    case EQRCodeDataType.TEXT:
-      return props.qrCode.options.data;
-    case EQRCodeDataType.URL:
-      return new URL(props.qrCode.options.data).href;
-    case EQRCodeDataType.EMAIL:
-      return `mailto:${props.qrCode.options.data}`;
-    case EQRCodeDataType.PHONE:
-      return `tel:${props.qrCode.options.data}`;
-    default:
-      return props.qrCode.options.data;
-  }
-});
-
 onMounted(() => {
   qrCodeStyling.value = new QRCodeStyling({
     ...props.qrCode.options,
-    data: computedData.value,
     height: 128,
     width: 128,
     image: props.qrCode.imageUrl ?? undefined,
   });
   largeQrCodeStyling.value = new QRCodeStyling({
     ...props.qrCode.options,
-    data: computedData.value,
     image: props.qrCode.imageUrl ?? undefined,
   });
   qrCodeStyling.value?.append(

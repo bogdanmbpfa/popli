@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -19,6 +20,7 @@ import {
   ApiProduces,
   ApiResponse,
 } from '@nestjs/swagger';
+import type { Request } from 'express';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Multer } from 'multer'; // Import needed for file upload to be possible
 
@@ -122,5 +124,31 @@ export class QrCodeController {
     @Param('id') id: string,
   ): Promise<void> {
     return this.qrCodeService.deleteQrCode(account.id, id);
+  }
+
+  @Get('/:id/scan')
+  @ApiOperation({ summary: 'Scan a QR code' })
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the QR code',
+    required: true,
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiProduces('application/json')
+  @ApiResponse({
+    status: 200,
+    description: 'QR code scan registered and data resolved',
+    type: String,
+  })
+  async scanQrCode(
+    @Param('id') id: string,
+    @Req() request: Request,
+  ): Promise<string> {
+    return await this.qrCodeService.scanQrCode(
+      id,
+      request.ip || '',
+      request.headers['user-agent'] || '',
+      request.headers['referer'],
+    );
   }
 }

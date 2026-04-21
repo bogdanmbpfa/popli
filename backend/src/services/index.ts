@@ -3,6 +3,7 @@ import { AppService } from './app.service';
 import { AuthService } from './auth.service';
 import { ClickQueueProcessor } from './click-queue.processor';
 import { ProfileService } from './profile.service';
+import { QrCodeScanQueueProcessor } from './qr-code-scan-queue.processor';
 import { QrCodeService } from './qrcode.service';
 import { UrlService } from './url.service';
 
@@ -12,6 +13,7 @@ export const Services = [
   AuthService,
   ClickQueueProcessor,
   ProfileService,
+  QrCodeScanQueueProcessor,
   QrCodeService,
   UrlService,
 ];
@@ -22,6 +24,7 @@ export {
   AuthService,
   ClickQueueProcessor,
   ProfileService,
+  QrCodeScanQueueProcessor,
   QrCodeService,
   UrlService,
 };

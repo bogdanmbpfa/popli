@@ -10,6 +10,7 @@ export const config: IConfig = {
   port: process.env.APP_PORT ? Number(process.env.APP_PORT) : 3000,
 
   app: {
+    baseUrl: process.env.BASE_URL as string,
     websiteUrl: process.env.WEBSITE_URL as string,
   },
 

@@ -4,6 +4,7 @@ export interface IConfig {
   nodeEnv: EEnvironment;
   port: number;
   app: {
+    baseUrl: string;
     websiteUrl: string;
   };
   brevo: {

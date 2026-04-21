@@ -36,6 +36,9 @@ import { UtilityServices } from '@utilities';
     BullModule.registerQueue({
       name: EQueueName.CLICK,
     }),
+    BullModule.registerQueue({
+      name: EQueueName.QR_CODE_SCAN,
+    }),
     ScheduleModule.forRoot(),
   ],
   controllers: Controllers,
