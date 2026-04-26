@@ -14,31 +14,8 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_HOST: database
-      POSTGRES_USER: popli
-      POSTGRES_PASSWORD: popli
-      POSTGRES_DB: popli
-      POSTGRES_PORT: 5432
+      POSTGRES_URL: postgres://popli:popli@database:5432/popli
     volumes:
       - popli-postgres-data:/var/lib/postgresql
     networks:
       - popli
-
-  backend:
-    container_name: backend
-    build:
-      context: ./backend
-      dockerfile: docker/Dockerfile
-    env_file:
-      - ./backend/.env
-    environment:
-      MIGRATION_FLAG: RUN
-    volumes:
-      - ./backend/:/app
-      - ./backend/node_modules:/app/node_modules
-    ports:
-      - 8000:8000
-    networks:
-      - popli
-    depends_on:
-      - database

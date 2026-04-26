@@ -1,0 +1,39 @@
+import { Storage } from '@google-cloud/storage';
+
+export default async function getFileUrl(fileName: string) {
+  const { googleCloud } = useRuntimeConfig();
+
+  const client = new Storage({
+    projectId: googleCloud.projectId,
+    universeDomain: 'googleapis.com',
+    credentials: {
+      type: 'service_account',
+      project_id: googleCloud.projectId,
+      client_email: googleCloud.storage.serviceAccountEmail,
+      private_key: googleCloud.storage.serviceAccountKey.replace(/\\n/g, '\n'),
+    },
+  });
+  const bucket = client.bucket(googleCloud.storage.bucket);
+
+  try {
+    const file = bucket.file(fileName);
+    const [exists] = await file.exists();
+
+    if (!exists) {
+      log.error({ message: `File ${fileName} does not exist in bucket` });
+
+      throw new Error(`File ${fileName} does not exist in bucket`);
+    }
+
+    const [url] = await file.getSignedUrl({
+      version: 'v4',
+      action: 'read',
+      expires: Date.now() + 1000 * 60 * 60, // 1 hour
+    });
+
+    return url;
+  } catch (error) {
+    log.error({ message: `Error getting URL for file: ${fileName}`, error });
+    throw error;
+  }
+}
