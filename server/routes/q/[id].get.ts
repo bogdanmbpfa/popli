@@ -34,8 +34,6 @@ export default defineEventHandler(async (event) => {
     public: { errorMessages },
   } = useRuntimeConfig();
 
-  const { id: userId } = await isAuthenticated(event);
-
   const qrCodeId = getRouterParam(event, 'id');
 
   if (!qrCodeId) {
@@ -49,7 +47,6 @@ export default defineEventHandler(async (event) => {
   const qrCode = await db.query.qrCodeModel.findFirst({
     where: and(
       eq(qrCodeModel.id, qrCodeId),
-      eq(qrCodeModel.userId, userId),
       isNull(qrCodeModel.deletedAt),
     ),
   });
