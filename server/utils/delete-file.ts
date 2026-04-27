@@ -1,25 +1,32 @@
-import { Storage } from '@google-cloud/storage';
+import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { EEnvironment } from '~~/enums';
 
-export default async function deleteFile(fileName: string) {
-  const { googleCloud } = useRuntimeConfig();
+export default async function deleteFile(key: string) {
+  const {
+    public: { nodeEnv },
+    storage,
+  } = useRuntimeConfig();
 
-  const client = new Storage({
-    projectId: googleCloud.projectId,
-    universeDomain: 'googleapis.com',
+  const client = new S3Client({
+    region: storage.region,
     credentials: {
-      type: 'service_account',
-      project_id: googleCloud.projectId,
-      client_email: googleCloud.storage.serviceAccountEmail,
-      private_key: googleCloud.storage.serviceAccountKey.replace(/\\n/g, '\n'),
+      accessKeyId: storage.accessKeyId,
+      secretAccessKey: storage.secretAccessKey,
     },
+    endpoint: storage.endpoint,
+    forcePathStyle: nodeEnv === EEnvironment.LOCAL,
   });
-  const bucket = client.bucket(googleCloud.storage.bucket);
+
+  const command = new DeleteObjectCommand({
+    Bucket: storage.bucket,
+    Key: key,
+  });
 
   try {
-    const file = bucket.file(fileName);
-    await file.delete();
+    await client.send(command);
   } catch (error) {
-    log.error({ message: `Error deleting file: ${fileName}`, error });
+    log.error({ message: 'Error deleting file', error });
+
     throw error;
   }
 }

@@ -10,6 +10,8 @@ import {
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
+import { fileModel } from './public.schema';
+
 export const userManagementSchema = pgSchema('user_management');
 
 export const userModel = userManagementSchema.table(
@@ -50,8 +52,8 @@ export const profileModel = userManagementSchema.table(
     userId: uuid('user_id').notNull(),
     handle: varchar('handle', { length: 40 }).unique(),
     name: varchar('name', { length: 255 }),
-    profileImage: varchar('profile_image', { length: 255 }),
-    coverImage: varchar('cover_image', { length: 255 }),
+    profileImageId: uuid('profile_image_id').references(() => fileModel.id),
+    coverImageId: uuid('cover_image_id').references(() => fileModel.id),
     handleColor: varchar('handle_color', { length: 6 }),
     bio: text('bio'),
     bioColor: varchar('bio_color', { length: 6 }),

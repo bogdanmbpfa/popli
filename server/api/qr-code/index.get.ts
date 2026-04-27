@@ -1,6 +1,11 @@
 import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
 
-import { db, qrCodeModel, qrCodeScanModel } from '~~/server/database';
+import {
+  db,
+  fileModel,
+  qrCodeModel,
+  qrCodeScanModel,
+} from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
   const {
@@ -39,8 +44,14 @@ export default defineEventHandler(async (event) => {
     qrCodes.map(async (qrCode) => {
       let imageUrl: string | null = null;
 
-      if (qrCode.imageUrl) {
-        imageUrl = await getFileUrl(qrCode.imageUrl);
+      if (qrCode.imageId) {
+        const file = await db.query.fileModel.findFirst({
+          where: eq(fileModel.id, qrCode.imageId),
+        });
+
+        if (file) {
+          imageUrl = await getFileUrl(file.path);
+        }
       }
 
       return {

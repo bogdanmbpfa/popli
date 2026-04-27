@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 
-import { db, profileModel } from '~~/server/database';
+import { db, fileModel, profileModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
   const { public: { errorMessages } } = useRuntimeConfig();
@@ -21,14 +21,26 @@ export default defineEventHandler(async (event) => {
 
   let profileImageUrl: string | null = null;
 
-  if (profile.profileImage) {
-    profileImageUrl = await getFileUrl(profile.profileImage);
+  if (profile.profileImageId) {
+    const file = await db.query.fileModel.findFirst({
+      where: eq(fileModel.id, profile.profileImageId),
+    });
+
+    if (file) {
+      profileImageUrl = await getFileUrl(file.path);
+    }
   }
 
   let coverImageUrl: string | null = null;
 
-  if (profile.coverImage) {
-    coverImageUrl = await getFileUrl(profile.coverImage);
+  if (profile.coverImageId) {
+    const file = await db.query.fileModel.findFirst({
+      where: eq(fileModel.id, profile.coverImageId),
+    });
+
+    if (file) {
+      coverImageUrl = await getFileUrl(file.path);
+    }
   }
 
   return {

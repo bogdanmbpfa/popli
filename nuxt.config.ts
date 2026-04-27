@@ -173,6 +173,13 @@ export default defineNuxtConfig({
       nodeEnv: '',
       siteUrl: '',
     },
+    storage: {
+      accessKeyId: '',
+      secretAccessKey: '',
+      region: '',
+      bucket: '',
+      endpoint: '',
+    },
   },
 
   sitemap: {

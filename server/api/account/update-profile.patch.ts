@@ -20,8 +20,6 @@ export default defineEventHandler(async (event) => {
       AccountUpdateProfileYupSchema.validate(body),
     );
   } catch (error) {
-    console.error(error);
-
     throw createError({
       statusCode: 400,
       statusMessage: 'Bad Request',
@@ -37,6 +35,8 @@ export default defineEventHandler(async (event) => {
       ...(body.handleColor && { handleColor: body.handleColor }),
       ...(body.bio && { bio: body.bio }),
       ...(body.bioColor && { bioColor: body.bioColor }),
+      ...(body.profileImageId && { profileImageId: body.profileImageId }),
+      ...(body.coverImageId && { coverImageId: body.coverImageId }),
     })
     .where(eq(profileModel.userId, id));
 });

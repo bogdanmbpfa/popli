@@ -278,11 +278,54 @@ const generateQRCode = async () => {
       break;
   }
 
-  const { error } = await useApiMultipart(EApiEndpoint.QR_CODE_CREATE, {
+  let imageId: string | null = null;
+
+  if (data.value?.image) {
+    const { data: signData, error } = await useApiJson(
+      EApiEndpoint.FILE_SIGN_URL,
+      {
+        fileName: data.value?.image.name,
+        contentType: data.value?.image.type,
+      },
+    );
+
+    if (error) {
+      return uiToast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: error.message,
+        life: 3000,
+      });
+    }
+
+    const [, { data: id, error: saveError }] = await Promise.all([
+      $fetch(signData!.url, {
+        method: 'PUT',
+        headers: { 'Content-Type': data.value?.image.type },
+        body: data.value?.image,
+      }),
+      useApiJson(EApiEndpoint.FILE_SAVE, {
+        key: signData!.key,
+      }),
+    ]);
+
+    if (saveError) {
+      return uiToast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: saveError.message,
+        life: 3000,
+      });
+    }
+
+    imageId = id;
+  }
+
+  const { error } = await useApiJson(EApiEndpoint.QR_CODE_CREATE, {
     title: title.value,
     type: type.value,
-    image: data.value?.image,
-    options: JSON.stringify({ ...qrCodeOptions, data: qrCodeData.value }),
+    imageId,
+    options: { ...qrCodeOptions, data: qrCodeData.value },
   });
 
   if (error) {

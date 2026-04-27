@@ -4,7 +4,7 @@
       <Icon class="info" name="popli:avatar" size="1rem" />
       <span>Avatar</span>
     </div>
-    
+
     <FormFileUpload
       id="profile-image"
       ref="profileImageUpload"
@@ -36,6 +36,8 @@ import { EApiEndpoint } from '~~/enums';
 const userStore = useUserStore();
 const uiToast = useUiToast();
 
+const profileImageUpload = ref<InstanceType<typeof FileUpload>>();
+
 const { defineField, handleSubmit, isSubmitting } = useForm({
   validationSchema: yup.object().shape({
     profileImage: yup
@@ -61,9 +63,31 @@ const { defineField, handleSubmit, isSubmitting } = useForm({
 
 const [profileImage] = defineField('profileImage');
 
-const profileImageUpload = ref<InstanceType<typeof FileUpload>>();
-
 const profile = computed(() => userStore.getProfile!);
+
+onMounted(async () => {
+  if (profile.value && profile.value.profileImage) {
+    try {
+      const response = await $fetch<Blob>(profile.value.profileImage, {
+        method: 'GET',
+        responseType: 'blob',
+      });
+
+      const file = new File(
+        [response],
+        profile.value.profileImage.split('/').pop()!,
+        {
+          type: response.type,
+        },
+      );
+
+      profileImage.value = file;
+      profileImageUpload.value?.setFile(file);
+    } catch {
+      return;
+    }
+  }
+});
 
 const onSelectProfileImage = (file: File) => {
   profileImage.value = file;
@@ -77,12 +101,10 @@ const onSelectProfileImage = (file: File) => {
 };
 
 const onSubmitProfileImage = handleSubmit(async (values) => {
-  const { error } = await useApiMultipart(
-    EApiEndpoint.ACCOUNT_UPLOAD_PROFILE_IMAGE,
-    {
-      file: values.profileImage,
-    },
-  );
+  const { data, error } = await useApiJson(EApiEndpoint.FILE_SIGN_URL, {
+    fileName: values.profileImage.name,
+    contentType: values.profileImage.type,
+  });
 
   if (error) {
     return uiToast.add({
@@ -93,15 +115,48 @@ const onSubmitProfileImage = handleSubmit(async (values) => {
     });
   }
 
+  const [, { data: id, error: saveError }] = await Promise.all([
+    $fetch(data!.url, {
+      method: 'PUT',
+      headers: { 'Content-Type': values.profileImage.type },
+      body: values.profileImage,
+    }),
+    useApiJson(EApiEndpoint.FILE_SAVE, {
+      key: data!.key,
+    }),
+  ]);
+
+  if (saveError) {
+    return uiToast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: saveError.message,
+      life: 3000,
+    });
+  }
+
+  const { error: updateError } = await useApiJson(
+    EApiEndpoint.ACCOUNT_UPDATE_PROFILE,
+    {
+      profileImageId: id,
+    },
+  );
+
+  if (updateError) {
+    return uiToast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: updateError.message,
+      life: 3000,
+    });
+  }
+
   const { data: profileData } = await useApiJson(EApiEndpoint.ACCOUNT_PROFILE);
 
   userStore.setProfile({
     ...profile.value,
     profileImage: profileData?.profileImage || null,
   });
-
-  profileImageUpload.value?.remove();
-  profileImage.value = null;
 
   return uiToast.add({
     severity: 'success',

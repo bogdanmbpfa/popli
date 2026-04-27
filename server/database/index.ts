@@ -3,6 +3,7 @@ import { withReplicas } from 'drizzle-orm/pg-core';
 
 import { EEnvironment } from '~~/enums';
 
+import * as publicSchema from './public.schema';
 import * as qrCodeSchema from './qrcode.schema';
 import * as urlSchema from './url.schema';
 import * as userSchema from './user.schema';
@@ -26,6 +27,7 @@ export const db = withReplicas(
           : false,
     },
     schema: {
+      ...publicSchema,
       ...qrCodeSchema,
       ...urlSchema,
       ...userSchema,
@@ -48,6 +50,7 @@ export const db = withReplicas(
             : false,
       },
       schema: {
+        ...publicSchema,
         ...qrCodeSchema,
         ...urlSchema,
         ...userSchema,
@@ -56,6 +59,7 @@ export const db = withReplicas(
   ],
 );
 
+export * from './public.schema';
 export * from './qrcode.schema';
 export * from './url.schema';
 export * from './user.schema';

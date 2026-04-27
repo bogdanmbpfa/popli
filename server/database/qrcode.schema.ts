@@ -13,6 +13,7 @@ import { relations } from 'drizzle-orm';
 
 import { EQRCodeDataType } from '~~/enums';
 
+import { fileModel } from './public.schema';
 import { userModel } from './user.schema';
 
 export const qrCodeDataType = pgEnum(
@@ -28,7 +29,7 @@ export const qrCodeModel = qrCodeSchema.table(
     id: uuid('id').defaultRandom().primaryKey().unique().notNull(),
     userId: uuid('user_id').notNull(),
     title: varchar('title', { length: 255 }).notNull(),
-    imageUrl: varchar('image_url', { length: 255 }),
+    imageId: uuid('image_id').references(() => fileModel.id),
     dataType: qrCodeDataType('data_type').notNull(),
     options: jsonb('options').notNull().default({}),
     createdAt: timestamp('created_at').notNull().defaultNow(),

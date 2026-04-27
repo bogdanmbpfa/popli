@@ -71,25 +71,57 @@ const onSave = async () => {
   if (!areLinksValid.value) return;
 
   const createdLinks = await Promise.all(
-    links.value.map((link) =>
-      useApiMultipart(EApiEndpoint.URL_LINKS_CREATE, {
+    links.value.map(async (link) => {
+      let backgroundImageId: string | null = null;
+
+      if (link.backgroundImage && typeof link.backgroundImage === 'object') {
+        const { data, error } = await useApiJson(EApiEndpoint.FILE_SIGN_URL, {
+          fileName: link.backgroundImage.name,
+          contentType: link.backgroundImage.type,
+        });
+
+        if (error) {
+          return { error: error.message };
+        }
+
+        const [, { data: id, error: saveError }] = await Promise.all([
+          $fetch(data!.url, {
+            method: 'PUT',
+            headers: { 'Content-Type': link.backgroundImage.type },
+            body: link.backgroundImage,
+          }),
+          useApiJson(EApiEndpoint.FILE_SAVE, {
+            key: data!.key,
+          }),
+        ]);
+
+        if (saveError) {
+          return { error: saveError.message };
+        }
+
+        backgroundImageId = id;
+      }
+
+      return useApiJson(EApiEndpoint.URL_LINKS_CREATE, {
         id: link.id,
         type: link.type,
         title: link.title,
         titleColors: link.titleColors,
-        backgroundImage: link.backgroundImage,
+        backgroundImageId: backgroundImageId,
         backgroundColors: link.backgroundColors,
         url: link.url,
         position: link.position,
-      }),
-    ),
+      });
+    }),
   );
 
   if (createdLinks.some((result) => result.error)) {
+    const error = createdLinks.find((result) => !!result.error)?.error;
+
     return uiToast.add({
       severity: 'error',
       summary: 'Error',
-      detail: createdLinks.find((result) => result.error)?.error?.message,
+      detail: typeof error === 'string' ? error : error?.message,
       life: 3000,
     });
   }

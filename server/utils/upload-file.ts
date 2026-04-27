@@ -1,60 +1,53 @@
-import { Storage } from '@google-cloud/storage';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { log } from 'evlog';
 import { randomBytes } from 'node:crypto';
 import { stat, unlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { v7 as uuidv7 } from 'uuid';
+
+import { EEnvironment } from '~~/enums';
 
 export default async function uploadFile(
+  userId: string,
   buffer: Buffer,
   name: string,
   mimetype: string,
   folder?: string,
 ) {
-  const { googleCloud } = useRuntimeConfig();
+  const {
+    public: { nodeEnv },
+    storage,
+  } = useRuntimeConfig();
 
-  const client = new Storage({
-    projectId: googleCloud.projectId,
-    universeDomain: 'googleapis.com',
+  const client = new S3Client({
+    region: storage.region,
     credentials: {
-      type: 'service_account',
-      project_id: googleCloud.projectId,
-      client_email: googleCloud.storage.serviceAccountEmail,
-      private_key: googleCloud.storage.serviceAccountKey.replace(/\\n/g, '\n'),
+      accessKeyId: storage.accessKeyId,
+      secretAccessKey: storage.secretAccessKey,
     },
+    endpoint: storage.endpoint,
+    forcePathStyle: nodeEnv === EEnvironment.LOCAL,
   });
-  const bucket = client.bucket(googleCloud.storage.bucket);
 
-  const filepath = join(
-    tmpdir(),
-    `${randomBytes(16).toString('hex')}.${mimetype.split('/')[1]}`,
-  );
+  const key = `user/${userId}/${uuidv7()}.${mimetype.split('/')[1]}`;
+
+  const command = new PutObjectCommand({
+    Bucket: storage.bucket,
+    Key: key,
+    ContentType: mimetype,
+  });
 
   try {
-    await writeFile(filepath, buffer);
-
-    log.info({
-      message: `Uploading file to Google Cloud Storage: ${filepath}`,
+    const url = await getSignedUrl(client, command, {
+      expiresIn: 60, // seconds
     });
 
-    const [file] = await bucket.upload(filepath, {
-      destination: `${folder ? `${folder}/` : ''}${name}`,
-      metadata: {
-        contentType: mimetype,
-      },
-    });
-
-    return file.metadata.name!;
+    return { url, key };
   } catch (error) {
-    log.error({
-      message: `Error uploading file to Google Cloud Storage`,
-      error,
-    });
+    log.error({ message: 'Error getting signed URL for file', error });
 
     throw error;
-  } finally {
-    if (await stat(filepath).catch(() => false)) {
-      await unlink(filepath);
-    }
   }
 }

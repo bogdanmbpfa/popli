@@ -7,7 +7,7 @@ export interface ILink {
   platform?: ELinkPlatform;
   url?: string;
   title?: string;
-  backgroundImage?: File | string;
+  backgroundImage?: string | File | null;
   titleColors?: string[];
   backgroundColors?: string[];
   position: number;

@@ -1,6 +1,6 @@
 import { and, asc, eq, isNull } from 'drizzle-orm';
 
-import { db, linkModel } from '~~/server/database';
+import { db, fileModel, linkModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
   const { id: userId } = await isAuthenticated(event);
@@ -14,8 +14,14 @@ export default defineEventHandler(async (event) => {
     links.map(async (link) => {
       let backgroundImageUrl: string | null = null;
 
-      if (link.backgroundImage) {
-        backgroundImageUrl = await getFileUrl(link.backgroundImage);
+      if (link.backgroundImageId) {
+        const file = await db.query.fileModel.findFirst({
+          where: eq(fileModel.id, link.backgroundImageId),
+        });
+
+        if (file) {
+          backgroundImageUrl = await getFileUrl(file.path);
+        }
       }
 
       return {

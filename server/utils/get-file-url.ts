@@ -1,39 +1,32 @@
-import { Storage } from '@google-cloud/storage';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
-export default async function getFileUrl(fileName: string) {
-  const { googleCloud } = useRuntimeConfig();
+import { EEnvironment } from '~~/enums';
 
-  const client = new Storage({
-    projectId: googleCloud.projectId,
-    universeDomain: 'googleapis.com',
+export default async function getFileUrl(key: string) {
+  const {
+    public: { errorMessages, nodeEnv },
+    storage,
+  } = useRuntimeConfig();
+
+  const client = new S3Client({
+    region: storage.region,
     credentials: {
-      type: 'service_account',
-      project_id: googleCloud.projectId,
-      client_email: googleCloud.storage.serviceAccountEmail,
-      private_key: googleCloud.storage.serviceAccountKey.replace(/\\n/g, '\n'),
+      accessKeyId: storage.accessKeyId,
+      secretAccessKey: storage.secretAccessKey,
     },
+    endpoint: storage.endpoint,
+    forcePathStyle: nodeEnv === EEnvironment.LOCAL,
   });
-  const bucket = client.bucket(googleCloud.storage.bucket);
 
-  try {
-    const file = bucket.file(fileName);
-    const [exists] = await file.exists();
+  const command = new GetObjectCommand({
+    Bucket: storage.bucket,
+    Key: key,
+  });
 
-    if (!exists) {
-      log.error({ message: `File ${fileName} does not exist in bucket` });
+  const url = await getSignedUrl(client, command, {
+    expiresIn: 60 * 5, // 5 minutes
+  });
 
-      throw new Error(`File ${fileName} does not exist in bucket`);
-    }
-
-    const [url] = await file.getSignedUrl({
-      version: 'v4',
-      action: 'read',
-      expires: Date.now() + 1000 * 60 * 60, // 1 hour
-    });
-
-    return url;
-  } catch (error) {
-    log.error({ message: `Error getting URL for file: ${fileName}`, error });
-    throw error;
-  }
+  return url;
 }

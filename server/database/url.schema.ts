@@ -15,6 +15,7 @@ import {
 
 import { ELinkPlatform, ELinkType } from '~~/enums';
 
+import { fileModel } from './public.schema';
 import { userModel } from './user.schema';
 
 export const urlManagementSchema = pgSchema('url_management');
@@ -85,7 +86,7 @@ export const linkModel = urlManagementSchema.table(
     platform: linkPlatform('platform'),
     url: varchar('url', { length: 255 }).notNull(),
     title: varchar('title', { length: 255 }),
-    backgroundImage: varchar('background_image', { length: 255 }),
+    backgroundImageId: uuid('background_image_id').references(() => fileModel.id),
     titleColors: jsonb('title_colors').default('[]'),
     backgroundColors: jsonb('background_colors').default('[]'),
     position: integer('position').notNull().default(0),

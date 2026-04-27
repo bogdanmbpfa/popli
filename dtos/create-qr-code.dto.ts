@@ -19,15 +19,13 @@ export const CreateQrCodeYupSchema = yup.object({
     .string()
     .required('Type is required')
     .oneOf(Object.values(EQRCodeDataType)),
-  image: yup
-    .object({
-      buffer: yup.mixed().required(),
-      mimetype: yup.string().required(),
-      size: yup.number().required(),
-      originalname: yup.string().required(),
-    })
+  imageId: yup
+    .string()
     .optional()
-    .default(undefined),
+    .nullable()
+    .matches(
+      /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-57][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i,
+    ),
   options: yup
     .object({
       shape: yup.string().required().oneOf(Object.values(EQRCodeShape)),

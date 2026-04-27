@@ -10,6 +10,7 @@ import type {
 	IProfileTotalClicks,
 	IQrCode,
 	IQrCodeAnalytics,
+	ISignFileUrl,
 	IUrlShortUrl,
 	IUrlShortUrlCountryClicks,
 	IUrlShortUrlDailyClicks,
@@ -171,10 +172,8 @@ export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 	[EApiEndpoint.URL_LINKS_CREATE]: {
 		path: '/api/url/link',
 		method: 'POST',
-		contentType: 'multipart',
+		contentType: 'json',
 		auth: true,
-		filenames: ['backgroundImage'],
-		stringArrays: ['titleColors', 'backgroundColors'],
 	},
 	[EApiEndpoint.URL_LINK_BACKGROUND_IMAGE]: {
 		path: '/api/url/link/{id}/background-image',
@@ -199,9 +198,8 @@ export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 	[EApiEndpoint.QR_CODE_CREATE]: {
 		path: '/api/qr-code',
 		method: 'POST',
-		contentType: 'multipart',
+		contentType: 'json',
 		auth: true,
-		filenames: ['image'],
 	},
 	[EApiEndpoint.QR_CODE_GET]: {
 		path: '/api/qr-code',
@@ -243,6 +241,20 @@ export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 	},
 	[EApiEndpoint.PROFILE_ACCESS]: {
 		path: '/api/profile/{handle}/access',
+		method: 'POST',
+		contentType: 'json',
+		auth: false,
+	},
+
+	// File API Endpoints
+	[EApiEndpoint.FILE_SIGN_URL]: {
+		path: '/api/file/sign-url',
+		method: 'POST',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.FILE_SAVE]: {
+		path: '/api/file/save',
 		method: 'POST',
 		contentType: 'json',
 		auth: false,
@@ -295,4 +307,8 @@ export type TApiEndpoint = {
 	[EApiEndpoint.PROFILE_DAILY_CLICKS]: IProfileDailyClicks;
 	[EApiEndpoint.PROFILE_TOTAL_CLICKS]: IProfileTotalClicks;
 	[EApiEndpoint.PROFILE_ACCESS]: undefined;
+
+	// File API Endpoints
+	[EApiEndpoint.FILE_SIGN_URL]: ISignFileUrl;
+	[EApiEndpoint.FILE_SAVE]: string;
 };

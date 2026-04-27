@@ -4,7 +4,7 @@
       <Icon class="info" name="popli:image" size="1rem" />
       <span>Cover</span>
     </div>
-    
+
     <FormFileUpload
       id="cover-image"
       ref="coverImageUpload"
@@ -66,6 +66,30 @@ const coverImageUpload = ref<InstanceType<typeof FileUpload>>();
 
 const profile = computed(() => userStore.getProfile!);
 
+onMounted(async () => {
+  if (profile.value && profile.value.coverImage) {
+    try {
+      const response = await $fetch<Blob>(profile.value.coverImage, {
+        method: 'GET',
+        responseType: 'blob',
+      });
+
+      const file = new File(
+        [response],
+        profile.value.coverImage.split('/').pop()!,
+        {
+          type: response.type,
+        },
+      );
+
+      coverImage.value = file;
+      coverImageUpload.value?.setFile(file);
+    } catch {
+      return;
+    }
+  }
+});
+
 const onSelectCoverImage = (file: File) => {
   coverImage.value = file;
 
@@ -78,10 +102,10 @@ const onSelectCoverImage = (file: File) => {
 };
 
 const onSubmitCoverImage = handleSubmit(async (values) => {
-  const { error } = await useApiMultipart(
-    EApiEndpoint.ACCOUNT_UPLOAD_COVER_IMAGE,
-    { file: values.coverImage },
-  );
+  const { data, error } = await useApiJson(EApiEndpoint.FILE_SIGN_URL, {
+    fileName: values.coverImage.name,
+    contentType: values.coverImage.type,
+  });
 
   if (error) {
     return uiToast.add({
@@ -92,15 +116,48 @@ const onSubmitCoverImage = handleSubmit(async (values) => {
     });
   }
 
+  const [, { data: id, error: saveError }] = await Promise.all([
+    $fetch(data!.url, {
+      method: 'PUT',
+      headers: { 'Content-Type': values.coverImage.type },
+      body: values.coverImage,
+    }),
+    useApiJson(EApiEndpoint.FILE_SAVE, {
+      key: data!.key,
+    }),
+  ]);
+
+  if (saveError) {
+    return uiToast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: saveError.message,
+      life: 3000,
+    });
+  }
+
+  const { error: updateError } = await useApiJson(
+    EApiEndpoint.ACCOUNT_UPDATE_PROFILE,
+    {
+      coverImageId: id,
+    },
+  );
+
+  if (updateError) {
+    return uiToast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: updateError.message,
+      life: 3000,
+    });
+  }
+
   const { data: profileData } = await useApiJson(EApiEndpoint.ACCOUNT_PROFILE);
 
   userStore.setProfile({
     ...profile.value,
-    coverImage: profileData?.coverImage ?? null,
+    coverImage: profileData?.coverImage || null,
   });
-
-  coverImageUpload.value?.remove();
-  coverImage.value = null;
 
   return uiToast.add({
     severity: 'success',

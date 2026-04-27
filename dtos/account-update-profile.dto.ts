@@ -30,6 +30,20 @@ export const AccountUpdateProfileYupSchema = yup.object({
     .optional()
     .max(6, 'Bio color must be less than 6 characters')
     .matches(/^[0-9a-fA-F]+$/, 'Bio color must be a valid hex color'),
+  profileImageId: yup
+    .string()
+    .optional()
+    .nullable()
+    .matches(
+      /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-57][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i,
+    ),
+  coverImageId: yup
+    .string()
+    .optional()
+    .nullable()
+    .matches(
+      /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-57][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i,
+    ),
 });
 
 export type IAccountUpdateProfileYup = yup.InferType<

@@ -1,21 +1,20 @@
+import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
 
-import { EEnvironment } from '~~/enums';
-
-const { database, public: { nodeEnv } } = useRuntimeConfig();
+config();
 
 const AppDataSource = new DataSource({
   type: 'postgres',
-  host: database.writeHost,
-  port: database.port,
-  username: database.username,
-  password: database.password,
-  database: database.database,
+  host: process.env.NUXT_DATABASE_WRITE_HOST,
+  port: Number(process.env.DATABASE_PORT),
+  username: process.env.NUXT_DATABASE_USERNAME,
+  password: process.env.NUXT_DATABASE_PASSWORD,
+  database: process.env.NUXT_DATABASE_NAME,
   migrationsTableName: 'migrations',
-  migrations: ['~~/server/database/migrations/*.ts'],
+  migrations: ['server/database/migrations/*.ts'],
   synchronize: false,
   ssl:
-    nodeEnv !== EEnvironment.LOCAL
+    process.env.NUXT_PUBLIC_NODE_ENV !== 'local'
       ? {
           rejectUnauthorized: false,
         }

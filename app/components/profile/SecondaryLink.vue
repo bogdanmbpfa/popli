@@ -43,7 +43,9 @@
           :options="titleColorTypeOptions"
           option-label="label"
           option-value="value"
-          @update:model-value="onTitleColorTypeChange($event as 'solid' | 'gradient')"
+          @update:model-value="
+            onTitleColorTypeChange($event as 'solid' | 'gradient')
+          "
         />
 
         <div v-if="titleColorType === 'solid'" class="color-picker-container">
@@ -53,7 +55,11 @@
             format="hex"
             @update:model-value="setTitleColor"
           />
-          <UiInputText :value="titleSolidColor || ''" class="default" readonly />
+          <UiInputText
+            :value="titleSolidColor || ''"
+            class="default"
+            readonly
+          />
         </div>
 
         <div v-if="titleColorType === 'gradient'" class="gradient-controls">
@@ -128,6 +134,9 @@
           :options="backgroundColorTypeOptions"
           option-label="label"
           option-value="value"
+          @update:model-value="
+            onBackgroundColorTypeChange($event as 'solid' | 'gradient')
+          "
         />
 
         <div
@@ -136,13 +145,13 @@
         >
           <UiColorPicker
             id="background-color-solid-0"
-            v-model="backgroundColors[0]"
+            v-model="backgroundSolidColor"
             fluid
             format="hex"
-            @update:model-value="setBackgroundColor($event, 0)"
+            @update:model-value="setBackgroundColor"
           />
           <UiInputText
-            :value="backgroundColors[0] || ''"
+            :value="backgroundSolidColor || ''"
             name="background-color-solid-0"
             readonly
           />
@@ -156,10 +165,10 @@
             <div class="color-picker-container">
               <UiColorPicker
                 id="background-color-gradient-0"
-                v-model="backgroundColors[0]"
+                v-model="backgroundGradientStartColor"
                 fluid
                 format="hex"
-                @update:model-value="setBackgroundColor($event, 0)"
+                @update:model-value="setBackgroundColor"
               />
             </div>
 
@@ -167,7 +176,7 @@
               class="default"
               name="background-color-gradient-0"
               readonly
-              :value="backgroundColors[0] || ''"
+              :value="backgroundGradientStartColor || ''"
             />
           </div>
 
@@ -175,17 +184,17 @@
             <div class="color-picker-container">
               <UiColorPicker
                 id="background-color-gradient-1"
-                v-model="backgroundColors[1]"
+                v-model="backgroundGradientEndColor"
                 fluid
                 format="hex"
-                @update:model-value="setBackgroundColor($event, 1)"
+                @update:model-value="setBackgroundColor"
               />
             </div>
 
             <UiInputText
               name="background-color-gradient-1"
               readonly
-              :value="backgroundColors[1] || ''"
+              :value="backgroundGradientEndColor || ''"
             />
           </div>
         </div>
@@ -258,19 +267,24 @@ onMounted(async () => {
   backgroundColors.value = props.link.backgroundColors ?? [];
   url.value = props.link.url ?? '';
 
-  if (props.link.backgroundImage) {
+  if (
+    props.link.backgroundImage &&
+    typeof props.link.backgroundImage === 'string'
+  ) {
     try {
-      const fileBuffer = await $fetch<ArrayBuffer>(
-        props.link.backgroundImage as string,
-        {
-          responseType: 'arrayBuffer',
-        },
-      );
+      const response = await $fetch<Blob>(props.link.backgroundImage, {
+        method: 'GET',
+        responseType: 'blob',
+      });
 
-      if (fileBuffer) {
-        const file = new File([fileBuffer], 'background-image.webp', {
-          type: 'image/webp',
-        });
+      if (response) {
+        const file = new File(
+          [response],
+          props.link.backgroundImage.split('/').pop()!,
+          {
+            type: response.type,
+          },
+        );
 
         backgroundImage.value = file;
         backgroundImageUpload.value?.setFile(file);
@@ -323,11 +337,29 @@ const setTitleColor = () => {
   });
 };
 
-const setBackgroundColor = (value: string, index: number) => {
-  backgroundColors.value[index] = value;
+const onBackgroundColorTypeChange = (value: 'solid' | 'gradient') => {
   urlStore.updateLink(props.link.type, {
     ...props.link,
-    backgroundColors: backgroundColors.value,
+    backgroundColors:
+      value === 'solid'
+        ? backgroundSolidColor.value
+          ? [backgroundSolidColor.value]
+          : undefined
+        : backgroundGradientStartColor.value && backgroundGradientEndColor.value
+        ? [backgroundGradientStartColor.value, backgroundGradientEndColor.value]
+        : undefined,
+  });
+};
+
+const setBackgroundColor = () => {
+  urlStore.updateLink(props.link.type, {
+    ...props.link,
+    backgroundColors:
+      backgroundColorType.value === 'solid'
+        ? [backgroundSolidColor.value]
+        : backgroundGradientStartColor.value && backgroundGradientEndColor.value
+        ? [backgroundGradientStartColor.value, backgroundGradientEndColor.value]
+        : undefined,
   });
 };
 
