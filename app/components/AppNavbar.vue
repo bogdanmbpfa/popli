@@ -192,7 +192,7 @@ nav {
     .right {
       display: flex;
       align-items: center;
-      gap: 2rem;
+      gap: clamp(0.5rem, 3vw, 2rem);
 
       .navigation-toggle {
         display: none;
