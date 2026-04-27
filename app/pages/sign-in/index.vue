@@ -27,7 +27,6 @@
               id="email"
               v-model="email"
               v-bind="emailAttributes"
-              v-keyfilter="/^[a-z0-9.@_\-+]+$/"
               placeholder="hello@example.com"
               fluid
               autocomplete="username"

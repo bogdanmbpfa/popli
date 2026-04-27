@@ -5,9 +5,13 @@ export const AccountChangePasswordYupSchema = yup.object({
   newPassword: yup
     .string()
     .required('New password is required')
+    .min(8, 'Password must be at least 8 characters long')
+    .matches(/[A-Z]/, 'Password must have at least one uppercase letter')
+    .matches(/[a-z]/, 'Password must have at least one lowercase letter')
+    .matches(/[0-9]/, 'Password must have at least one number')
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character',
+      /[!@#$%^&*(){}[\]=;'\:"|,.\/<>?§±`~_+-]/,
+      'Password must have at least one special character',
     ),
 });
 

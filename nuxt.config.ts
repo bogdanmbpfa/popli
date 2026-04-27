@@ -116,12 +116,7 @@ export default defineNuxtConfig({
       },
     },
     database: {
-      readHost: '',
-      writeHost: '',
-      port: 0,
-      username: '',
-      password: '',
-      database: '',
+      url: '',
     },
     googleCloud: {
       projectId: '',

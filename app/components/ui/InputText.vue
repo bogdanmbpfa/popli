@@ -48,20 +48,28 @@ const showPassword = ref(false);
   width: 100%;
 
   .ui-input-text {
+    width: 100%;
+    height: 3rem;
     padding: 0.75rem;
     font-size: 1rem;
-    background: var(--input-background) !important;
+    background: var(--input-background);
     background-color: var(--input-background) !important;
     border: 1px solid transparent;
     color: var(--neutral-100);
+    -webkit-text-fill-color: var(--neutral-100);
     line-height: 1.5;
     border-radius: 0.25rem;
-    width: 100%;
     outline: none;
     outline-offset: 0;
+    transition:
+      background-color 999999s step-end,
+      color 999999s step-end,
+      -webkit-text-fill-color 999999s step-end;
 
     &::placeholder {
       opacity: 0.8;
+      color: var(--neutral-400);
+      -webkit-text-fill-color: var(--neutral-400);
     }
 
     &.invalid {

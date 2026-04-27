@@ -36,9 +36,11 @@ import { EApiEndpoint } from '~~/enums';
 defineProps<{
   isNavigationVisible: boolean;
 }>();
+const emit = defineEmits(['toggle-navigation-overlay']);
 
 const uiToast = useUiToast();
 const userStore = useUserStore();
+
 
 const signOut = async () => {
   const { error } = await useApiJson(EApiEndpoint.AUTH_LOGOUT);
@@ -63,6 +65,8 @@ const signOut = async () => {
     life: 3000,
     closable: false,
   });
+
+  emit('toggle-navigation-overlay');
 
   return navigateTo('/');
 };

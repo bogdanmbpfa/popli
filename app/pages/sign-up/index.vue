@@ -32,7 +32,6 @@
               id="email"
               v-model="email"
               v-bind="emailAttributes"
-              v-keyfilter="/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/"
               placeholder="hello@example.com"
               fluid
               autocomplete="username"
@@ -134,10 +133,11 @@ const {
     password: yup
       .string()
       .required('Password is required')
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character',
-      ),
+      .min(8, 'Password must be at least 8 characters long')
+      .matches(/[A-Z]/, 'Password must have at least one uppercase letter')
+      .matches(/[a-z]/, 'Password must have at least one lowercase letter')
+      .matches(/[0-9]/, 'Password must have at least one number')
+      .matches(/[!@#$%^&*(){}[\]=;'\:"|,.\/<>?§±`~_+-]/, 'Password must have at least one special character'),
   }),
 });
 

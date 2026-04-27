@@ -1,0 +1,40 @@
+# fly.toml app configuration file generated for popli-production on 2026-04-27T16:21:28+03:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'popli-production'
+primary_region = 'fra'
+
+[build]
+  dockerfile = 'Dockerfile'
+
+[env]
+  NUXT_PUBLIC_NODE_ENV = 'production'
+  NUXT_PUBLIC_SITE_URL = 'https://popli.one'
+  NUXT_STORAGE_BUCKET = 'popli-production'
+  NUXT_STORAGE_ENDPOINT = 'https://f4c24b382c8fadd87adc4e62bfb442ee.r2.cloudflarestorage.com'
+  NUXT_STORAGE_REGION = 'auto'
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 8080
+
+  [[services.ports]]
+    port = 8080
+    handlers = ['http']
+
+  [[services.ports]]
+    port = 443
+    handlers = ['tls', 'http']
+
+  [[services.http_checks]]
+    path = '/api/ping'
+    interval = '10s'
+    timeout = '5s'
+    retries = 3
+
+[[vm]]
+  memory = '1gb'
+  cpus = 1
+  memory_mb = 1024

@@ -263,8 +263,8 @@ export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 
 export type TApiEndpoint = {
 	// Auth API Endpoints
-	[EApiEndpoint.AUTH_LOGIN]: IAuthLoginResponse;
-	[EApiEndpoint.AUTH_REGISTER]: IAuthLoginResponse;
+	[EApiEndpoint.AUTH_LOGIN]: undefined;
+	[EApiEndpoint.AUTH_REGISTER]: undefined;
 	[EApiEndpoint.AUTH_REQUEST_PASSWORD_RESET]: undefined;
 	[EApiEndpoint.AUTH_RESET_PASSWORD]: undefined;
 	[EApiEndpoint.AUTH_LOGOUT]: undefined;

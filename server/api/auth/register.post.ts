@@ -93,8 +93,6 @@ export default defineEventHandler(async (event) => {
       });
 
       await tx.insert(profileModel).values({ userId: user!.id });
-
-      await sendEmail(body.email.toLowerCase(), brevo.templates.welcome);
     });
   } catch (error) {
     log.error({
@@ -110,6 +108,10 @@ export default defineEventHandler(async (event) => {
       message: errorMessages.internalServerError,
     });
   }
+
+  setAuthCookies(event, token!, refreshToken!);
+
+  await sendEmail(body.email.toLowerCase(), brevo.templates.welcome);
 
   return { token: token!, refreshToken: refreshToken! };
 });

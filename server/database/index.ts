@@ -1,63 +1,24 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { withReplicas } from 'drizzle-orm/pg-core';
-
-import { EEnvironment } from '~~/enums';
+import pg from 'pg';
 
 import * as publicSchema from './public.schema';
 import * as qrCodeSchema from './qrcode.schema';
 import * as urlSchema from './url.schema';
 import * as userSchema from './user.schema';
 
-const { database, public: { nodeEnv } } = useRuntimeConfig();
+const { database } = useRuntimeConfig();
 
-export const db = withReplicas(
-  drizzle({
-    casing: 'snake_case',
-    connection: {
-      host: database.writeHost,
-      port: database.port,
-      user: database.username,
-      password: database.password,
-      database: database.database,
-      ssl:
-        nodeEnv !== EEnvironment.LOCAL
-          ? {
-              rejectUnauthorized: false,
-            }
-          : false,
-    },
-    schema: {
-      ...publicSchema,
-      ...qrCodeSchema,
-      ...urlSchema,
-      ...userSchema,
-    },
-  }),
-  [
-    drizzle({
-      casing: 'snake_case',
-      connection: {
-        host: database.readHost,
-        port: database.port,
-        user: database.username,
-        password: database.password,
-        database: database.database,
-        ssl:
-          nodeEnv !== EEnvironment.LOCAL
-            ? {
-                rejectUnauthorized: false,
-              }
-            : false,
-      },
-      schema: {
-        ...publicSchema,
-        ...qrCodeSchema,
-        ...urlSchema,
-        ...userSchema,
-      },
-    }),
-  ],
-);
+const pool = new pg.Pool({ connectionString: database.url });
+
+export const db = drizzle(pool, {
+  casing: 'snake_case',
+  schema: {
+    ...publicSchema,
+    ...qrCodeSchema,
+    ...urlSchema,
+    ...userSchema,
+  },
+});
 
 export * from './public.schema';
 export * from './qrcode.schema';

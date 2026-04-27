@@ -76,8 +76,6 @@ export default defineEventHandler(async (event) => {
       });
 
     setAuthCookies(event, token, refreshToken);
-
-    return { token, refreshToken };
   } catch (error) {
     log.error({
       message: `Error logging in: ${

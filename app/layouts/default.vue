@@ -2,7 +2,10 @@
   <div class="layout">
     <AppNavbar @toggle-navigation-overlay="toggleNavigationOverlay" />
 
-    <OverlayNavbar :is-navigation-visible="isNavigationVisible" />
+    <OverlayNavbar
+      :is-navigation-visible="isNavigationVisible"
+      @toggle-navigation-overlay="toggleNavigationOverlay"
+    />
 
     <main>
       <slot />

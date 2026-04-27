@@ -208,7 +208,7 @@ nav {
 @media (max-width: 900px) {
   nav {
     .container {
-      .center.account-navigation {
+      .center {
         display: none;
       }
 

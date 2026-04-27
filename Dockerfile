@@ -21,4 +21,4 @@ ENV PORT=8080
 
 EXPOSE 8080
 
-CMD ["node", ".output/server/index.mjs"]
+CMD ["sh", "-c", "pnpm typeorm migration:run -d server/database/typeorm.datasource.ts && exec node .output/server/index.mjs"]
