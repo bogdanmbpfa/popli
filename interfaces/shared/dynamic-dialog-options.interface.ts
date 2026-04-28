@@ -5,4 +5,6 @@ export interface IDynamicDialogOptions {
   component: Component;
   props?: Record<string, unknown>;
   onClose?: () => void;
+  widthFit?: boolean;
+  hideCloseButton?: boolean;
 }

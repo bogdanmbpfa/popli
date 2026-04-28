@@ -16,6 +16,15 @@ export default defineNuxtConfig({
           fetchpriority: 'low',
           onload: 'this.onload = null; this.rel = "stylesheet";',
         },
+        {
+          rel: 'icon',
+          type: 'image/x-icon',
+          href: '/favicon.ico',
+        },
+        {
+          rel: 'apple-touch-icon',
+          href: '/logo.png',
+        },
       ],
       htmlAttrs: {
         lang: 'en',
@@ -79,6 +88,7 @@ export default defineNuxtConfig({
         test: false,
       },
     ],
+    '@vueuse/nuxt',
   ],
 
   nitro: {

@@ -25,9 +25,9 @@
 	});
 
 	configure({
-		validateOnInput: true,
-		validateOnModelUpdate: true,
-		validateOnBlur: true,
+		validateOnInput: false,
+		validateOnModelUpdate: false,
+		validateOnBlur: false,
 		validateOnChange: true,
 	});
 </script>

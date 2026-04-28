@@ -28,7 +28,7 @@
 import type QrCodeManage from '~/components/qrcode/Manage.vue';
 
 definePageMeta({
-  layout: 'default',
+  layout: 'account',
   middleware: 'is-logged-in',
 });
 

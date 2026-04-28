@@ -33,12 +33,10 @@ const toggleNavigationOverlay = () => {
   min-height: 100lvh;
   position: relative;
   padding-top: 4rem;
-  padding: 4rem 1.5rem 0;
 
   main {
     flex: 1;
     width: 100%;
-    max-width: 80rem;
     margin: 0 auto;
   }
 }

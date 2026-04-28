@@ -85,7 +85,7 @@ defineEmits<{ click: [MouseEvent] }>();
   gap: 0.5rem;
   border: none;
   outline: none;
-  padding: 0.75rem 2rem;
+  padding: 0.75rem clamp(1rem, 3vw, 2rem);
   min-width: fit-content;
   background: none;
   color: var(--neutral-400);
@@ -93,6 +93,7 @@ defineEmits<{ click: [MouseEvent] }>();
   font-size: 1rem;
   line-height: 1.5;
   font-weight: 500;
+  text-wrap: nowrap;
   border-radius: 0.25rem;
   cursor: pointer;
 

@@ -78,12 +78,12 @@ const signOut = async () => {
   top: -100lvh;
   left: 0;
   width: 100lvw;
-  height: calc(100lvh - 4rem);
-  background-color: var(--background-primary);
+  background-color: color-mix(in oklab, var(--background-primary) 90%, transparent);
+  backdrop-filter: blur(0.75rem);
   z-index: 45;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 2rem;
   padding: 1rem;
   transition: top 0.3s ease-in-out;
 

@@ -78,7 +78,7 @@ import type {
 } from '~~/interfaces';
 
 definePageMeta({
-  layout: 'default',
+  layout: 'account',
   middleware: 'is-logged-in',
 });
 

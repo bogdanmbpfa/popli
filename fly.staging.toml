@@ -13,7 +13,7 @@ primary_region = 'fra'
   NUXT_PUBLIC_NODE_ENV = 'staging'
   NUXT_PUBLIC_SITE_URL = 'https://staging.popli.one'
   NUXT_STORAGE_BUCKET = 'popli-staging'
-  NUXT_STORAGE_ENDPOINT = 'https://f4c24b382c8fadd87adc4e62bfb442ee.r2.cloudflarestorage.com/popli-staging'
+  NUXT_STORAGE_ENDPOINT = 'https://f4c24b382c8fadd87adc4e62bfb442ee.r2.cloudflarestorage.com'
   NUXT_STORAGE_REGION = 'auto'
 
 [[services]]

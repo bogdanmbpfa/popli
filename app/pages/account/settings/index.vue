@@ -182,7 +182,7 @@ import { EApiEndpoint } from '~~/enums';
 import type { IAccountChangePassword } from '~~/interfaces';
 
 definePageMeta({
-  layout: 'default',
+  layout: 'account',
   middleware: 'is-logged-in',
 });
 

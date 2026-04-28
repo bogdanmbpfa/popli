@@ -31,6 +31,40 @@
             />
           </div>
 
+          <Popper class="profile-options-popper" arrow placement="right-start">
+            <UiButton
+              class="naked toggle-popper"
+              severity="secondary"
+              icon="popli:dots-vertical"
+              icon-size="2rem"
+              aria-label="Open profile options"
+            />
+
+            <template #content>
+              <div class="profile-options">
+                <UiButton
+                  class="naked"
+                  severity="secondary"
+                  icon="popli:link-chain"
+                  icon-size="1rem"
+                  label="Copy Profile Link"
+                  aria-label="Copy Profile Link"
+                  @click="copyProfileLink"
+                />
+
+                <UiButton
+                  class="naked"
+                  severity="secondary"
+                  icon="popli:qr-code-2"
+                  icon-size="1rem"
+                  label="Show QR Code"
+                  aria-label="Show QR Code"
+                  @click="showProfileQrCode"
+                />
+              </div>
+            </template>
+          </Popper>
+
           <div v-if="profile.profileImage" class="avatar">
             <NuxtImg
               :src="profile.profileImage"
@@ -168,14 +202,22 @@
 
 <script setup lang="ts">
 import { DateTime } from 'luxon';
+import Popper from 'vue3-popper';
+
+import ProfileQrCodeDialog from '~/components/dialog/ProfileQrCode.vue';
 import { EApiEndpoint } from '~~/enums';
 
 definePageMeta({
-  layout: 'default',
+  layout: 'account',
   middleware: 'is-logged-in',
 });
 
+const { copy } = useClipboard();
 const { isMobile } = useDevice();
+const {
+  public: { siteUrl },
+} = useRuntimeConfig();
+const uiDynamicDialog = useUiDynamicDialog();
 const uiToast = useUiToast();
 const urlStore = useUrlStore();
 const userStore = useUserStore();
@@ -207,16 +249,26 @@ const loadBackgroundImage = (image: File | string): string => {
 const toggleConfiguration = () =>
   (isConfigurationOpen.value = !isConfigurationOpen.value);
 
-const copyProfileLink = () => {
-  navigator.clipboard.writeText(
-    `${window.location.origin}/${profile.value.handle}`,
-  );
+const copyProfileLink = async () => {
+  if (!profile.value.handle) return;
+
+  await copy(`${siteUrl}/${profile.value.handle}`);
 
   uiToast.add({
     severity: 'success',
     summary: 'Profile Link Copied',
     detail: 'The profile link has been copied to your clipboard.',
     life: 3000,
+  });
+};
+
+const showProfileQrCode = () => {
+  uiDynamicDialog.open({
+    component: markRaw(ProfileQrCodeDialog),
+    header: '',
+    props: { handle: profile.value.handle },
+    widthFit: true,
+    hideCloseButton: true,
   });
 };
 </script>
@@ -319,6 +371,39 @@ const copyProfileLink = () => {
             height: 100%;
             object-fit: cover;
             object-position: center;
+          }
+        }
+
+        .profile-options-popper {
+          position: absolute;
+          top: 4rem;
+          left: 1rem;
+          z-index: 50;
+          border: none !important;
+          margin: 0 !important;
+
+          :deep(.popper) {
+            background: var(--background-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+
+            #arrow {
+              background: var(--background-primary);
+              visibility: visible;
+              rotate: 45deg;
+              transform: translate3d(6px, 6px, 0px) !important;
+            }
+
+            .profile-options {
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 0.5rem;
+
+              .ui-button {
+                font-size: 0.75rem;
+              }
+            }
           }
         }
 

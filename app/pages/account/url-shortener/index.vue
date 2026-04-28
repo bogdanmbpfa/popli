@@ -195,7 +195,7 @@ import { EApiEndpoint } from '~~/enums';
 import type { IUrlShortenUrl, IUrlShortUrl } from '~~/interfaces';
 
 definePageMeta({
-  layout: 'default',
+  layout: 'account',
   middleware: 'is-logged-in',
 });
 

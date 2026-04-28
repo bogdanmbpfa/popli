@@ -3,11 +3,12 @@
     <div
       v-if="isVisible"
       class="ui-dynamic-dialog-overlay"
+      :class="{ 'width-fit': options?.widthFit, 'hide-close-button': options?.hideCloseButton }"
       @click.self="onClose"
     >
       <div class="ui-dynamic-dialog" v-bind="$attrs">
-        <h1 class="title">
-          {{ options?.header }}
+        <h1 v-if="options?.header" class="title">
+          {{ options.header }}
         </h1>
 
         <UiButton
@@ -61,7 +62,7 @@ const onClose = () => {
     border: 1px solid color-mix(in oklab, var(--neutral-400) 20%, transparent);
     border-radius: 0.75rem;
     background: var(--background-primary);
-    padding: 1rem;
+    padding: 2rem;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -79,6 +80,20 @@ const onClose = () => {
       position: absolute;
       top: 0.5rem;
       right: 0.5rem;
+    }
+  }
+
+  &.width-fit {
+    .ui-dynamic-dialog {
+      width: fit-content;
+    }
+  }
+
+  &.hide-close-button {
+    .ui-dynamic-dialog {
+      .close-button {
+        display: none;
+      }
     }
   }
 }
