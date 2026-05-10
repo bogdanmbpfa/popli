@@ -90,7 +90,7 @@ const profile = computed(() => userStore.getProfile!);
 
 onMounted(() => {
   bio.value = props.bio ?? undefined;
-  bioColor.value = props.bioColor ? `#${props.bioColor}` : undefined;
+  bioColor.value = props.bioColor || undefined;
 });
 
 const onBioChange = debounce(async (value?: string) => {
@@ -107,7 +107,7 @@ const onBioColorChange = debounce(async (value?: string) => {
 
   userStore.setProfile({
     ...profile.value,
-    bioColor: value ?? null,
+    bioColor: value || null,
   });
 }, 200);
 

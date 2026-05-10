@@ -88,9 +88,7 @@
           <UiButton
             severity="primary"
             :style="{
-              color: profile.handleColor
-                ? `#${profile.handleColor}`
-                : 'var(--neutral-400)',
+              color: profile.handleColor || 'var(--neutral-400)',
             }"
             :label="profile.handle ? `@${profile.handle}` : 'Add handle'"
             aria-label="Change handle"
@@ -100,9 +98,7 @@
           <UiButton
             severity="primary"
             :style="{
-              color: profile.bioColor
-                ? `#${profile.bioColor}`
-                : 'var(--neutral-400)',
+              color: profile.bioColor || 'var(--neutral-400)',
             }"
             :label="profile.bio || 'Add bio'"
             aria-label="Change bio"
@@ -283,7 +279,7 @@ const { data: links, refresh: refreshLinks } = await useAsyncData(
 
 const currentTime = computed(() => DateTime.now().toFormat('HH:mm'));
 const hasMultipleLinks = computed(() => {
-  return featuredLinks.value.length > 2 || secondaryLinks.value.length > 2;
+  return featuredLinks.value.length >= 2 || secondaryLinks.value.length >= 2;
 });
 const hasProPlan = computed(() => user.value?.plan === EPlanType.PRO);
 const hasReachedLinksLimit = computed(() => {
@@ -759,7 +755,7 @@ const getCssColor = (
         }
 
         .rearange-links-hint {
-          font-size: 0.875rem;
+          font-size: 0.75rem;
           font-weight: 400;
           color: var(--neutral-400);
         }

@@ -118,7 +118,7 @@ const profile = computed(() => userStore.getProfile!);
 
 onMounted(() => {
   handle.value = props.handle || '';
-  handleColor.value = props.handleColor ? `#${props.handleColor}` : null;
+  handleColor.value = props.handleColor || null;
 });
 
 const onHandleChange = debounce(async (value?: string) => {

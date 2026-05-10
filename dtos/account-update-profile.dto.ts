@@ -22,14 +22,14 @@ export const AccountUpdateProfileYupSchema = yup.object({
   handleColor: yup
     .string()
     .optional()
-    .max(6, 'Handle color must be less than 6 characters')
-    .matches(/^[0-9a-fA-F]+$/, 'Handle color must be a valid hex color'),
+    .length(7, 'Handle color must be 7 characters')
+    .matches(/^#[0-9a-fA-F]+$/, 'Handle color must be a valid hex color'),
   bio: yup.string().optional().max(255, 'Bio must be less than 255 characters'),
   bioColor: yup
     .string()
     .optional()
-    .max(6, 'Bio color must be less than 6 characters')
-    .matches(/^[0-9a-fA-F]+$/, 'Bio color must be a valid hex color'),
+    .length(7, 'Bio color must be 7 characters')
+    .matches(/^#[0-9a-fA-F]+$/, 'Bio color must be a valid hex color'),
   profileImageId: yup
     .string()
     .optional()

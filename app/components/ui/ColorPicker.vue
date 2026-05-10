@@ -2,7 +2,7 @@
   <input
     class="ui-color-picker"
     type="color"
-    :value="normalizedValue"
+    :value="modelValue"
     v-bind="$attrs"
     @input="
       $emit('update:modelValue', ($event.target as HTMLInputElement).value)
@@ -14,11 +14,6 @@
 const props = withDefaults(defineProps<{ modelValue?: string }>(), {
   modelValue: '#000000',
 });
-const normalizedValue = computed(() =>
-  props.modelValue?.startsWith('#')
-    ? props.modelValue
-    : `#${props.modelValue ?? '000000'}`,
-);
 defineEmits<{ 'update:modelValue': [string] }>();
 </script>
 

@@ -60,7 +60,7 @@
 
               <UiInputText
                 name="background-color-solid"
-                :value="`#${backgroundColor}`"
+                :value="backgroundColor"
                 readonly
               />
             </div>
@@ -77,7 +77,9 @@
                   :min="0"
                   :max="360"
                   show-buttons
-                  @update:model-value="setBackgroundGradientAngle($event as number)"
+                  @update:model-value="
+                    setBackgroundGradientAngle($event as number)
+                  "
                 />
               </div>
 
@@ -98,7 +100,7 @@
                   <UiInputText
                     name="background-color-gradient-0"
                     readonly
-                    :value="`#${backgroundGradient.stops[0]!.color}`"
+                    :value="backgroundGradient.stops[0]!.color"
                   />
                 </div>
 
@@ -118,7 +120,7 @@
                   <UiInputText
                     name="background-color-gradient-1"
                     readonly
-                    :value="`#${backgroundGradient.stops[1]!.color}`"
+                    :value="backgroundGradient.stops[1]!.color"
                   />
                 </div>
               </div>
@@ -153,7 +155,7 @@
               />
 
               <UiInputText
-                :value="`#${foregroundColor}`"
+                :value="foregroundColor"
                 name="foreground-color-solid"
                 readonly
               />
@@ -171,7 +173,9 @@
                   :min="0"
                   :max="360"
                   show-buttons
-                  @update:model-value="setForegroundGradientAngle($event as number)"
+                  @update:model-value="
+                    setForegroundGradientAngle($event as number)
+                  "
                 />
               </div>
 
@@ -192,7 +196,7 @@
                   <UiInputText
                     name="foreground-color-gradient-0"
                     readonly
-                    :value="`#${foregroundGradient.stops[0]!.color}`"
+                    :value="foregroundGradient.stops[0]!.color"
                   />
                 </div>
 
@@ -212,7 +216,7 @@
                   <UiInputText
                     name="foreground-color-gradient-1"
                     readonly
-                    :value="`#${foregroundGradient.stops[1]!.color}`"
+                    :value="foregroundGradient.stops[1]!.color"
                   />
                 </div>
               </div>
@@ -292,7 +296,9 @@
                   v-for="dotShape in dotsShapes"
                   :key="dotShape.value"
                   type="button"
-                  :severity="dotsType === dotShape.value ? 'contrast' : 'secondary'"
+                  :severity="
+                    dotsType === dotShape.value ? 'contrast' : 'secondary'
+                  "
                   :label="dotShape.label"
                   :aria-label="`Set dots shape to ${dotShape.label}`"
                   @click="setDotsShape(dotShape.value)"
@@ -310,7 +316,9 @@
                 :options="dotsColorTypeOptions"
                 option-label="label"
                 option-value="value"
-                @update:model-value="setDotsColorType($event as 'solid' | 'gradient')"
+                @update:model-value="
+                  setDotsColorType($event as 'solid' | 'gradient')
+                "
               />
 
               <div
@@ -325,11 +333,7 @@
                   @update:model-value="setDotsColor"
                 />
 
-                <UiInputText
-                  name="dots-color"
-                  readonly
-                  :value="`#${dotsColor}`"
-                />
+                <UiInputText name="dots-color" readonly :value="dotsColor" />
               </div>
 
               <div
@@ -365,7 +369,7 @@
                     <UiInputText
                       name="dots-color-gradient-0"
                       readonly
-                      :value="`#${dotsGradient.stops[0]!.color}`"
+                      :value="dotsGradient.stops[0]!.color"
                     />
                   </div>
 
@@ -385,7 +389,7 @@
                     <UiInputText
                       name="dots-color-gradient-1"
                       readonly
-                      :value="`#${dotsGradient.stops[1]!.color}`"
+                      :value="dotsGradient.stops[1]!.color"
                     />
                   </div>
                 </div>
@@ -428,7 +432,9 @@
                 :options="cornerDotsColorTypeOptions"
                 option-label="label"
                 option-value="value"
-                @update:model-value="setCornerDotsColorType($event as 'solid' | 'gradient')"
+                @update:model-value="
+                  setCornerDotsColorType($event as 'solid' | 'gradient')
+                "
               />
 
               <div
@@ -446,7 +452,7 @@
                 <UiInputText
                   name="corner-dots-color"
                   readonly
-                  :value="`#${cornerDotsColor}`"
+                  :value="cornerDotsColor"
                 />
               </div>
 
@@ -462,7 +468,9 @@
                     :min="0"
                     :max="360"
                     show-buttons
-                    @update:model-value="setCornerDotsGradientAngle($event as number)"
+                    @update:model-value="
+                      setCornerDotsGradientAngle($event as number)
+                    "
                   />
                 </div>
 
@@ -483,7 +491,7 @@
                     <UiInputText
                       name="corner-dots-color-gradient-0"
                       readonly
-                      :value="`#${cornerDotsGradient.stops[0]!.color}`"
+                      :value="cornerDotsGradient.stops[0]!.color"
                     />
                   </div>
 
@@ -503,7 +511,7 @@
                     <UiInputText
                       name="corner-dots-color-gradient-1"
                       readonly
-                      :value="`#${cornerDotsGradient.stops[1]!.color}`"
+                      :value="cornerDotsGradient.stops[1]!.color"
                     />
                   </div>
                 </div>
@@ -546,7 +554,9 @@
                 :options="cornerSquaresColorTypeOptions"
                 option-label="label"
                 option-value="value"
-                @update:model-value="setCornerSquaresColorType($event as 'solid' | 'gradient')"
+                @update:model-value="
+                  setCornerSquaresColorType($event as 'solid' | 'gradient')
+                "
               />
 
               <div
@@ -564,7 +574,7 @@
                 <UiInputText
                   name="corner-squares-color"
                   readonly
-                  :value="`#${cornerSquaresColor}`"
+                  :value="cornerSquaresColor"
                 />
               </div>
 
@@ -580,7 +590,9 @@
                     :min="0"
                     :max="360"
                     show-buttons
-                    @update:model-value="setCornerSquaresGradientAngle($event as number)"
+                    @update:model-value="
+                      setCornerSquaresGradientAngle($event as number)
+                    "
                   />
                 </div>
 
@@ -601,7 +613,7 @@
                     <UiInputText
                       name="corner-squares-color-gradient-0"
                       readonly
-                      :value="`#${cornerSquaresGradient.stops[0]!.color}`"
+                      :value="cornerSquaresGradient.stops[0]!.color"
                     />
                   </div>
 
@@ -621,7 +633,7 @@
                     <UiInputText
                       name="corner-squares-color-gradient-1"
                       readonly
-                      :value="`#${cornerSquaresGradient.stops[1]!.color}`"
+                      :value="cornerSquaresGradient.stops[1]!.color"
                     />
                   </div>
                 </div>
@@ -756,7 +768,7 @@ const props = defineProps<{
 }>();
 
 const backgroundBorderRadius = ref<number>(0);
-const backgroundColor = ref<string>('ffffff');
+const backgroundColor = ref<string>('#ffffff');
 const backgroundColorType = ref<'solid' | 'gradient'>('solid');
 const backgroundColorTypeOptions = ref([
   { label: 'Solid', value: 'solid' },
@@ -768,8 +780,8 @@ const backgroundGradient = ref<{
 }>({
   rotation: 0,
   stops: [
-    { color: 'ffffff', offset: 0 },
-    { color: '000000', offset: 100 },
+    { color: '#ffffff', offset: 0 },
+    { color: '#000000', offset: 100 },
   ],
 });
 const colorPreset = ref<
@@ -835,7 +847,7 @@ const cornerSquaresShapes = ref<{ label: string; value: CornerSquareType }[]>([
   { label: 'Classy Rounded', value: 'classy-rounded' },
   { label: 'Extra Rounded', value: 'extra-rounded' },
 ]);
-const cornerDotsColor = ref<string>('000000');
+const cornerDotsColor = ref<string>('#000000');
 const cornerDotsColorType = ref<'solid' | 'gradient'>('solid');
 const cornerDotsColorTypeOptions = ref([
   { label: 'Solid', value: 'solid' },
@@ -847,12 +859,12 @@ const cornerDotsGradient = ref<{
 }>({
   rotation: 0,
   stops: [
-    { color: 'ffffff', offset: 0 },
-    { color: '000000', offset: 100 },
+    { color: '#ffffff', offset: 0 },
+    { color: '#000000', offset: 100 },
   ],
 });
 const cornerDotsType = ref<CornerDotType>('square');
-const cornerSquaresColor = ref<string>('000000');
+const cornerSquaresColor = ref<string>('#000000');
 const cornerSquaresColorType = ref<'solid' | 'gradient'>('solid');
 const cornerSquaresColorTypeOptions = ref([
   { label: 'Solid', value: 'solid' },
@@ -864,12 +876,12 @@ const cornerSquaresGradient = ref<{
 }>({
   rotation: 0,
   stops: [
-    { color: 'ffffff', offset: 0 },
-    { color: '000000', offset: 100 },
+    { color: '#ffffff', offset: 0 },
+    { color: '#000000', offset: 100 },
   ],
 });
 const cornerSquaresType = ref<CornerSquareType>('square');
-const dotsColor = ref<string>('000000');
+const dotsColor = ref<string>('#000000');
 const dotsColorType = ref<'solid' | 'gradient'>('solid');
 const dotsColorTypeOptions = ref([
   { label: 'Solid', value: 'solid' },
@@ -881,8 +893,8 @@ const dotsGradient = ref<{
 }>({
   rotation: 0,
   stops: [
-    { color: 'ffffff', offset: 0 },
-    { color: '000000', offset: 100 },
+    { color: '#ffffff', offset: 0 },
+    { color: '#000000', offset: 100 },
   ],
 });
 const dotsShapes = ref<{ label: string; value: DotType }[]>([
@@ -899,7 +911,7 @@ const foregroundColorTypeOptions = ref([
   { label: 'Solid', value: 'solid' },
   { label: 'Gradient', value: 'gradient' },
 ]);
-const foregroundColor = ref<string>('000000');
+const foregroundColor = ref<string>('#000000');
 const foregroundGradient = ref<{
   rotation: number;
   stops: { color: string; offset: number }[];
@@ -1064,7 +1076,7 @@ const setColorPreset = (preset: string) => {
 
 const setBackgroundColorType = () => {
   if (backgroundColorType.value === 'solid') {
-    qrCodeOptionsRef.value.backgroundOptions!.color = `#${backgroundColor.value}`;
+    qrCodeOptionsRef.value.backgroundOptions!.color = backgroundColor.value;
     qrCodeOptionsRef.value.backgroundOptions!.gradient = undefined;
   } else {
     qrCodeOptionsRef.value.backgroundOptions!.gradient = {
@@ -1072,7 +1084,7 @@ const setBackgroundColorType = () => {
       rotation: (backgroundGradient.value.rotation / 180) * Math.PI,
       colorStops: backgroundGradient.value.stops.map((stop) => ({
         offset: stop.offset,
-        color: `#${stop.color}`,
+        color: stop.color,
       })),
     };
     qrCodeOptionsRef.value.backgroundOptions!.color = undefined;
@@ -1092,15 +1104,16 @@ const setBackgroundGradientAngle = debounce((value: number | number[]) => {
 const setBackgroundGradientStopColor = debounce(
   (value: string, index: number) => {
     backgroundGradient.value.stops[index]!.color = value;
-    qrCodeOptionsRef.value.backgroundOptions!.gradient!.colorStops[index]!.color =
-      value;
+    qrCodeOptionsRef.value.backgroundOptions!.gradient!.colorStops[
+      index
+    ]!.color = value;
   },
   100,
 );
 
 const setForegroundColorType = () => {
   if (foregroundColorType.value === 'solid') {
-    qrCodeOptionsRef.value.dotsOptions!.color = `#${foregroundColor.value}`;
+    qrCodeOptionsRef.value.dotsOptions!.color = foregroundColor.value;
     qrCodeOptionsRef.value.dotsOptions!.gradient = undefined;
   } else {
     qrCodeOptionsRef.value.dotsOptions!.gradient = {
@@ -1108,7 +1121,7 @@ const setForegroundColorType = () => {
       rotation: (foregroundGradient.value.rotation / 180) * Math.PI,
       colorStops: foregroundGradient.value.stops.map((stop) => ({
         offset: stop.offset,
-        color: `#${stop.color}`,
+        color: stop.color,
       })),
     };
     qrCodeOptionsRef.value.dotsOptions!.color = undefined;
@@ -1128,7 +1141,8 @@ const setForegroundGradientAngle = debounce((value: number | number[]) => {
 const setForegroundGradientStopColor = debounce(
   (value: string, index: number) => {
     foregroundGradient.value.stops[index]!.color = value;
-    qrCodeOptionsRef.value.dotsOptions!.gradient!.colorStops[index]!.color = value;
+    qrCodeOptionsRef.value.dotsOptions!.gradient!.colorStops[index]!.color =
+      value;
   },
   100,
 );
@@ -1188,7 +1202,8 @@ const setDotsGradientAngle = debounce((value: number | number[]) => {
 }, 100);
 
 const setDotsGradientStopColor = debounce((value: string, index: number) => {
-  qrCodeOptionsRef.value.dotsOptions!.gradient!.colorStops[index]!.color = value;
+  qrCodeOptionsRef.value.dotsOptions!.gradient!.colorStops[index]!.color =
+    value;
 }, 100);
 
 const setCornerDotsColorType = (value: 'solid' | 'gradient') => {
@@ -1220,8 +1235,9 @@ const setCornerDotsGradientAngle = debounce((value: number | number[]) => {
 const setCornerDotsGradientStopColor = debounce(
   (value: string, index: number) => {
     cornerDotsGradient.value.stops[index]!.color = value;
-    qrCodeOptionsRef.value.cornersDotOptions!.gradient!.colorStops[index]!.color =
-      value;
+    qrCodeOptionsRef.value.cornersDotOptions!.gradient!.colorStops[
+      index
+    ]!.color = value;
   },
   100,
 );
