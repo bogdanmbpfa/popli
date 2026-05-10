@@ -3,7 +3,10 @@ FROM node:24-alpine
 WORKDIR /app
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
-ENV PNPM_HOME=/usr/local/bin
+# RUN pnpm setup
+
+ENV PNPM_HOME=/root/.local/share/pnpm
+ENV PATH=$PNPM_HOME/bin:$PATH
 
 RUN pnpm add -g typescript
 
