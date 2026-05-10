@@ -47,13 +47,18 @@
       </div>
 
       <div v-if="user" class="global-distribution">
-        <LazyAnalyticsClicksMap :clicks="countryClicks" :user-plan="user.plan" />
+        <ClientOnly>
+          <LazyAnalyticsClicksMap
+            :clicks="countryClicks"
+            :user-plan="user.plan"
+          />
 
-        <LazyAnalyticsTopCountries
-          :total-clicks="totalClicks"
-          :countries="countriesWithColors"
-          :user-plan="user.plan"
-        />
+          <LazyAnalyticsTopCountries
+            :total-clicks="totalClicks"
+            :countries="countriesWithColors"
+            :user-plan="user.plan"
+          />
+        </ClientOnly>
       </div>
 
       <div v-if="user" class="traffic-distribution">
