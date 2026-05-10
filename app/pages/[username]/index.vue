@@ -39,9 +39,7 @@
           <h2
             v-if="profile.handle"
             :style="{
-              color: profile.handleColor
-                ? `#${profile.handleColor}`
-                : 'var(--neutral-100)',
+              color: profile.handleColor || 'var(--neutral-100)',
             }"
             class="handle"
           >
@@ -51,9 +49,7 @@
           <p
             v-if="profile.bio"
             :style="{
-              color: profile.bioColor
-                ? `#${profile.bioColor}`
-                : 'var(--neutral-400)',
+              color: profile.bioColor || 'var(--neutral-400)',
             }"
             class="bio"
           >
