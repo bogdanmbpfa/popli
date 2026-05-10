@@ -9,7 +9,7 @@
       <span class="title"> Top Countries </span>
     </div>
 
-    <div class="countries">
+    <div v-if="isProPlan" class="countries">
       <div
         v-for="country in countries"
         :key="country.countryCode"
@@ -37,6 +37,19 @@
       </div>
     </div>
 
+    <div v-else class="free-plan-banner">
+      <span class="description">
+        Upgrade to the Pro plan to view your top countries.
+      </span>
+
+      <UiButton
+        severity="contrast"
+        label="Upgrade to Pro"
+        aria-label="Upgrade to Pro"
+        @click="upgradeToPro"
+      />
+    </div>
+
     <UiButton
       v-if="!expanded && countries.length > 5"
       severity="info"
@@ -50,6 +63,10 @@
 <script setup lang="ts">
 import orderBy from 'lodash/orderBy';
 
+import { EPlanType } from '~~/enums';
+
+const { upgradeToPro } = useUpgradePlan();
+
 const props = defineProps({
   totalClicks: {
     type: Number,
@@ -61,10 +78,15 @@ const props = defineProps({
     >,
     required: true,
   },
+  userPlan: {
+    type: String as PropType<EPlanType>,
+    required: true,
+  },
 });
 
 const expanded = ref(false);
 
+const isProPlan = computed(() => props.userPlan === EPlanType.PRO);
 const countries = computed(() => {
   return orderBy(props.countries, 'clicks', 'desc').slice(
     0,
@@ -152,6 +174,22 @@ const toggleExpanded = () => {
           z-index: 2;
         }
       }
+    }
+  }
+
+  .free-plan-banner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    
+    .description {
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--neutral-400);
+      text-align: center;
     }
   }
 }

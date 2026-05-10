@@ -5,6 +5,7 @@
     <UiButton
       severity="contrast"
       icon="popli:download"
+      icon-size="1.25rem"
       label="Download"
       aria-label="Download QR Code"
       @click="downloadQRCode"
@@ -36,7 +37,7 @@ onMounted(() => {
       margin: 2,
     },
     dotsOptions: {
-      type: 'extra-rounded',
+      type: 'dots',
       color: '#0e0e12',
     },
     cornersSquareOptions: {

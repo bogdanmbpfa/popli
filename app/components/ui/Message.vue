@@ -5,9 +5,12 @@
 </template>
 
 <script setup lang="ts">
-withDefaults(defineProps<{ severity?: 'info' | 'success' | 'warn' | 'error' }>(), {
-  severity: 'info'
-});
+withDefaults(
+  defineProps<{ severity?: 'info' | 'success' | 'warn' | 'error' }>(),
+  {
+    severity: 'info',
+  },
+);
 </script>
 
 <style scoped lang="scss">

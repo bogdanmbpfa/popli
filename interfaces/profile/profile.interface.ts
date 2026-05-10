@@ -22,4 +22,5 @@ export interface IProfile {
   bioColor: string | null;
   primaryLinks: IProfileLink[];
   secondaryLinks: IProfileLink[];
+  isPro: boolean;
 }

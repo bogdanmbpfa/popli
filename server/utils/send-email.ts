@@ -1,11 +1,17 @@
 import { log } from 'evlog';
+import { readFile } from 'node:fs/promises';
+
+import { EEmailTemplate } from '~~/enums';
 
 export default async function sendEmail(
   email: string,
-  templateId: number,
+  subject: string,
+  emailTemplate: EEmailTemplate,
   params?: Record<string, unknown>,
 ) {
   const { brevo } = useRuntimeConfig();
+
+  const html = await readFile(`${process.cwd()}/emails/${emailTemplate}`, 'utf-8');
 
   try {
     await $fetch('https://api.brevo.com/v3/smtp/email', {
@@ -16,7 +22,8 @@ export default async function sendEmail(
           email: 'no-reply@popli.one',
         },
         to: [{ email }],
-        templateId,
+        subject,
+        htmlContent: html,
         params,
       },
       headers: {

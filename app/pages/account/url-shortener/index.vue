@@ -71,13 +71,24 @@
         </FormInput>
 
         <UiButton
+          v-if="isProPlan || shortUrlCount < shortUrlLimit"
           type="submit"
           severity="contrast"
           icon="popli:link-chain"
-          label="Shorten URL"
+          :label="submitButtonLabel"
           aria-label="Shorten URL"
           fluid
           :disabled="isShortenUrlSubmitting || actionInProgress"
+        />
+
+        <UiButton
+          v-else
+          severity="contrast"
+          icon="popli:link-chain"
+          label="Upgrade to Pro"
+          aria-label="Upgrade to Pro"
+          fluid
+          @click="upgradeToPro"
         />
       </form>
     </FormContainer>
@@ -191,7 +202,7 @@ import * as yup from 'yup';
 
 import ShortUrlAnalyticsDialog from '~/components/dialog/ShortUrlAnalytics.vue';
 import UpdateShortUrlDialog from '~/components/dialog/UpdateShortUrl.vue';
-import { EApiEndpoint } from '~~/enums';
+import { EApiEndpoint, EPlanType } from '~~/enums';
 import type { IUrlShortenUrl, IUrlShortUrl } from '~~/interfaces';
 
 definePageMeta({
@@ -199,12 +210,18 @@ definePageMeta({
   middleware: 'is-logged-in',
 });
 
+const globalStore = useGlobalStore();
+const {
+  public: {
+    errorMessages,
+    freePlan: { shortUrlLimit },
+  },
+} = useRuntimeConfig();
 const uiConfirmDialog = useUiConfirmDialog();
 const uiDynamicDialog = useUiDynamicDialog();
-const globalStore = useGlobalStore();
 const uiToast = useUiToast();
-
-const actionInProgress = computed(() => globalStore.getActionInProgress);
+const { upgradeToPro } = useUpgradePlan();
+const userStore = useUserStore();
 
 const { data: shortUrls, refresh: refreshShortUrls } = await useAsyncData(
   'short-url',
@@ -215,6 +232,33 @@ const { data: shortUrls, refresh: refreshShortUrls } = await useAsyncData(
     }),
   { server: false, default: () => [] },
 );
+
+const { data: shortUrlCount, refresh: refreshShortUrlCount } = await useAsyncData(
+  'short-url-count',
+  () => useApiJson(EApiEndpoint.ACCOUNT_COUNTERS),
+  { default: () => 0, transform: (data) => data.data?.shortUrlCount ?? 0 },
+);
+
+const actionInProgress = computed(() => globalStore.getActionInProgress);
+const user = computed(() => userStore.getUser);
+const isProPlan = computed(() => user.value?.plan === EPlanType.PRO);
+const submitButtonLabel = computed(() => {
+  return `Create Short URL${
+    isProPlan.value ? '' : ` (${shortUrlCount.value}/${shortUrlLimit})`
+  }`;
+});
+
+onMounted(async () => {
+  if (user.value && !user.value.emailConfirmedAt) {
+    uiToast.add({
+      severity: 'info',
+      detail: errorMessages.emailNotConfirmed,
+      life: 3000,
+    });
+
+    return navigateTo('/account/settings');
+  }
+});
 
 const {
   defineField: defineShortenUrlField,
@@ -248,7 +292,6 @@ const onSubmitShortenUrl = handleShortenUrlSubmit(async (values) => {
   if (error) {
     return uiToast.add({
       severity: 'error',
-      summary: 'Oops!',
       detail: error.message,
       life: 3000,
     });
@@ -257,6 +300,7 @@ const onSubmitShortenUrl = handleShortenUrlSubmit(async (values) => {
   resetShortenUrlForm();
 
   await refreshShortUrls();
+  await refreshShortUrlCount();
 
   return uiToast.add({
     severity: 'success',
@@ -300,7 +344,6 @@ const handleDeleteShortenedUrl = (id: string, title: string) =>
 
         return uiToast.add({
           severity: 'error',
-          summary: 'Oops!',
           detail: error.message,
           life: 3000,
         });
@@ -332,7 +375,6 @@ const handleToggleShortenedUrl = async (id: string) => {
   if (error) {
     uiToast.add({
       severity: 'error',
-      summary: 'Oops!',
       detail: error.message,
       life: 3000,
     });
@@ -366,6 +408,7 @@ const openAnalyticsDialog = (shortUrl: IUrlShortUrl) =>
     header: shortUrl.title,
     props: {
       shortUrl,
+      userPlan: user.value?.plan,
     },
   });
 </script>

@@ -31,13 +31,13 @@
     </div>
 
     <div class="chart">
-      <AnalyticsDailyClicksChart :clicks="dailyClicks" />
+      <LazyAnalyticsDailyClicksChart :clicks="dailyClicks" />
     </div>
 
     <div class="global-distribution">
-      <AnalyticsClicksMap :clicks="countryClicks" />
+      <LazyAnalyticsClicksMap :clicks="countryClicks" :user-plan="userPlan" />
 
-      <AnalyticsTopCountries
+      <LazyAnalyticsTopCountries
         :total-clicks="shortUrl.totalClicks"
         :countries="
           countryClicks.map((country) => ({
@@ -45,6 +45,7 @@
             color: (worldCountryCoordinates as Record<string, IWorldCountry>)[country.countryCode]!.color,
           }))
         "
+        :user-plan="userPlan"
       />
     </div>
   </div>
@@ -52,7 +53,7 @@
 
 <script setup lang="ts">
 import worldCountryCoordinates from '~~/constants/world-countries.json';
-import { EApiEndpoint } from '~~/enums';
+import { EApiEndpoint, EPlanType } from '~~/enums';
 import type {
   IUrlShortUrl,
   IUrlShortUrlCountryClicks,
@@ -62,6 +63,7 @@ import type {
 
 const props = defineProps<{
   shortUrl: IUrlShortUrl;
+  userPlan: EPlanType;
 }>();
 
 const dailyClicks = ref<IUrlShortUrlDailyClicks[]>([]);

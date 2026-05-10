@@ -11,31 +11,22 @@
         v-for="qrCode in qrCodes"
         :key="qrCode.id"
         :qr-code="qrCode"
-        @refresh="getQrCodes"
+        @refresh="emit('refresh')"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { EApiEndpoint } from '~~/enums';
 import type { IQrCode } from '~~/interfaces';
 
-const qrCodes = ref<IQrCode[]>([]);
+defineProps<{
+  qrCodes: IQrCode[];
+}>();
 
-onMounted(async () => {
-  await getQrCodes();
-});
-
-const getQrCodes = async () => {
-  const { data, error } = await useApiJson(EApiEndpoint.QR_CODE_GET, {});
-
-  if (error) return;
-
-  qrCodes.value = data;
-};
-
-defineExpose({ getQrCodes });
+const emit = defineEmits<{
+  (e: 'refresh'): void;
+}>();
 </script>
 
 <style lang="scss" scoped>

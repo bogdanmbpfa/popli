@@ -1,19 +1,15 @@
 <template>
-  <form @submit.prevent="onSubmitCoverImage">
-    <div class="heading">
-      <Icon class="info" name="popli:image" size="1rem" />
-      <span>Cover</span>
-    </div>
-
+  <form class="profile-avatar" @submit.prevent="onSubmitProfileImage">
     <FormFileUpload
-      id="cover-image"
-      ref="coverImageUpload"
+      id="profile-image"
+      ref="profileImageUpload"
       accept="image/jpeg,image/png,image/webp"
+      :image="props.profileImage ?? undefined"
       :disabled="isSubmitting"
-      @select="onSelectCoverImage"
+      @select="onSelectProfileImage"
     />
 
-    <span class="caption"> Recommended size: 1280x720px, JPG, PNG, WEBP </span>
+    <span class="caption"> Recommended size: 512x512px, JPG, PNG, WEBP </span>
 
     <UiButton
       type="submit"
@@ -21,8 +17,10 @@
       icon="popli:upload-outline"
       icon-size="1.25rem"
       label="Upload"
-      aria-label="Upload cover image"
-      :disabled="!coverImage || isSubmitting"
+      aria-label="Upload profile image"
+      fluid
+      :loading="isSubmitting"
+      :disabled="!profileImage || isSubmitting"
     />
   </form>
 </template>
@@ -33,14 +31,18 @@ import * as yup from 'yup';
 import type FileUpload from '~/components/form/FileUpload.vue';
 import { EApiEndpoint } from '~~/enums';
 
+const props = defineProps<{ profileImage: string | null }>();
+
+const uiDynamicDialog = useUiDynamicDialog();
 const userStore = useUserStore();
 const uiToast = useUiToast();
 
+const profileImageUpload = ref<InstanceType<typeof FileUpload>>();
+
 const { defineField, handleSubmit, isSubmitting } = useForm({
   validationSchema: yup.object().shape({
-    coverImage: yup
+    profileImage: yup
       .mixed()
-      .required('Cover image is required')
       .test('fileSize', 'File size must be less than 10MB', (value) => {
         if (value instanceof File) {
           if (!value) return true;
@@ -60,57 +62,49 @@ const { defineField, handleSubmit, isSubmitting } = useForm({
   }),
 });
 
-const [coverImage] = defineField('coverImage');
-
-const coverImageUpload = ref<InstanceType<typeof FileUpload>>();
+const [profileImage] = defineField('profileImage');
 
 const profile = computed(() => userStore.getProfile!);
 
 onMounted(async () => {
-  if (profile.value && profile.value.coverImage) {
+  if (profile.value && profile.value.profileImage) {
     try {
-      const response = await $fetch<Blob>(profile.value.coverImage, {
+      const response = await $fetch<Blob>(profile.value.profileImage, {
         method: 'GET',
         responseType: 'blob',
       });
 
       const file = new File(
         [response],
-        profile.value.coverImage.split('/').pop()!,
+        profile.value.profileImage.split('/').pop()!,
         {
           type: response.type,
         },
       );
 
-      coverImage.value = file;
-      coverImageUpload.value?.setFile(file);
+      profileImage.value = file;
+      profileImageUpload.value?.setFile(file);
     } catch {
       return;
     }
   }
 });
 
-const onSelectCoverImage = (file: File) => {
-  coverImage.value = file;
+const onSelectProfileImage = (file: File) => {
+  profileImage.value = file;
 
   const imageUrl = URL.createObjectURL(file);
-
-  userStore.setProfile({
-    ...profile.value,
-    coverImage: imageUrl,
-  });
 };
 
-const onSubmitCoverImage = handleSubmit(async (values) => {
+const onSubmitProfileImage = handleSubmit(async (values) => {
   const { data, error } = await useApiJson(EApiEndpoint.FILE_SIGN_URL, {
-    fileName: values.coverImage.name,
-    contentType: values.coverImage.type,
+    fileName: values.profileImage.name,
+    contentType: values.profileImage.type,
   });
 
   if (error) {
     return uiToast.add({
       severity: 'error',
-      summary: 'Error',
       detail: error.message,
       life: 3000,
     });
@@ -119,8 +113,8 @@ const onSubmitCoverImage = handleSubmit(async (values) => {
   const [, { data: id, error: saveError }] = await Promise.all([
     $fetch(data!.url, {
       method: 'PUT',
-      headers: { 'Content-Type': values.coverImage.type },
-      body: values.coverImage,
+      headers: { 'Content-Type': values.profileImage.type },
+      body: values.profileImage,
     }),
     useApiJson(EApiEndpoint.FILE_SAVE, {
       key: data!.key,
@@ -130,7 +124,6 @@ const onSubmitCoverImage = handleSubmit(async (values) => {
   if (saveError) {
     return uiToast.add({
       severity: 'error',
-      summary: 'Error',
       detail: saveError.message,
       life: 3000,
     });
@@ -139,14 +132,13 @@ const onSubmitCoverImage = handleSubmit(async (values) => {
   const { error: updateError } = await useApiJson(
     EApiEndpoint.ACCOUNT_UPDATE_PROFILE,
     {
-      coverImageId: id,
+      profileImageId: id,
     },
   );
 
   if (updateError) {
     return uiToast.add({
       severity: 'error',
-      summary: 'Error',
       detail: updateError.message,
       life: 3000,
     });
@@ -156,13 +148,15 @@ const onSubmitCoverImage = handleSubmit(async (values) => {
 
   userStore.setProfile({
     ...profile.value,
-    coverImage: profileData?.coverImage || null,
+    profileImage: profileData?.profileImage || null,
   });
+
+  uiDynamicDialog.close();
 
   return uiToast.add({
     severity: 'success',
     summary: 'Success',
-    detail: 'Cover image uploaded successfully',
+    detail: 'Profile image uploaded successfully',
     life: 3000,
   });
 });
@@ -174,19 +168,10 @@ form {
   flex-direction: column;
   align-items: center;
 
-  .heading {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 0.5rem;
-
-    span {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--neutral-100);
-    }
+  .file-upload {
+    height: 10rem;
+    width: 10rem;
+    border-radius: 50%;
   }
 
   .caption {

@@ -4,17 +4,26 @@ const DEFAULT_LIFE = 3000;
 
 export const useUiToast = () => {
   const globalStore = useGlobalStore();
+  const { t, te } = useI18n();
 
   const remove = (id: number) => globalStore.removeToastMessage(id);
 
   const add = (message: Partial<IToastMessage>) => {
+    let detail = message.detail ?? '';
+    let summary = message.summary ?? '';
+
+    if (te(`common.errorMessages.${message.detail}.summary`)) {
+      summary = t(`common.errorMessages.${message.detail}.summary`);
+      detail = t(`common.errorMessages.${message.detail}.detail`);
+    }
+
     const nextMessage = {
       id: Date.now() + Math.floor(Math.random() * 100000),
       severity: message.severity || 'info',
-      summary: message.summary ?? '',
-      detail: message.detail ?? '',
+      summary,
+      detail,
       closable: message.closable ?? true,
-      life: message.life ?? DEFAULT_LIFE
+      life: message.life ?? DEFAULT_LIFE,
     };
 
     globalStore.addToastMessage(nextMessage);
@@ -29,6 +38,6 @@ export const useUiToast = () => {
   return {
     add,
     remove,
-    clear
+    clear,
   };
 };

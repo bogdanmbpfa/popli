@@ -16,10 +16,7 @@ import { EQRCodeDataType } from '~~/enums';
 import { fileModel } from './public.schema';
 import { userModel } from './user.schema';
 
-export const qrCodeDataType = pgEnum(
-  'qr_code_data_type',
-  Object.values(EQRCodeDataType) as [string, ...string[]],
-);
+export const qrCodeDataType = pgEnum('qr_code_data_type', EQRCodeDataType);
 
 export const qrCodeSchema = pgSchema('qr_code_management');
 
@@ -30,7 +27,7 @@ export const qrCodeModel = qrCodeSchema.table(
     userId: uuid('user_id').notNull(),
     title: varchar('title', { length: 255 }).notNull(),
     imageId: uuid('image_id').references(() => fileModel.id),
-    dataType: qrCodeDataType('data_type').notNull(),
+    dataType: qrCodeDataType('data_type').notNull().$type<EQRCodeDataType>(),
     options: jsonb('options').notNull().default({}),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at')

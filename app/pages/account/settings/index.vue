@@ -55,7 +55,7 @@
             fluid
             :length="6"
             :invalid="!!contactInfoErrors.code"
-            :disabled="isContactInfoSubmitting"
+            :disabled="isContactInfoSubmitting || actionInProgress"
           />
         </FormInput>
 
@@ -66,7 +66,8 @@
           severity="contrast"
           label="Verify"
           aria-label="Verify email"
-          :disabled="isContactInfoSubmitting"
+          :loading="isContactInfoSubmitting"
+          :disabled="isContactInfoSubmitting || actionInProgress"
         />
 
         <UiButton
@@ -76,7 +77,8 @@
           severity="contrast"
           label="Request code"
           aria-label="Request email verification code"
-          :disabled="isContactInfoSubmitting"
+          :loading="actionInProgress"
+          :disabled="isContactInfoSubmitting || actionInProgress"
           @click="onSubmitRequestEmailVerify"
         />
       </form>
@@ -112,7 +114,7 @@
             autocomplete="current-password"
             toggle-mask
             :invalid="!!changePasswordErrors.currentPassword"
-            :disabled="isChangePasswordSubmitting"
+            :disabled="isChangePasswordSubmitting || actionInProgress"
           />
         </FormInput>
 
@@ -133,7 +135,7 @@
             fluid
             toggle-mask
             :invalid="!!changePasswordErrors.newPassword"
-            :disabled="isChangePasswordSubmitting"
+            :disabled="isChangePasswordSubmitting || actionInProgress"
           />
         </FormInput>
 
@@ -142,9 +144,72 @@
           severity="contrast"
           label="Update password"
           aria-label="Update password"
-          :disabled="isChangePasswordSubmitting"
+          :loading="isChangePasswordSubmitting"
+          :disabled="isChangePasswordSubmitting || actionInProgress"
         />
       </form>
+    </FormContainer>
+
+    <FormContainer
+      v-if="user"
+      title="Billing"
+      title-icon="popli:credit-card-outline"
+      description="Manage your subscription and payment history."
+    >
+      <div class="billing">
+        <div class="current-plan">
+          <span class="label">Current plan</span>
+          <span class="value">{{ user.plan.toUpperCase() }}</span>
+          <span v-if="user.planStartedAt" class="meta">
+            Started: {{ formatDate(user.planStartedAt) }}
+          </span>
+          <span v-if="user.planEndsAt" class="meta">
+            Renews/Ends: {{ formatDate(user.planEndsAt) }}
+          </span>
+        </div>
+
+        <div class="actions">
+          <UiButton
+            v-if="user.plan === EPlanType.PRO"
+            type="button"
+            severity="contrast"
+            label="Manage subscription"
+            aria-label="Manage subscription"
+            :loading="isBillingSubmitting"
+            :disabled="isBillingSubmitting || actionInProgress"
+            @click="onManageSubscription"
+          />
+
+          <UiButton
+            v-if="user.plan === EPlanType.FREE"
+            type="button"
+            severity="contrast"
+            label="Upgrade to Pro"
+            aria-label="Upgrade to Pro"
+            :loading="isBillingSubmitting"
+            :disabled="isBillingSubmitting || actionInProgress"
+            @click="onUpgradeToPro"
+          />
+        </div>
+
+        <div v-if="transactions?.length" class="transaction-history">
+          <span class="label">Transaction history</span>
+
+          <div class="list">
+            <div
+              v-for="transaction in transactions"
+              :key="transaction.id"
+              class="item"
+            >
+              <span class="status">
+                {{ transaction.status.toUpperCase() }} -
+                {{ formatAmount(transaction.amount, transaction.currency) }}
+              </span>
+              <span class="meta">{{ formatDate(transaction.createdAt) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </FormContainer>
 
     <div class="danger-zone">
@@ -178,7 +243,7 @@
 <script setup lang="ts">
 import * as yup from 'yup';
 
-import { EApiEndpoint } from '~~/enums';
+import { EApiEndpoint, EPlanType } from '~~/enums';
 import type { IAccountChangePassword } from '~~/interfaces';
 
 definePageMeta({
@@ -191,6 +256,7 @@ const globalStore = useGlobalStore();
 const uiToast = useUiToast();
 const userStore = useUserStore();
 
+const isBillingSubmitting = ref(false);
 const isEmailVerifyRequested = ref(false);
 
 const {
@@ -241,23 +307,92 @@ const [newPassword, newPasswordAttributes] =
 
 const actionInProgress = computed(() => globalStore.getActionInProgress);
 const user = computed(() => userStore.getUser!);
+const route = useRoute();
 
-const onSubmitRequestEmailVerify = async () => {
-  const { error } = await useApiJson(
-    EApiEndpoint.ACCOUNT_REQUEST_EMAIL_VERIFY,
-    {},
-  );
+onMounted(async () => {
+  if (route.query.billing === 'success') {
+    uiToast.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'Subscription checkout completed.',
+      life: 3000,
+    });
+  }
+
+  if (route.query.billing === 'cancel') {
+    uiToast.add({
+      severity: 'warn',
+      summary: 'Cancelled',
+      detail: 'Subscription checkout cancelled.',
+      life: 3000,
+    });
+  }
+});
+
+const { data: transactions } = await useAsyncData(
+  'billing-transactions',
+  () => useApiJson(EApiEndpoint.BILLING_TRANSACTIONS),
+  {
+    transform: (data) => data?.data || [],
+  },
+);
+
+const formatDate = (value: string) =>
+  new Date(value).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+
+const formatAmount = (amount: number, currency: string) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+  }).format(amount / 100);
+
+const onManageSubscription = async () => {
+  isBillingSubmitting.value = true;
+  globalStore.toggleActionInProgress();
+
+  const { data, error } = await useApiJson(EApiEndpoint.BILLING_PORTAL, {});
 
   if (error) {
+    isBillingSubmitting.value = false;
+    globalStore.toggleActionInProgress();
+
     return uiToast.add({
       severity: 'error',
-      summary: 'Error',
+      detail: error.message,
+      life: 3000,
+    });
+  }
+
+  if (data?.url) {
+    await navigateTo(data.url, { external: true });
+  }
+
+  isBillingSubmitting.value = false;
+  globalStore.toggleActionInProgress();
+};
+
+const onSubmitRequestEmailVerify = async () => {
+  globalStore.toggleActionInProgress();
+
+  const { error } = await useApiJson(EApiEndpoint.ACCOUNT_REQUEST_EMAIL_VERIFY);
+
+  if (error) {
+    isEmailVerifyRequested.value = false;
+    globalStore.toggleActionInProgress();
+
+    return uiToast.add({
+      severity: 'error',
       detail: error.message,
       life: 3000,
     });
   }
 
   isEmailVerifyRequested.value = true;
+  globalStore.toggleActionInProgress();
 
   return uiToast.add({
     severity: 'success',
@@ -268,14 +403,17 @@ const onSubmitRequestEmailVerify = async () => {
 };
 
 const onSubmitVerifyEmail = handleContactInfoSubmit(async (values) => {
+  globalStore.toggleActionInProgress();
+
   const { error } = await useApiJson(EApiEndpoint.ACCOUNT_VERIFY_EMAIL, {
     code: values.code,
   });
 
   if (error) {
+    globalStore.toggleActionInProgress();
+
     return uiToast.add({
       severity: 'error',
-      summary: 'Error',
       detail: error.message,
       life: 3000,
     });
@@ -287,6 +425,8 @@ const onSubmitVerifyEmail = handleContactInfoSubmit(async (values) => {
 
   userStore.setUser(userData ? { ...userData! } : null);
 
+  globalStore.toggleActionInProgress();
+
   return uiToast.add({
     severity: 'success',
     summary: 'Success',
@@ -296,21 +436,25 @@ const onSubmitVerifyEmail = handleContactInfoSubmit(async (values) => {
 });
 
 const onSubmitChangePassword = handleChangePasswordSubmit(async (values) => {
+  globalStore.toggleActionInProgress();
+
   const { error } = await useApiJson(EApiEndpoint.ACCOUNT_CHANGE_PASSWORD, {
     currentPassword: values.currentPassword,
     newPassword: values.newPassword,
   });
 
   if (error) {
+    globalStore.toggleActionInProgress();
+
     return uiToast.add({
       severity: 'error',
-      summary: 'Error',
       detail: error.message,
       life: 3000,
     });
   }
 
   resetChangePasswordForm();
+  globalStore.toggleActionInProgress();
 
   return uiToast.add({
     severity: 'success',
@@ -332,17 +476,16 @@ const openConfirmDeleteAccount = () =>
     accept: async () => {
       globalStore.toggleActionInProgress();
 
-      const { error } = await useApiJson(EApiEndpoint.ACCOUNT_DELETE, {});
+      const { error } = await useApiJson(EApiEndpoint.ACCOUNT_DELETE);
 
       if (error) {
-        uiToast.add({
+        globalStore.toggleActionInProgress();
+
+        return uiToast.add({
           severity: 'error',
-          summary: 'Error',
           detail: error.message,
           life: 3000,
         });
-
-        return globalStore.toggleActionInProgress();
       }
 
       await useApiJson(EApiEndpoint.AUTH_LOGOUT);
@@ -361,6 +504,30 @@ const openConfirmDeleteAccount = () =>
       return navigateTo('/');
     },
   });
+
+const onUpgradeToPro = async () => {
+  globalStore.toggleActionInProgress();
+
+  const { data, error } = await useApiJson(
+    EApiEndpoint.BILLING_CHECKOUT_SESSION,
+  );
+
+  if (error) {
+    globalStore.toggleActionInProgress();
+
+    return uiToast.add({
+      severity: 'error',
+      detail: error.message,
+      life: 3000,
+    });
+  }
+
+  if (data?.url) {
+    await navigateTo(data.url, { external: true });
+  }
+
+  globalStore.toggleActionInProgress();
+};
 </script>
 
 <style lang="scss" scoped>
@@ -397,6 +564,108 @@ const openConfirmDeleteAccount = () =>
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
+    }
+  }
+
+  .billing {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+
+    .current-plan {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .label {
+        font-size: 0.875rem;
+        color: var(--neutral-400);
+      }
+
+      .value {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--neutral-100);
+      }
+
+      .meta {
+        font-size: 0.875rem;
+        color: var(--neutral-300);
+      }
+    }
+
+    .transaction-history {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .label {
+        font-size: 0.875rem;
+        color: var(--neutral-400);
+      }
+
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        border: 1px solid
+          color-mix(in oklab, var(--neutral-400) 20%, transparent);
+        border-radius: 0.5rem;
+        padding: 1rem 0.5rem;
+        max-height: 8rem;
+        overflow-y: auto;
+        /* Custom scrollbar styling for .types container */
+        scrollbar-width: thin;
+        scrollbar-color: var(--neutral-800) transparent;
+        scrollbar-gutter: stable both-edges;
+
+        /* Webkit-based browsers */
+        &::-webkit-scrollbar {
+          width: 0.25rem;
+          color: var(--neutral-800);
+          background-color: transparent;
+          border-radius: 0.25rem;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          color: var(--neutral-800);
+          background-color: transparent;
+          border-radius: 0.25rem;
+          min-height: 2rem;
+          transition: background-color 0.3s;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+          color: var(--neutral-800);
+          background-color: transparent;
+        }
+
+        &::-webkit-scrollbar-corner {
+          color: var(--neutral-800);
+          background-color: transparent;
+        }
+
+        .item {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.5rem;
+
+          .status {
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: var(--neutral-400);
+          }
+
+          .meta {
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: var(--neutral-400);
+          }
+        }
+      }
     }
   }
 

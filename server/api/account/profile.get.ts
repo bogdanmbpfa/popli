@@ -1,9 +1,12 @@
 import { eq } from 'drizzle-orm';
 
+import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, fileModel, profileModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
-  const { public: { errorMessages } } = useRuntimeConfig();
+  const {
+    public: { errorMessages },
+  } = useRuntimeConfig();
 
   const { id } = await isAuthenticated(event);
 
@@ -13,8 +16,8 @@ export default defineEventHandler(async (event) => {
 
   if (!profile) {
     throw createError({
-      statusCode: 404,
-      statusMessage: 'Not Found',
+      statusCode: EHttpStatusCode.NOT_FOUND,
+      statusMessage: EHttpStatusMessage.NOT_FOUND,
       message: errorMessages.accountNotFound,
     });
   }

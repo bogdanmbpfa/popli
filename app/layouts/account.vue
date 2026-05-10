@@ -11,8 +11,6 @@
       <slot />
     </main>
 
-    <AppAd />
-
     <AppFooter />
   </div>
 </template>

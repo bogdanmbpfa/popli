@@ -5,6 +5,7 @@ import {
   AccountRequestEmailUpdateYupSchema,
   type IAccountRequestEmailUpdateYup,
 } from '~~/dtos';
+import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, userModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
@@ -14,7 +15,7 @@ export default defineEventHandler(async (event) => {
   } = useRuntimeConfig();
 
   const { id } = await isAuthenticated(event);
-  
+
   let body: IAccountRequestEmailUpdateYup;
 
   try {
@@ -23,8 +24,8 @@ export default defineEventHandler(async (event) => {
     );
   } catch {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.validationError,
     });
   }
@@ -35,8 +36,8 @@ export default defineEventHandler(async (event) => {
 
   if (accountWithSameEmail) {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.emailAlreadyExists,
     });
   }

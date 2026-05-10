@@ -1,9 +1,12 @@
+import { randomBytes } from 'node:crypto';
 import { eq, inArray } from 'drizzle-orm';
 import { log } from 'evlog';
 
+import { EPlanType } from '~~/enums';
 import {
   authSessionModel,
   db,
+  fileModel,
   linkClickModel,
   linkModel,
   profileAccessModel,
@@ -14,6 +17,7 @@ import {
   shortUrlModel,
   userModel,
 } from '~~/server/database';
+import { getStripeClient } from '~~/server/utils/stripe';
 
 const deleted = '[deleted]';
 
@@ -21,6 +25,7 @@ export default defineEventHandler(async (event) => {
   const {
     public: { cookies },
   } = useRuntimeConfig();
+  const stripeClient = getStripeClient();
 
   const { id } = await isAuthenticated(event);
 
@@ -41,36 +46,52 @@ export default defineEventHandler(async (event) => {
   });
 
   const imageKeys = [
-    profile?.profileImage,
-    profile?.coverImage,
-    ...links.map((link) => link.backgroundImage),
-    ...qrCodes.map((qrCode) => qrCode.imageUrl),
+    profile?.profileImageId,
+    profile?.coverImageId,
+    ...links.map((link) => link.backgroundImageId),
+    ...qrCodes.map((qrCode) => qrCode.imageId),
   ].filter((key): key is string => Boolean(key));
 
-  for (const imageKey of imageKeys) {
-    try {
-      await deleteFile(imageKey);
-    } catch (error) {
-      log.info({
-        message: `Failed deleting image from storage: ${imageKey}`,
-        error,
-      });
-    }
-  }
-
   await db.transaction(async (tx) => {
+    const user = await db.query.userModel.findFirst({
+      where: eq(userModel.id, id),
+    });
+
+    for (const imageKey of imageKeys) {
+      try {
+        const file = await tx.query.fileModel.findFirst({
+          where: eq(fileModel.id, imageKey),
+        });
+
+        if (file) {
+          await deleteFile(file.path);
+          await tx.delete(fileModel).where(eq(fileModel.id, imageKey));
+        }
+      } catch (error) {
+        log.info({
+          message: `Failed deleting image from storage: ${imageKey}`,
+          error,
+        });
+      }
+    }
+
     await tx
       .update(userModel)
       .set({
-        email: deleted,
-        password: deleted,
+        email: randomBytes(32).toString('hex'),
+        password: randomBytes(32).toString('hex'),
         emailConfirmationCode: null,
         emailConfirmationCodeExpiresAt: null,
         emailConfirmedAt: null,
         passwordResetCode: null,
         passwordResetCodeExpiresAt: null,
-        jwtSecret: deleted,
-        refreshTokenSecret: deleted,
+        jwtSecret: randomBytes(20).toString('hex'),
+        refreshTokenSecret: randomBytes(20).toString('hex'),
+        plan: EPlanType.FREE,
+        planStartedAt: null,
+        planEndsAt: null,
+        stripeCustomerId: null,
+        stripeSubscriptionId: null,
         deletedAt: now,
       })
       .where(eq(userModel.id, id));
@@ -82,8 +103,8 @@ export default defineEventHandler(async (event) => {
       .set({
         handle: null,
         name: deleted,
-        profileImage: null,
-        coverImage: null,
+        profileImageId: null,
+        coverImageId: null,
         handleColor: null,
         bio: null,
         bioColor: null,
@@ -96,7 +117,7 @@ export default defineEventHandler(async (event) => {
       .set({
         url: deleted,
         title: deleted,
-        backgroundImage: null,
+        backgroundImageId: null,
         titleColors: [],
         backgroundColors: [],
         deletedAt: now,
@@ -107,7 +128,7 @@ export default defineEventHandler(async (event) => {
       .update(qrCodeModel)
       .set({
         title: deleted,
-        imageUrl: null,
+        imageId: null,
         options: {},
         deletedAt: now,
       })
@@ -167,6 +188,19 @@ export default defineEventHandler(async (event) => {
             shortUrls.map((shortUrl) => shortUrl.id),
           ),
         );
+    }
+
+    if (user?.stripeSubscriptionId && stripeClient) {
+      try {
+        await stripeClient.subscriptions.cancel(user.stripeSubscriptionId, {
+          prorate: false,
+        });
+      } catch (error) {
+        log.info({
+          message: `Failed cancelling subscription during account deletion: ${user.stripeSubscriptionId}`,
+          error,
+        });
+      }
     }
   });
 

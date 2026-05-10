@@ -34,5 +34,6 @@ defineEmits<{ 'update:modelValue': [string] }>();
   outline: none;
   width: 3rem;
   height: 3rem;
+  cursor: pointer;
 }
 </style>

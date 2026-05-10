@@ -4,6 +4,7 @@ import {
   AccountUpdateProfileYupSchema,
   type IAccountUpdateProfileYup,
 } from '~~/dtos';
+import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, profileModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
@@ -19,10 +20,10 @@ export default defineEventHandler(async (event) => {
     body = await readValidatedBody(event, (body) =>
       AccountUpdateProfileYupSchema.validate(body),
     );
-  } catch (error) {
+  } catch {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.validationError,
     });
   }

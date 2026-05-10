@@ -1,14 +1,16 @@
 <template>
   <div class="analytics-chart">
     <UiChart
-      v-if="data"
+      v-if="isDataAvailable"
       id="daily-clicks-chart"
       type="line"
       :data="data"
       :options="options"
     />
 
-    <div v-else class="no-data">There is no data to display.</div>
+    <div v-else-if="!isDataAvailable" class="no-data">
+      There is no data to display.
+    </div>
   </div>
 </template>
 
@@ -33,6 +35,8 @@ const props = defineProps({
   },
 });
 
+const isDataAvailable = computed(() => props.clicks.length > 0);
+
 const data = computed<ChartData<ChartType>>(() => {
   const documentStyle = getComputedStyle(document.documentElement);
 
@@ -46,6 +50,7 @@ const data = computed<ChartData<ChartType>>(() => {
         borderColor: documentStyle.getPropertyValue('--primary-400'),
         tension: 0.3,
         fill: true,
+        pointStyle: false,
         backgroundColor: function (context: ScriptableChartContext) {
           const { ctx, chartArea } = context.chart;
 
@@ -80,6 +85,10 @@ const options = computed<ChartOptions<ChartType>>(() => {
     maintainAspectRatio: false,
     aspectRatio: 0.6,
     responsive: true,
+    interaction: {
+      mode: 'index' as const,
+      intersect: false,
+    },
     plugins: {
       legend: { display: false },
       title: {
@@ -99,12 +108,45 @@ const options = computed<ChartOptions<ChartType>>(() => {
       tooltip: {
         boxWidth: 0,
         boxHeight: 0,
+        backgroundColor: documentStyle.getPropertyValue(
+          '--background-tertiary',
+        ),
+        borderWidth: 1,
+        borderColor: documentStyle.getPropertyValue('--neutral-400'),
+        padding: 16,
+        bodyAlign: 'left',
+        titleAlign: 'left',
+        titleColor: textColorPrimary,
+        titleFont: {
+          size: 14,
+          weight: 500,
+        },
+        bodyColor: documentStyle.getPropertyValue('--primary-400'),
+        bodyFont: {
+          size: 12,
+          weight: 400,
+        },
+        titleMarginBottom: 8,
+        usePointStyle: true,
+        boxPadding: 0,
+        callbacks: {
+          title: (context) => {
+            const [dataset] = context;
+            const date = dataset!.label;
+
+            return `Date: ${date}`;
+          },
+          label: (context) => {
+            return `Total clicks: ${context.parsed.y}`;
+          },
+        },
       },
     },
     scales: {
       x: {
         ticks: {
           color: textColorSecondary,
+          includeBounds: true,
         },
         grid: {
           display: false,
@@ -135,6 +177,10 @@ const options = computed<ChartOptions<ChartType>>(() => {
   border-radius: 0.5rem;
 
   .no-data {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 0.75rem;
     font-weight: 400;
     color: var(--neutral-400);
@@ -145,6 +191,22 @@ const options = computed<ChartOptions<ChartType>>(() => {
     width: 100%;
     height: 100%;
     max-height: 20rem;
+  }
+
+  .free-plan-banner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+
+    .description {
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--neutral-400);
+      text-align: center;
+    }
   }
 }
 </style>

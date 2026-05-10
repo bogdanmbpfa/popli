@@ -76,7 +76,7 @@ export default async function <T, U extends keyof TApiEndpoint>(
 
     return {
       error: {
-        code: errorResponse.data?.code,
+        statusCode: errorResponse.data?.statusCode,
         message: errorResponse.data?.message,
       },
     } as IApiFailure;

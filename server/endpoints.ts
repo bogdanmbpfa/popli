@@ -1,6 +1,8 @@
 import { EApiEndpoint } from '~~/enums';
 import type {
 	IAccountProfile,
+	IAccountCounters,
+	IAccountBillingTransaction,
 	IAccountUser,
 	IApiEndpoint,
 	IAuthLoginResponse,
@@ -114,8 +116,32 @@ export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 		auth: true,
 	},
 	[EApiEndpoint.ACCOUNT_DELETE]: {
-		path: '/api/index',
+		path: '/api/account',
 		method: 'DELETE',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.ACCOUNT_COUNTERS]: {
+		path: '/api/account/counters',
+		method: 'GET',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.BILLING_CHECKOUT_SESSION]: {
+		path: '/api/billing/checkout-session',
+		method: 'POST',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.BILLING_TRANSACTIONS]: {
+		path: '/api/billing/transactions',
+		method: 'GET',
+		contentType: 'json',
+		auth: true,
+	},
+	[EApiEndpoint.BILLING_PORTAL]: {
+		path: '/api/billing/portal',
+		method: 'POST',
 		contentType: 'json',
 		auth: true,
 	},
@@ -169,15 +195,9 @@ export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 		contentType: 'json',
 		auth: true,
 	},
-	[EApiEndpoint.URL_LINKS_CREATE]: {
+	[EApiEndpoint.URL_LINK_CREATE]: {
 		path: '/api/url/link',
 		method: 'POST',
-		contentType: 'json',
-		auth: true,
-	},
-	[EApiEndpoint.URL_LINK_BACKGROUND_IMAGE]: {
-		path: '/api/url/link/{id}/background-image',
-		method: 'GET',
 		contentType: 'json',
 		auth: true,
 	},
@@ -192,6 +212,12 @@ export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 		method: 'POST',
 		contentType: 'json',
 		auth: false,
+	},
+	[EApiEndpoint.URL_LINK_POSITION]: {
+		path: '/api/url/link/position',
+		method: 'PATCH',
+		contentType: 'json',
+		auth: true,
 	},
 
 	// QR Code API Endpoints
@@ -259,6 +285,12 @@ export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 		contentType: 'json',
 		auth: false,
 	},
+	[EApiEndpoint.FILE_DELETE]: {
+		path: '/api/file',
+		method: 'DELETE',
+		contentType: 'json',
+		auth: true,
+	},
 };
 
 export type TApiEndpoint = {
@@ -281,6 +313,10 @@ export type TApiEndpoint = {
 	[EApiEndpoint.ACCOUNT_VERIFY_EMAIL]: undefined;
 	[EApiEndpoint.ACCOUNT_CHANGE_PASSWORD]: undefined;
 	[EApiEndpoint.ACCOUNT_DELETE]: undefined;
+	[EApiEndpoint.ACCOUNT_COUNTERS]: IAccountCounters;
+	[EApiEndpoint.BILLING_CHECKOUT_SESSION]: { url: string };
+	[EApiEndpoint.BILLING_TRANSACTIONS]: IAccountBillingTransaction[];
+	[EApiEndpoint.BILLING_PORTAL]: { url: string };
 
 	// URL API Endpoints
 	[EApiEndpoint.URL_SHORT_URL_CREATE]: undefined;
@@ -291,10 +327,10 @@ export type TApiEndpoint = {
 	[EApiEndpoint.URL_SHORT_URL_DAILY_CLICKS]: IUrlShortUrlDailyClicks[];
 	[EApiEndpoint.URL_SHORT_URL_COUNTRY_CLICKS]: IUrlShortUrlCountryClicks[];
 	[EApiEndpoint.URL_LINKS]: ILink[];
-	[EApiEndpoint.URL_LINKS_CREATE]: undefined;
-	[EApiEndpoint.URL_LINK_BACKGROUND_IMAGE]: Buffer;
+	[EApiEndpoint.URL_LINK_CREATE]: undefined;
 	[EApiEndpoint.URL_LINK_DELETE]: undefined;
 	[EApiEndpoint.URL_LINK_CLICK]: string;
+	[EApiEndpoint.URL_LINK_POSITION]: undefined;
 
 	// QR Code API Endpoints
 	[EApiEndpoint.QR_CODE_CREATE]: undefined;
@@ -311,4 +347,5 @@ export type TApiEndpoint = {
 	// File API Endpoints
 	[EApiEndpoint.FILE_SIGN_URL]: ISignFileUrl;
 	[EApiEndpoint.FILE_SAVE]: string;
+	[EApiEndpoint.FILE_DELETE]: undefined;
 };

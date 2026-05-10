@@ -114,19 +114,25 @@
       @click="openQrCodeAdvancedConfigurationDialog()"
     />
 
-    <UiMessage v-if="formError" severity="error" fluid>
-      {{ formError }}
-    </UiMessage>
-
     <UiButton
+      v-if="isProPlan || count < qrCodeLimit"
       severity="contrast"
       fluid
       icon="popli:plus"
-      label="Create QR Code"
+      :label="submitButtonLabel"
       aria-label="Create QR Code"
       :loading="actionInProgress"
       :disabled="!title || !qrCodeData || actionInProgress"
       @click="generateQRCode"
+    />
+
+    <UiButton
+      v-else
+      severity="contrast"
+      fluid
+      label="Upgrade to Pro"
+      aria-label="Upgrade to Pro"
+      @click="upgradeToPro"
     />
   </div>
 </template>
@@ -135,7 +141,11 @@
 import QRCodeStyling, { type Options } from 'qr-code-styling';
 
 import QrCodeAdvancedConfigurationDialog from '~/components/dialog/QrCodeAdvancedConfiguration.vue';
-import { EApiEndpoint, EQRCodeDataType } from '~~/enums';
+import { EApiEndpoint, EPlanType, EQRCodeDataType } from '~~/enums';
+
+const props = defineProps<{
+  count: number;
+}>();
 
 const emit = defineEmits<{
   (e: 'refresh'): void;
@@ -144,7 +154,10 @@ const emit = defineEmits<{
 const uiDynamicDialog = useUiDynamicDialog();
 const globalStore = useGlobalStore();
 const qrCodeStore = useQrCodeStore();
+const { public: { freePlan: { qrCodeLimit } } } = useRuntimeConfig();
 const uiToast = useUiToast();
+const { upgradeToPro } = useUpgradePlan();
+const userStore = useUserStore();
 
 const dataTypeIcons = ref({
   [EQRCodeDataType.TEXT]: 'popli:text-box-outline',
@@ -211,6 +224,11 @@ const typeOptions = [
 
 const actionInProgress = computed(() => globalStore.getActionInProgress);
 const data = computed(() => qrCodeStore.getData);
+const userPlan = computed(() => userStore.getUser?.plan);
+const isProPlan = computed(() => userPlan.value === EPlanType.PRO);
+const submitButtonLabel = computed(() => {
+  return `Create QR Code${isProPlan.value ? '' : ` (${props.count}/${qrCodeLimit})`}`;
+});
 
 onMounted(() => {
   qrCode.value = new QRCodeStyling(qrCodeOptions);
@@ -292,7 +310,6 @@ const generateQRCode = async () => {
     if (error) {
       return uiToast.add({
         severity: 'error',
-        summary: 'Error',
         detail: error.message,
         life: 3000,
       });
@@ -312,7 +329,6 @@ const generateQRCode = async () => {
     if (saveError) {
       return uiToast.add({
         severity: 'error',
-        summary: 'Error',
         detail: saveError.message,
         life: 3000,
       });

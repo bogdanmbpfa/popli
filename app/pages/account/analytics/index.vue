@@ -42,23 +42,25 @@
         </div>
       </div>
 
-      <div class="chart">
-        <AnalyticsDailyClicksChart :clicks="dailyClicks" />
+      <div v-if="user" class="chart">
+        <LazyAnalyticsDailyClicksChart :clicks="dailyClicks" />
       </div>
 
-      <div class="global-distribution">
-        <AnalyticsClicksMap :clicks="countryClicks" />
+      <div v-if="user" class="global-distribution">
+        <LazyAnalyticsClicksMap :clicks="countryClicks" :user-plan="user.plan" />
 
-        <AnalyticsTopCountries
+        <LazyAnalyticsTopCountries
           :total-clicks="totalClicks"
           :countries="countriesWithColors"
+          :user-plan="user.plan"
         />
       </div>
 
-      <div class="traffic-distribution">
-        <AnalyticsClickTypeDistribution
+      <div v-if="user" class="traffic-distribution">
+        <LazyAnalyticsClickTypeDistribution
           :total-clicks="totalClicks"
           :clicks="typeClicks"
+          :user-plan="user.plan"
         />
       </div>
     </div>
@@ -82,6 +84,12 @@ definePageMeta({
   middleware: 'is-logged-in',
 });
 
+const {
+  public: { errorMessages },
+} = useRuntimeConfig();
+const uiToast = useUiToast();
+const userStore = useUserStore();
+
 const { data: analyticsData, refresh } = await useAsyncData(
   'profile-analytics',
   async () => {
@@ -103,12 +111,6 @@ const { data: analyticsData, refresh } = await useAsyncData(
     }),
   },
 );
-
-onMounted(async () => {
-  if (!analyticsData.value?.total) {
-    await refresh();
-  }
-});
 
 const totalClicks = computed(
   () => analyticsData.value?.total?.totalClicks ?? 0,
@@ -141,6 +143,24 @@ const countriesWithColors = computed(() =>
     ]!.color,
   })),
 );
+
+const user = computed(() => userStore.getUser);
+
+onMounted(async () => {
+  if (!analyticsData.value?.total) {
+    await refresh();
+  }
+
+  if (user.value && !user.value.emailConfirmedAt) {
+    uiToast.add({
+      severity: 'info',
+      detail: errorMessages.emailNotConfirmed,
+      life: 3000,
+    });
+
+    return navigateTo('/account/settings');
+  }
+});
 </script>
 
 <style scoped lang="scss">

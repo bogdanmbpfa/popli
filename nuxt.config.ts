@@ -53,6 +53,26 @@ export default defineNuxtConfig({
     families: [{ name: 'Roboto', provider: 'google' }],
   },
 
+  i18n: {
+    locales: [
+      {
+        code: 'en',
+        file: 'en.json',
+        name: 'English',
+        iso: 'en-US',
+      },
+    ],
+    defaultLocale: 'en',
+    strategy: 'no_prefix',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root',
+    },
+    langDir: 'locales/',
+    vueI18n: './i18n.config.ts',
+  },
+
   image: {
     dir: 'assets/images',
   },
@@ -83,12 +103,13 @@ export default defineNuxtConfig({
       '@nuxtjs/google-adsense',
       {
         id: 'ca-pub-4244824823711590',
-        onPageLoad: false,
+        onPageLoad: true,
         pageLevelAds: false,
-        test: false,
+        test: process.env.NUXT_PUBLIC_NODE_ENV !== 'production',
       },
     ],
     '@vueuse/nuxt',
+    '@nuxtjs/i18n',
   ],
 
   nitro: {
@@ -128,6 +149,11 @@ export default defineNuxtConfig({
     database: {
       url: '',
     },
+    stripe: {
+      secretKey: '',
+      webhookSecret: '',
+      proPriceId: '',
+    },
     googleCloud: {
       projectId: '',
       storage: {
@@ -145,6 +171,12 @@ export default defineNuxtConfig({
           expires: 60 * 60 * 2, // 2 hours
           httpOnly: true,
         },
+      },
+      freePlan: {
+        qrCodeLimit: 3,
+        shortUrlLimit: 3,
+        featuredLinksLimit: 3,
+        secondaryLinksLimit: 3,
       },
       errorMessages: {
         userAlreadyExists: 'USER_ALREADY_EXISTS',
@@ -173,6 +205,10 @@ export default defineNuxtConfig({
         internalServerError: 'INTERNAL_SERVER_ERROR',
         qrCodeNotFound: 'QR_CODE_NOT_FOUND',
         backgroundImageNotFound: 'BACKGROUND_IMAGE_NOT_FOUND',
+        freePlanLimitReached: 'FREE_PLAN_LIMIT_REACHED',
+        paymentRequired: 'PAYMENT_REQUIRED',
+        billingNotConfigured: 'BILLING_NOT_CONFIGURED',
+        emailNotConfirmed: 'EMAIL_NOT_CONFIRMED',
       },
       mapboxAccessToken: '',
       nodeEnv: '',
@@ -204,6 +240,22 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    build: {
+      chunkSizeWarningLimit: 2000,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (!id.includes('node_modules')) return;
+            if (id.includes('mapbox-gl')) return 'vendor-mapbox';
+            if (id.includes('chart.js')) return 'vendor-chart';
+            if (id.includes('qr-code-styling')) return 'vendor-qrcode';
+            if (id.includes('vuedraggable') || id.includes('sortablejs')) {
+              return 'vendor-draggable';
+            }
+          },
+        },
+      },
+    },
     css: {
       preprocessorOptions: {
         scss: {
@@ -225,9 +277,6 @@ export default defineNuxtConfig({
         'lodash/debounce',
         'uuid',
         'luxon',
-        'mapbox-gl',
-        'qr-code-styling',
-        'chart.js',
       ],
     },
   },

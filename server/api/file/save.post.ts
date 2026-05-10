@@ -1,3 +1,4 @@
+import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, fileModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
@@ -9,8 +10,8 @@ export default defineEventHandler(async (event) => {
 
   if (!key) {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.fileRequired,
     });
   }
@@ -26,8 +27,8 @@ export default defineEventHandler(async (event) => {
     log.error({ message: 'Error saving file', error });
 
     throw createError({
-      statusCode: 500,
-      statusMessage: 'Error saving file',
+      statusCode: EHttpStatusCode.INTERNAL_SERVER_ERROR,
+      statusMessage: EHttpStatusMessage.INTERNAL_SERVER_ERROR,
       message: errorMessages.internalServerError,
     });
   }

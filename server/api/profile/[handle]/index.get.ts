@@ -1,7 +1,18 @@
 import { and, asc, eq, isNull } from 'drizzle-orm';
 
-import { ELinkType } from '~~/enums';
-import { db, linkModel, profileModel } from '~~/server/database';
+import {
+  EHttpStatusCode,
+  EHttpStatusMessage,
+  ELinkType,
+  EPlanType,
+} from '~~/enums';
+import {
+  db,
+  fileModel,
+  linkModel,
+  profileModel,
+  userModel,
+} from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
   const {
@@ -12,8 +23,8 @@ export default defineEventHandler(async (event) => {
 
   if (!handle) {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.validationError,
     });
   }
@@ -24,22 +35,41 @@ export default defineEventHandler(async (event) => {
 
   if (!profile) {
     throw createError({
-      statusCode: 404,
-      statusMessage: 'Not Found',
+      statusCode: EHttpStatusCode.NOT_FOUND,
+      statusMessage: EHttpStatusMessage.NOT_FOUND,
       message: errorMessages.profileNotFound,
     });
   }
 
+  const owner = await db.query.userModel.findFirst({
+    where: and(eq(userModel.id, profile.userId), isNull(userModel.deletedAt)),
+    columns: { plan: true },
+  });
+
+  const isPro = owner?.plan === EPlanType.PRO;
+
   let profileImageUrl: string | null = null;
 
-  if (profile.profileImage) {
-    profileImageUrl = await getFileUrl(profile.profileImage);
+  if (profile.profileImageId) {
+    const file = await db.query.fileModel.findFirst({
+      where: eq(fileModel.id, profile.profileImageId),
+    });
+
+    if (file) {
+      profileImageUrl = await getFileUrl(file.path);
+    }
   }
 
   let coverImageUrl: string | null = null;
 
-  if (profile.coverImage) {
-    coverImageUrl = await getFileUrl(profile.coverImage);
+  if (profile.coverImageId) {
+    const file = await db.query.fileModel.findFirst({
+      where: eq(fileModel.id, profile.coverImageId),
+    });
+
+    if (file) {
+      coverImageUrl = await getFileUrl(file.path);
+    }
   }
 
   const links = await db.query.linkModel.findMany({
@@ -54,8 +84,14 @@ export default defineEventHandler(async (event) => {
     links.map(async (link) => {
       let backgroundImageUrl: string | null = null;
 
-      if (link.backgroundImage) {
-        backgroundImageUrl = await getFileUrl(link.backgroundImage);
+      if (link.backgroundImageId) {
+        const file = await db.query.fileModel.findFirst({
+          where: eq(fileModel.id, link.backgroundImageId),
+        });
+
+        if (file) {
+          backgroundImageUrl = await getFileUrl(file.path);
+        }
       }
 
       return {
@@ -84,5 +120,6 @@ export default defineEventHandler(async (event) => {
     secondaryLinks: linkDtos.filter(
       (link) => link.type === ELinkType.SECONDARY,
     ),
+    isPro,
   };
 });

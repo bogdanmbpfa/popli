@@ -4,6 +4,7 @@ import { log } from 'evlog';
 import { randomBytes } from 'node:crypto';
 
 import { AuthRegisterYupSchema, type IAuthRegisterYup } from '~~/dtos';
+import { EEmailTemplate, EPlanType } from '~~/enums';
 import {
   authSessionModel,
   db,
@@ -60,6 +61,7 @@ export default defineEventHandler(async (event) => {
           password: hashedPassword,
           jwtSecret,
           refreshTokenSecret,
+          plan: EPlanType.FREE,
         })
         .returning({ id: userModel.id });
 
@@ -111,7 +113,11 @@ export default defineEventHandler(async (event) => {
 
   setAuthCookies(event, token!, refreshToken!);
 
-  await sendEmail(body.email.toLowerCase(), brevo.templates.welcome);
+  await sendEmail(
+    body.email.toLowerCase(),
+    'Hey, Welcome to Popli!',
+    EEmailTemplate.WELCOME,
+  );
 
   return { token: token!, refreshToken: refreshToken! };
 });

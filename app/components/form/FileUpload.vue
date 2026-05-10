@@ -11,8 +11,8 @@
     />
 
     <NuxtImg
-      v-if="file"
-      :src="imagePreview(file)"
+      v-if="file || image"
+      :src="file ? imagePreview(file) : image"
       alt="File preview image"
       class="preview-image"
     />
@@ -36,7 +36,7 @@
 const emit = defineEmits<{
   (e: 'select', file: File): void;
 }>();
-defineProps({
+const props = defineProps({
   id: {
     type: String,
     default: 'file-upload',
@@ -56,6 +56,11 @@ defineProps({
   disabled: {
     type: Boolean,
     default: false,
+  },
+  image: {
+    type: String,
+    required: false,
+    default: null,
   },
 });
 

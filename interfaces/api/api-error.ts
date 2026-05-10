@@ -1,5 +1,5 @@
 export interface IApiError {
-	code: string;
+	statusCode: number;
 	message: string;
 	errors?: Record<string, string>;
 }

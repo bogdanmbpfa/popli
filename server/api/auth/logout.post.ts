@@ -28,7 +28,9 @@ export default defineEventHandler(async (event) => {
   });
 
   if (session) {
-    await db.delete(authSessionModel).where(eq(authSessionModel.id, session.id));
+    await db
+      .delete(authSessionModel)
+      .where(eq(authSessionModel.id, session.id));
   }
 
   deleteCookie(event, cookies.auth.name);

@@ -5,6 +5,7 @@ import {
   AccountChangePasswordYupSchema,
   type IAccountChangePasswordYup,
 } from '~~/dtos';
+import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, userModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
@@ -22,8 +23,8 @@ export default defineEventHandler(async (event) => {
     );
   } catch {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.validationError,
     });
   }
@@ -34,8 +35,8 @@ export default defineEventHandler(async (event) => {
 
   if (!account) {
     throw createError({
-      statusCode: 404,
-      statusMessage: 'Not Found',
+      statusCode: EHttpStatusCode.NOT_FOUND,
+      statusMessage: EHttpStatusMessage.NOT_FOUND,
       message: errorMessages.accountNotFound,
     });
   }
@@ -44,8 +45,8 @@ export default defineEventHandler(async (event) => {
 
   if (!isPasswordValid) {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.invalidCredentials,
     });
   }
@@ -54,8 +55,8 @@ export default defineEventHandler(async (event) => {
 
   if (isSamePassword) {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.passwordSameAsCurrent,
     });
   }

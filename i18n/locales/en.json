@@ -1,0 +1,126 @@
+{
+  "common": {
+    "errorMessages": {
+      "USER_ALREADY_EXISTS": {
+        "summary": "Email address already in use",
+        "detail": "The email address is already in use."
+      },
+      "INVALID_CREDENTIALS": {
+        "summary": "Invalid credentials",
+        "detail": "The email address or password is incorrect."
+      },
+      "INVALID_REFRESH_TOKEN": {
+        "summary": "Invalid refresh token",
+        "detail": "The refresh token is invalid or has expired."
+      },
+      "TOKEN_EXPIRED": {
+        "summary": "Token expired",
+        "detail": "The token has expired."
+      },
+      "RATE_LIMIT_EXCEEDED": {
+        "summary": "Rate limit exceeded",
+        "detail": "Too many requests. Please try again later."
+      },
+      "PASSWORD_RESET_CODE_EXPIRED": {
+        "summary": "Password reset code expired",
+        "detail": "The password reset code has expired."
+      },
+      "INVALID_CODE": {
+        "summary": "Invalid code",
+        "detail": "The code is invalid or has expired."
+      },
+      "ACCOUNT_NOT_FOUND": {
+        "summary": "Account not found",
+        "detail": "The account was not found."
+      },
+      "EMAIL_CONFIRMATION_CODE_EXPIRED": {
+        "summary": "Email confirmation code expired",
+        "detail": "The email confirmation code has expired."
+      },
+      "UNAUTHORIZED": {
+        "summary": "Unauthorized",
+        "detail": "Unauthorized."
+      },
+      "EMAIL_ALREADY_CONFIRMED": {
+        "summary": "Email already confirmed",
+        "detail": "The email address has already been confirmed."
+      },
+      "FILE_REQUIRED": {
+        "summary": "File required",
+        "detail": "A file is required."
+      },
+      "PASSWORD_SAME_AS_CURRENT": {
+        "summary": "Password same as current",
+        "detail": "The new password cannot be the same as the current password."
+      },
+      "HANDLE_ALREADY_EXISTS": {
+        "summary": "Handle already exists",
+        "detail": "The handle is already in use."
+      },
+      "EMAIL_SAME_AS_CURRENT": {
+        "summary": "Email same as current",
+        "detail": "The new email address cannot be the same as the current email address."
+      },
+      "ALIAS_ALREADY_EXISTS": {
+        "summary": "Alias already exists",
+        "detail": "The alias is already in use."
+      },
+      "SHORT_URL_NOT_FOUND": {
+        "summary": "Short URL not found",
+        "detail": "The short URL was not found."
+      },
+      "IP_PROXY": {
+        "summary": "IP proxy",
+        "detail": "The IP address is not allowed."
+      },
+      "LINK_NOT_FOUND": {
+        "summary": "Link not found",
+        "detail": "The link was not found."
+      },
+      "VALIDATION_ERROR": {
+        "summary": "Validation error",
+        "detail": "Validation error."
+      },
+      "PROFILE_NOT_FOUND": {
+        "summary": "Profile not found",
+        "detail": "The profile was not found."
+      },
+      "EMAIL_REQUIRED": {
+        "summary": "Email required",
+        "detail": "The email address is required."
+      },
+      "EMAIL_ALREADY_EXISTS": {
+        "summary": "Email already exists",
+        "detail": "The email address is already in use."
+      },
+      "INTERNAL_SERVER_ERROR": {
+        "summary": "Internal server error",
+        "detail": "An internal server error occurred."
+      },
+      "QR_CODE_NOT_FOUND": {
+        "summary": "QR code not found",
+        "detail": "The QR code was not found."
+      },
+      "BACKGROUND_IMAGE_NOT_FOUND": {
+        "summary": "Background image not found",
+        "detail": "The background image was not found."
+      },
+      "FREE_PLAN_LIMIT_REACHED": {
+        "summary": "Free plan limit reached",
+        "detail": "The free plan limit has been reached."
+      },
+      "PAYMENT_REQUIRED": {
+        "summary": "Payment required",
+        "detail": "Payment required to continue."
+      },
+      "BILLING_NOT_CONFIGURED": {
+        "summary": "Billing not configured",
+        "detail": "Billing not configured."
+      },
+      "EMAIL_NOT_CONFIRMED": {
+        "summary": "Email not confirmed",
+        "detail": "The email address has not been confirmed."
+      }
+    }
+  }
+}

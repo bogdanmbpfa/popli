@@ -92,7 +92,6 @@
 		if (error) {
 			return uiToast.add({
 				severity: 'error',
-				summary: 'Oops!',
 				detail: error.message,
 				life: 3000,
 			});

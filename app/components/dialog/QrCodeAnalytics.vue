@@ -24,7 +24,7 @@
     </div>
 
     <div class="chart">
-      <AnalyticsDailyClicksChart
+      <LazyAnalyticsDailyClicksChart
         :clicks="
           qrCodeAnalytics.dailyScans.map((scan) => ({
             date: scan.date,
@@ -36,7 +36,7 @@
     </div>
 
     <div class="global-distribution">
-      <AnalyticsClicksMap
+      <LazyAnalyticsClicksMap
         :clicks="
           qrCodeAnalytics.countryDistribution.map((country) => ({
             country: country.country,
@@ -44,9 +44,10 @@
             clicks: country.totalScans,
           }))
         "
+        :user-plan="userPlan"
       />
       
-      <AnalyticsTopCountries
+      <LazyAnalyticsTopCountries
         :total-clicks="qrCodeAnalytics.totalScans"
         :countries="
           qrCodeAnalytics.countryDistribution.map((country) => ({
@@ -55,6 +56,7 @@
             color: (worldCountryCoordinates as Record<string, IWorldCountry>)[country.countryCode]!.color,
           }))
         "
+        :user-plan="userPlan"
       />
     </div>
   </div>
@@ -62,11 +64,12 @@
 
 <script setup lang="ts">
 import worldCountryCoordinates from '~~/constants/world-countries.json';
-import { EApiEndpoint } from '~~/enums';
+import { EApiEndpoint, EPlanType } from '~~/enums';
 import type { IQrCodeAnalytics, IWorldCountry } from '~~/interfaces';
 
 const props = defineProps<{
   qrCodeId: string;
+  userPlan: EPlanType;
 }>();
 
 const qrCodeAnalytics = ref<IQrCodeAnalytics | null>(null);

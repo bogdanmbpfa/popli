@@ -4,6 +4,7 @@ import {
   AccountCheckHandleYupSchema,
   type IAccountCheckHandleYup,
 } from '~~/dtos';
+import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, profileModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
@@ -19,8 +20,8 @@ export default defineEventHandler(async (event) => {
     );
   } catch {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.validationError,
     });
   }
@@ -31,8 +32,8 @@ export default defineEventHandler(async (event) => {
 
   if (profile) {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.handleAlreadyExists,
     });
   }

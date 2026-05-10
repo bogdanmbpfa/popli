@@ -1,6 +1,7 @@
 import { and, asc, count, eq, sql, type SQL } from 'drizzle-orm';
 import { DateTime } from 'luxon';
 
+import { EHttpStatusCode, EHttpStatusMessage, EPlanType } from '~~/enums';
 import { db, shortUrlClickModel, shortUrlModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
@@ -8,14 +9,18 @@ export default defineEventHandler(async (event) => {
     public: { errorMessages },
   } = useRuntimeConfig();
 
-  const { id: userId } = await isAuthenticated(event);
+  const { id: userId, plan } = await isAuthenticated(event);
+
+  if (plan === EPlanType.FREE) {
+    return [];
+  }
 
   const shortUrlId = getRouterParam(event, 'id');
 
   if (!shortUrlId) {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.validationError,
     });
   }
@@ -29,8 +34,8 @@ export default defineEventHandler(async (event) => {
 
   if (!shortUrl) {
     throw createError({
-      statusCode: 404,
-      statusMessage: 'Not Found',
+      statusCode: EHttpStatusCode.NOT_FOUND,
+      statusMessage: EHttpStatusMessage.NOT_FOUND,
       message: errorMessages.shortUrlNotFound,
     });
   }

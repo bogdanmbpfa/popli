@@ -6,6 +6,7 @@ networks:
 
 volumes:
   popli-postgres-data:
+  popli-localstack-data:
 
 services:
   database:
@@ -14,8 +15,40 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_URL: postgres://popli:popli@database:5432/popli
+      POSTGRES_USER: popli
+      POSTGRES_PASSWORD: popli
+      POSTGRES_DB: popli
+      POSTGRES_PORT: 5432
+      POSTGRES_HOST: database
     volumes:
       - popli-postgres-data:/var/lib/postgresql
+    networks:
+      - popli
+
+  localstack:
+    container_name: localstack
+    image: localstack/localstack:latest
+    ports:
+      - 4566:4566
+    environment:
+      SERVICES: s3
+      AWS_DEFAULT_REGION: us-east-1
+      PERSISTENCE: 1
+      LOCALSTACK_AUTH_TOKEN: ls-POsARaFA-5135-huFo-wEVa-5596fExI4396
+    volumes:
+      - popli-localstack-data:/var/lib/localstack
+      - ./localstack/init/01-s3-setup.sh:/etc/localstack/init/ready.d/01-s3-setup.sh:ro
+    networks:
+      - popli
+
+  stripe:
+    container_name: stripe
+    image: stripe/stripe-cli:latest
+    environment:
+      STRIPE_API_KEY: ${NUXT_STRIPE_SECRET_KEY}
+    command: >
+      listen
+      --forward-to http://host.docker.internal:3000/api/billing/webhook
+      --events checkout.session.completed,invoice.paid,invoice.payment_failed,customer.subscription.updated,customer.subscription.deleted
     networks:
       - popli

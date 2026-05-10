@@ -5,12 +5,7 @@
       <span class="title"> Click Type Distribution </span>
     </div>
 
-    <div
-      v-if="
-        profileAccessClicks || featuredLinksClicks.length || otherClicks.length
-      "
-      class="types"
-    >
+    <div v-if="isDataAvailable && isProPlan" class="types">
       <div v-if="profileAccessClicks" class="type">
         <div class="labels">
           <span class="type-name">Profile Access</span>
@@ -73,7 +68,9 @@
 
         <div v-for="click in otherClicks" :key="click.type" class="type">
           <div class="labels">
-            <span class="type-name">{{ click.type.charAt(0).toUpperCase() + click.type.slice(1) }}</span>
+            <span class="type-name">{{
+              click.type.charAt(0).toUpperCase() + click.type.slice(1)
+            }}</span>
 
             <span class="type-clicks">
               {{ Intl.NumberFormat('en-US').format(click.clicks) }} ({{
@@ -93,37 +90,33 @@
           </div>
         </div>
       </div>
-      <!-- <div v-for="row in rows" :key="row.type" class="type">
-        <div class="labels">
-          <span class="type-name">{{ row.label }}</span>
-
-          <span class="type-clicks">
-            {{ Intl.NumberFormat('en-US').format(row.clicks) }} ({{
-              row.percent
-            }}%)
-          </span>
-        </div>
-
-        <div class="progress">
-          <div
-            class="progress-bar"
-            :style="{
-              width: `${row.percent}%`,
-              background: clickTypeColors[row.type]!,
-            }"
-          />
-        </div>
-      </div> -->
     </div>
 
-    <div v-else class="empty">There is no click type data to display.</div>
+    <div v-if="isProPlan && !isDataAvailable" class="empty">
+      There is no click type data to display.
+    </div>
+
+    <div v-if="!isProPlan" class="free-plan-banner">
+      <span class="description">
+        Upgrade to the Pro plan to view your click type distribution.
+      </span>
+
+      <UiButton
+        severity="contrast"
+        label="Upgrade to Pro"
+        aria-label="Upgrade to Pro"
+        @click="upgradeToPro"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import orderBy from 'lodash/orderBy';
 
-import { EClickType } from '~~/enums';
+import { EClickType, EPlanType } from '~~/enums';
+
+const { upgradeToPro } = useUpgradePlan();
 
 const props = defineProps({
   clicks: {
@@ -132,6 +125,10 @@ const props = defineProps({
   },
   totalClicks: {
     type: Number,
+    required: true,
+  },
+  userPlan: {
+    type: String as PropType<EPlanType>,
     required: true,
   },
 });
@@ -149,6 +146,8 @@ const clickTypeColors = ref<Record<EClickType, string>>({
   [EClickType.TWITCH]: 'var(--primary-800)',
   [EClickType.DISCORD]: 'var(--secondary-800)',
 });
+
+const isProPlan = computed(() => props.userPlan === EPlanType.PRO);
 
 const profileAccessClicks = computed(() => {
   return props.clicks.find((click) => click.type === EClickType.PROFILE_ACCESS);
@@ -183,6 +182,13 @@ const otherClicks = computed(() => {
     )
     .sort((a, b) => b.clicks - a.clicks);
 });
+
+const isDataAvailable = computed(
+  () =>
+    !!profileAccessClicks.value ||
+    !!featuredLinksClicks.value.length ||
+    !!otherClicks.value.length,
+);
 </script>
 
 <style scoped lang="scss">
@@ -312,10 +318,31 @@ const otherClicks = computed(() => {
   }
 
   .empty {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     font-size: 0.75rem;
     font-weight: 400;
     color: var(--neutral-400);
     text-align: center;
+  }
+
+  .free-plan-banner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+
+    .description {
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--neutral-400);
+      text-align: center;
+    }
   }
 }
 </style>

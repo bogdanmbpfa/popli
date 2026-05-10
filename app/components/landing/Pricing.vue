@@ -78,10 +78,12 @@
 </template>
 
 <script setup lang="ts">
+import { EPlanType } from '~~/enums';
+
 const prices = ref([
   {
     name: 'Free Tier',
-    type: 'free' as const,
+    type: EPlanType.FREE,
     featured: false,
     description: 'Perfect for getting started',
     price: 0,
@@ -100,7 +102,7 @@ const prices = ref([
   },
   {
     name: 'Pro Tier',
-    type: 'pro' as const,
+    type: EPlanType.PRO,
     featured: true,
     description: 'Perfect for getting started',
     price: 6,
@@ -120,7 +122,7 @@ const prices = ref([
   },
 ]);
 
-const onSelectPrice = (type: 'free' | 'pro') =>
+const onSelectPrice = (type: EPlanType) =>
   navigateTo(`/sign-up?plan=${type}`);
 </script>
 

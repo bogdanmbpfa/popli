@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-import { ELinkPlatform, ELinkType } from '~~/enums';
+import { ELinkPlatform, ELinkType } from '../enums';
 
 export const CreateLinkYupSchema = yup.object({
   id: yup
@@ -10,11 +10,16 @@ export const CreateLinkYupSchema = yup.object({
       /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-57][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i,
     ),
   type: yup.string().required().oneOf(Object.values(ELinkType)),
-  platform: yup.string().optional().oneOf(Object.values(ELinkPlatform)),
+  platform: yup
+    .string()
+    .optional()
+    .nullable()
+    .oneOf(Object.values(ELinkPlatform)),
   url: yup.string().required().url(),
   title: yup
     .string()
     .optional()
+    .nullable()
     .min(3, 'Title must be at least 3 characters')
     .max(255, 'Title must be less than 255 characters'),
   backgroundImageId: yup

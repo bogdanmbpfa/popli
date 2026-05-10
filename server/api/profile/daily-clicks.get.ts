@@ -125,9 +125,14 @@ export default defineEventHandler(async (event) => {
     dailyClicksMap.set(date, (dailyClicksMap.get(date) || 0) + clicks);
   }
 
-  const dailyClicks = Array.from(dailyClicksMap.entries())
-    .map(([date, clicks]) => ({ date, clicks }))
-    .sort((a, b) => a.date.localeCompare(b.date));
+  const dailyClicks = Array.from({ length: 30 }, (_, index) => {
+    const date = currentStart.plus({ days: index }).toISODate() ?? '';
+
+    return {
+      date,
+      clicks: dailyClicksMap.get(date) ?? 0,
+    };
+  });
 
   const currentProfileAccessClicks = currentProfileAccessRows[0]?.clicks ?? 0;
   const previousProfileAccessClicks = previousProfileAccessRows[0]?.clicks ?? 0;

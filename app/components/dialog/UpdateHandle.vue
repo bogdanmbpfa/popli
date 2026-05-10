@@ -1,10 +1,5 @@
 <template>
   <form @submit.prevent="onHandleSubmit">
-    <div class="heading">
-      <Icon class="info" name="popli:alternate-email" size="1rem" />
-      <span>Handle</span>
-    </div>
-
     <FormInput
       id="handle"
       label=""
@@ -50,7 +45,7 @@
         :disabled="isSubmitting"
         @update:model-value="onHandleColorChange($event)"
       />
-      
+
       <UiInputText
         name="handle-color-hex"
         :value="handleColor"
@@ -61,9 +56,12 @@
 
     <UiButton
       type="submit"
+      severity="contrast"
+      icon="popli:check"
+      icon-size="1.25rem"
       label="Save"
       aria-label="Save handle"
-      severity="contrast"
+      fluid
       :loading="isSubmitting"
       :disabled="isSubmitting || !!errors.handle"
     />
@@ -76,6 +74,12 @@ import * as yup from 'yup';
 
 import { EApiEndpoint } from '~~/enums';
 
+const props = defineProps<{
+  handle: string | null;
+  handleColor: string | null;
+}>();
+
+const uiDynamicDialog = useUiDynamicDialog();
 const userStore = useUserStore();
 const uiToast = useUiToast();
 
@@ -113,12 +117,12 @@ const successCaption = ref('');
 const profile = computed(() => userStore.getProfile!);
 
 onMounted(() => {
-  handle.value = profile.value.handle;
-  handleColor.value = profile.value.handleColor;
+  handle.value = props.handle || '';
+  handleColor.value = props.handleColor ? `#${props.handleColor}` : null;
 });
 
 const onHandleChange = debounce(async (value?: string) => {
-  if (!value || value === profile.value.handle) return;
+  if (!value || value === props.handle) return;
 
   successCaption.value = '';
   setFieldError('handle', undefined);
@@ -146,11 +150,11 @@ const onHandleChange = debounce(async (value?: string) => {
 }, 500);
 
 const onHandleColorChange = debounce(async (value?: string) => {
-  if (!value || value === profile.value.handleColor) return;
+  if (!value || value === props.handleColor) return;
 
   userStore.setProfile({
     ...profile.value,
-    handleColor: value,
+    handleColor: value ?? null,
   });
 }, 200);
 
@@ -163,7 +167,6 @@ const onHandleSubmit = handleSubmit(async (values) => {
   if (error) {
     return uiToast.add({
       severity: 'error',
-      summary: 'Error',
       detail: error.message,
       life: 3000,
     });
@@ -172,10 +175,12 @@ const onHandleSubmit = handleSubmit(async (values) => {
   userStore.setProfile({
     ...profile.value,
     handle: values.handle,
-    handleColor: values.handleColor,
+    handleColor: values.handleColor ?? undefined,
   });
 
   successCaption.value = '';
+
+  uiDynamicDialog.close();
 
   return uiToast.add({
     severity: 'success',
@@ -185,36 +190,3 @@ const onHandleSubmit = handleSubmit(async (values) => {
   });
 });
 </script>
-
-<style lang="scss" scoped>
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  .heading {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 0.5rem;
-
-    span {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--neutral-100);
-    }
-  }
-
-  .handle-color-input {
-    :deep(.input-container) {
-      flex-direction: row;
-    }
-  }
-
-  .ui-button {
-    align-self: flex-start;
-  }
-}
-</style>

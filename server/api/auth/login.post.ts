@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 import { log } from 'evlog';
 
 import { AuthLoginYupSchema, type IAuthLoginYup } from '~~/dtos';
+import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { authSessionModel, db, userModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
@@ -18,37 +19,37 @@ export default defineEventHandler(async (event) => {
     );
   } catch {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.validationError,
     });
   }
 
   const email = body.email.toLowerCase();
 
-  try {
-    const account = await db.query.userModel.findFirst({
-      where: eq(userModel.email, email),
+  const account = await db.query.userModel.findFirst({
+    where: eq(userModel.email, email),
+  });
+
+  if (!account) {
+    throw createError({
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
+      message: errorMessages.invalidCredentials,
     });
+  }
 
-    if (!account) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Bad Request',
-        message: errorMessages.invalidCredentials,
-      });
-    }
+  const isPasswordValid = await verify(account.password, body.password);
 
-    const isPasswordValid = await verify(account.password, body.password);
+  if (!isPasswordValid) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Bad Request',
+      message: errorMessages.invalidCredentials,
+    });
+  }
 
-    if (!isPasswordValid) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Bad Request',
-        message: errorMessages.invalidCredentials,
-      });
-    }
-
+  try {
     const { token, refreshToken } = await generateAuthTokens(
       account.id,
       account.jwtSecret,
@@ -85,8 +86,8 @@ export default defineEventHandler(async (event) => {
     });
 
     throw createError({
-      statusCode: 500,
-      statusMessage: 'Internal Server Error',
+      statusCode: EHttpStatusCode.INTERNAL_SERVER_ERROR,
+      statusMessage: EHttpStatusMessage.INTERNAL_SERVER_ERROR,
       message: errorMessages.internalServerError,
     });
   }

@@ -1,55 +1,64 @@
 <template>
   <div v-if="profile" class="profile">
     <div class="profile-container">
-      <div class="background">
-        <Icon
-          v-if="!profile.coverImage"
-          class="info"
-          name="popli:person"
-          size="14rem"
-        />
+      <div class="phone-top-bar">
+        <span class="time">{{ currentTime }}</span>
 
-        <nuxt-img
-          v-else
-          :src="profile.coverImage"
-          :alt="profile.name || 'Cover image'"
-          fetchpriority="high"
-        />
+        <div class="dynamic-island" />
+
+        <div class="network-battery">
+          <Icon class="info" name="popli:android-wifi-3-bar" size="1rem" />
+
+          <Icon class="info" name="popli:battery-android-5" size="1rem" />
+        </div>
       </div>
 
-      <div v-if="profile.profileImage" class="avatar">
-        <nuxt-img
+      <div class="background-image">
+        <div class="background-image-container">
+          <NuxtImg
+            v-if="profile.coverImage"
+            :src="profile.coverImage"
+            :alt="profile.name || 'Cover'"
+          />
+
+          <div class="background-image-overlay" />
+        </div>
+      </div>
+
+      <div v-if="profile.profileImage" class="profile-image">
+        <NuxtImg
           :src="profile.profileImage"
-          :alt="profile.name || 'Profile image'"
-          fetchpriority="high"
+          :alt="profile.name || 'Profile Image'"
         />
       </div>
 
-      <div class="body">
+      <div class="profile-body">
         <div class="heading">
-          <span class="name">{{ profile.name }}</span>
+          <h1 v-if="profile.name" class="name">{{ profile.name }}</h1>
 
-          <span
-            class="handle"
+          <h2
+            v-if="profile.handle"
             :style="{
               color: profile.handleColor
                 ? `#${profile.handleColor}`
-                : 'var(--neutral-400)',
+                : 'var(--neutral-100)',
             }"
+            class="handle"
           >
             @{{ profile.handle }}
-          </span>
+          </h2>
 
-          <span
-            class="bio"
+          <p
+            v-if="profile.bio"
             :style="{
               color: profile.bioColor
                 ? `#${profile.bioColor}`
                 : 'var(--neutral-400)',
             }"
+            class="bio"
           >
             {{ profile.bio }}
-          </span>
+          </p>
         </div>
 
         <div class="content">
@@ -57,15 +66,12 @@
             <UiButton
               v-for="link in profile.primaryLinks"
               :key="link.id"
-              :title="link.platform!"
-              aria-label="Click {{ link.platform }} link"
+              severity="contrast"
+              :aria-label="`Visit ${link.platform} link`"
+              :title="`Visit ${link.platform} link`"
               @click="clickLink(link.id, link.url)"
             >
-              <NuxtImg
-                :src="`/${link.platform}.svg`"
-                :alt="link.platform"
-                loading="lazy"
-              />
+              <NuxtImg :src="`/${link.platform}.svg`" :alt="link.platform" />
             </UiButton>
           </div>
 
@@ -73,50 +79,97 @@
             <UiButton
               v-for="link in profile.secondaryLinks"
               :key="link.id"
-              severity="secondary"
-              :title="link.title!"
-              aria-label="Click {{ link.title }} link"
-              :style="[
-                link.backgroundColors
-                  ? link.backgroundColors.length === 1
-                    ? `background-color: #${link.backgroundColors[0]}`
-                    : `background-image: linear-gradient(to right, ${link.backgroundColors
-                        .map((color) => `#${color}`)
-                        .join(', ')});`
-                  : 'background-color: transparent',
-              ]"
+              :class="{
+                'has-background':
+                  link.backgroundImage ||
+                  (link.backgroundColors && !!link.backgroundColors.length),
+              }"
+              :style="{
+                backgroundColor: getCssColor(
+                  link.backgroundColors,
+                  false,
+                  'transparent',
+                ),
+              }"
+              :aria-label="`Visit ${link.title} link`"
+              :title="`Visit ${link.title} link`"
               @click="clickLink(link.id, link.url)"
             >
               <NuxtImg
                 v-if="link.backgroundImage"
                 :src="link.backgroundImage"
                 :alt="link.title"
-                loading="lazy"
               />
 
               <span
+                :style="
+                  getCssColor(link.titleColors, true, 'var(--neutral-100)')
+                "
                 class="title"
-                :style="[
-                  link.titleColors && link.titleColors.length
-                    ? link.titleColors.length === 1
-                      ? `color: #${link.titleColors[0]}`
-                      : `color: transparent; background-image: linear-gradient(to right, ${link.titleColors
-                          .map((color) => `#${color}`)
-                          .join(', ')}); background-clip: text;`
-                    : 'color: var(--neutral-100)',
-                ]"
               >
                 {{ link.title }}
               </span>
             </UiButton>
           </div>
 
-          <div class="copyright">
-            <div class="content">
-              <span>With ❤️ by</span>
-              <NuxtLink to="/" target="_blank" external>Popli.one</NuxtLink>
-            </div>
+          <div class="secondary-links">
+            <UiButton
+              v-for="link in profile.secondaryLinks"
+              :key="link.id"
+              :class="{
+                'has-background':
+                  link.backgroundImage ||
+                  (link.backgroundColors && !!link.backgroundColors.length),
+              }"
+              :style="{
+                backgroundColor: getCssColor(
+                  link.backgroundColors,
+                  false,
+                  'transparent',
+                ),
+              }"
+              :aria-label="`Visit ${link.title} link`"
+              :title="`Visit ${link.title} link`"
+              @click="clickLink(link.id, link.url)"
+            >
+              <NuxtImg
+                v-if="link.backgroundImage"
+                :src="link.backgroundImage"
+                :alt="link.title"
+              />
+
+              <span
+                :style="
+                  getCssColor(link.titleColors, true, 'var(--neutral-100)')
+                "
+                class="title"
+              >
+                {{ link.title }}
+              </span>
+            </UiButton>
           </div>
+
+          <div v-if="!profile.isPro" class="ad-section">
+            <Adsbygoogle
+              ad-format="auto"
+              ad-slot="1698276428"
+              :ad-full-width-responsive="true"
+              :ad-style="{ display: 'block', width: '100%' }"
+            />
+          </div>
+        </div>
+
+        <div class="footer">
+          <span class="copyright">
+            Made with ❤️ by
+            <a
+              href="https://popli.one"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Popli.one
+            </a>
+          </span>
         </div>
       </div>
     </div>
@@ -124,10 +177,12 @@
 </template>
 
 <script setup lang="ts">
+import { DateTime } from 'luxon';
+
 import { EApiEndpoint } from '~~/enums';
 
 definePageMeta({
-  layout: 'profile',
+  layout: 'auth',
 });
 
 const { seo } = useAppConfig();
@@ -143,6 +198,7 @@ const { data: profile } = await useApiJson(
   { handle: username },
 );
 
+const currentTime = computed(() => DateTime.now().toFormat('HH:mm'));
 const profileName = computed(() => profile?.name || `@${username}`);
 const profileHandle = computed(() => profile?.handle || String(username));
 const profileBio = computed(() => profile?.bio || '');
@@ -180,6 +236,23 @@ onMounted(() => {
   useApiJson(EApiEndpoint.PROFILE_ACCESS, {}, {}, { handle: username });
 });
 
+const getCssColor = (
+  colors: string[] | null,
+  isText: boolean | false,
+  defaultValue: string | 'transparent',
+) => {
+  if (!colors || !colors.length)
+    return `${isText ? 'color' : 'background-color'}: ${defaultValue}`;
+
+  if (colors.length === 1)
+    return `${isText ? 'color' : 'background-color'}: ${colors[0]}`;
+
+  return `
+    ${isText ? ' color: transparent; background-clip: text;' : ''}
+    background-image: linear-gradient(to right, ${colors[0]}, ${colors[1]})
+  `;
+};
+
 const clickLink = async (id: string, url: string) => {
   useApiJson(EApiEndpoint.URL_LINK_CLICK, {}, {}, { id });
 
@@ -189,75 +262,142 @@ const clickLink = async (id: string, url: string) => {
 
 <style scoped lang="scss">
 .profile {
-  width: 100lvw;
-  height: 100lvh;
-  overflow: hidden;
+  width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  flex: 1;
+  padding: 2rem;
+  position: relative;
+  overflow-y: hidden;
 
   .profile-container {
     position: relative;
-    height: 60rem;
-    width: 30rem;
-    border: 1px solid color-mix(in oklab, var(--neutral-400) 20%, transparent);
-    border-radius: 3rem;
-    z-index: 10;
-    overflow: hidden;
+    width: 100%;
+    max-width: 25rem;
+    height: 50rem;
+    display: flex;
+    border-radius: 2rem;
+    background-color: black;
 
-    .background {
+    .phone-top-bar {
       position: absolute;
       top: 0;
       left: 0;
-      right: 0;
-      height: 30%;
       width: 100%;
-      overflow: hidden;
-      z-index: 1;
+      height: 2rem;
       display: flex;
+      flex-direction: row;
       align-items: center;
-      justify-content: center;
-      background-image: var(--linear-gradient-primary);
+      justify-content: space-between;
+      padding: 0.5rem 1rem;
+      border-top-left-radius: 2rem;
+      border-top-right-radius: 2rem;
+      z-index: 30;
 
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
+      .time {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--neutral-100);
+      }
+
+      .dynamic-island {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        width: 6rem;
+        height: 1.5rem;
+        background-color: var(--background-primary);
+        border-radius: 3rem;
+      }
+
+      .network-battery {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
       }
     }
 
-    .avatar {
+    .background-image {
       position: absolute;
-      top: 3rem;
-      right: 2rem;
-      width: 3rem;
-      height: 3rem;
-      border-radius: 50%;
-      padding: 0.125rem;
-      background-image: var(--linear-gradient-primary);
-      overflow: hidden;
-      z-index: 50;
-
-      img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-        object-position: center;
-      }
-    }
-
-    .body {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      padding-top: 10rem;
+      top: 0;
+      left: 0;
       z-index: 10;
+      width: 100%;
+      height: 15rem;
+      overflow: hidden;
+      background-image: var(--linear-gradient-primary);
+      border-top-left-radius: 2rem;
+      border-top-right-radius: 2rem;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
-      overflow-y: auto;
+      justify-content: center;
+
+      .background-image-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center;
+        }
+
+        .background-image-overlay {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 50%;
+          background-image: linear-gradient(to bottom, transparent, black 60%);
+        }
+      }
+    }
+
+    .profile-image {
+      position: absolute;
+      top: 4rem;
+      right: 2rem;
+      z-index: 40;
+      width: 3rem;
+      height: 3rem;
+      overflow: hidden;
+      background-image: var(--linear-gradient-primary);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.125rem;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        border-radius: 50%;
+      }
+    }
+
+    .profile-body {
+      z-index: 20;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10rem 0 0;
+      border-radius: 2rem;
+      overflow-y: scroll;
       scrollbar-width: none;
       -ms-overflow-style: none;
 
@@ -270,14 +410,9 @@ const clickLink = async (id: string, url: string) => {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: flex-start;
-        gap: 0.25rem;
-        background-image: linear-gradient(
-          to bottom,
-          transparent 20%,
-          var(--background-primary)
-        );
-        min-height: 6rem;
+        justify-content: center;
+        gap: 0.5rem;
+        background-image: linear-gradient(to bottom, transparent, black 60%);
 
         .name {
           font-size: 1.5rem;
@@ -292,45 +427,40 @@ const clickLink = async (id: string, url: string) => {
         }
 
         .bio {
-          font-size: 1rem;
+          font-size: 0.875rem;
           font-weight: 400;
           color: var(--neutral-400);
+          margin: 0;
         }
       }
 
       .content {
         width: 100%;
-        height: 100%;
-        background-color: var(--background-primary);
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1rem;
+        background-color: black;
 
         .primary-links {
           width: 100%;
           display: flex;
-          flex-direction: row;
+          flex-wrap: wrap;
           align-items: center;
           justify-content: center;
           gap: 0.5rem;
-          padding: 1rem 0;
 
-          .ui-button {
-            padding: 0;
-            border: none;
-            box-shadow: none;
-            background: none;
-            width: 1.75rem;
-            height: 1.75rem;
+          :deep(.ui-button) {
+            padding: 0.25rem;
             border-radius: 50%;
-            background-image: var(--linear-gradient-primary);
-            overflow: hidden;
-            min-width: unset;
-            corner-shape: unset;
 
             img {
-              width: 1.25rem;
-              height: 1.25rem;
+              width: 1rem;
+              height: 1rem;
+              object-fit: cover;
+              object-position: center;
             }
           }
         }
@@ -340,24 +470,26 @@ const clickLink = async (id: string, url: string) => {
           display: flex;
           flex-direction: column;
           align-items: center;
+          justify-content: center;
           gap: 0.5rem;
-          padding: 2rem;
 
-          .ui-button {
+          :deep(.ui-button) {
+            position: relative;
             width: 100%;
-            height: 4rem;
-            overflow: hidden;
-            border: 1px solid
-              color-mix(in oklab, var(--neutral-400) 20%, transparent);
-            border-radius: 0.5rem;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            padding: 1rem;
-            position: relative;
-            z-index: 20;
+            padding: 0;
+            height: 8rem;
+            overflow: hidden;
+            border: 2px solid
+              color-mix(in oklab, var(--neutral-400) 20%, transparent);
+            border-radius: 1rem;
+
+            &.has-background {
+              border: none;
+            }
 
             img {
               position: absolute;
@@ -367,50 +499,48 @@ const clickLink = async (id: string, url: string) => {
               height: 100%;
               object-fit: cover;
               object-position: center;
-              z-index: 20;
             }
 
             .title {
               font-size: 1rem;
               font-weight: 500;
               color: var(--neutral-100);
-              z-index: 30;
             }
           }
         }
 
-        .copyright {
+        .ad-section {
+          width: 100%;
           display: flex;
-          flex: 1;
-          flex-direction: column;
           align-items: center;
-          justify-content: flex-end;
-          padding: 1rem;
+          justify-content: center;
+          overflow: hidden;
+          border-radius: 1rem;
+        }
+      }
 
-          .content {
-            height: fit-content;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
+      .footer {
+        width: 100%;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        padding: 2rem;
 
-            span {
-              font-size: 0.875rem;
-              font-weight: 400;
-              color: var(--neutral-400);
-            }
+        .copyright {
+          font-size: 0.875rem;
+          font-weight: 400;
+          color: var(--neutral-400);
 
-            a {
-              font-size: 0.875rem;
-              font-weight: 400;
-              color: transparent;
-              text-decoration: none;
-              background-image: var(--linear-gradient-primary);
-              background-clip: text;
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-            }
+          a {
+            background-image: var(--linear-gradient-primary);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            text-decoration: none;
           }
         }
       }
@@ -420,11 +550,17 @@ const clickLink = async (id: string, url: string) => {
 
 @media (max-width: 768px) {
   .profile {
+    padding: 0;
+
     .profile-container {
-      height: 100lvh;
       width: 100lvw;
+      max-width: 100lvw;
+      height: 100lvh;
       border-radius: 0;
-      border: none;
+
+      .phone-top-bar {
+        display: none;
+      }
     }
   }
 }

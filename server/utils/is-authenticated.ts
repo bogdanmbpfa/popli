@@ -116,6 +116,11 @@ export default async function isAuthenticated(
       return {
         id: user.id,
         email: user.email,
+        plan: user.plan,
+        planStartedAt: user.planStartedAt
+          ? user.planStartedAt.toISOString()
+          : null,
+        planEndsAt: user.planEndsAt ? user.planEndsAt.toISOString() : null,
         emailConfirmedAt: user.emailConfirmedAt
           ? user.emailConfirmedAt.toISOString()
           : null,
@@ -143,9 +148,10 @@ export default async function isAuthenticated(
     });
   }
 
-  user = await db.query.userModel.findFirst({
-    where: eq(userModel.id, tokenPayload.id as string),
-  }) ?? null;
+  user =
+    (await db.query.userModel.findFirst({
+      where: eq(userModel.id, tokenPayload.id as string),
+    })) ?? null;
 
   if (!user || user.deletedAt) {
     return deleteCookiesAndThrowError(
@@ -168,6 +174,9 @@ export default async function isAuthenticated(
   return {
     id: user.id,
     email: user.email,
+    plan: user.plan,
+    planStartedAt: user.planStartedAt ? user.planStartedAt.toISOString() : null,
+    planEndsAt: user.planEndsAt ? user.planEndsAt.toISOString() : null,
     emailConfirmedAt: user.emailConfirmedAt
       ? user.emailConfirmedAt.toISOString()
       : null,

@@ -1,4 +1,6 @@
 export * from './change-password';
+export * from './billing';
+export * from './counters';
 export * from './check-email';
 export * from './check-handle';
 export * from './profile';

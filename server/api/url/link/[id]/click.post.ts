@@ -1,6 +1,7 @@
 import { UAParser } from '@ua-parser-js/pro-business';
 import { and, eq, isNull } from 'drizzle-orm';
 
+import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, linkClickModel, linkModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
@@ -12,8 +13,8 @@ export default defineEventHandler(async (event) => {
 
   if (!linkId) {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.validationError,
     });
   }
@@ -24,8 +25,8 @@ export default defineEventHandler(async (event) => {
 
   if (!link) {
     throw createError({
-      statusCode: 404,
-      statusMessage: 'Not Found',
+      statusCode: EHttpStatusCode.NOT_FOUND,
+      statusMessage: EHttpStatusMessage.NOT_FOUND,
       message: errorMessages.linkNotFound,
     });
   }

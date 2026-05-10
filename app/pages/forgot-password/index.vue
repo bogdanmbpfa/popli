@@ -65,8 +65,9 @@
             id="code"
             v-model="codeReset"
             v-bind="codeResetAttributes"
-            fluid
             :length="6"
+            integer-only
+            fluid
             :invalid="!!resetPasswordErrors.code"
             :disabled="resetPasswordIsSubmitting"
           />
@@ -196,7 +197,6 @@ const onForgotPasswordSubmit = forgotPasswordHandleSubmit(async (values) => {
   if (error) {
     return uiToast.add({
       severity: 'error',
-      summary: 'Oops!',
       detail: error.message,
       life: 3000,
     });
@@ -224,7 +224,6 @@ const onResetPasswordSubmit = resetPasswordHandleSubmit(async (values) => {
   if (error) {
     return uiToast.add({
       severity: 'error',
-      summary: 'Oops!',
       detail: error.message,
       life: 3000,
     });

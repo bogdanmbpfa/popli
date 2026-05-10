@@ -12,5 +12,6 @@ export * from './auth-reset-password.dto';
 export * from './create-link.dto';
 export * from './create-qr-code.dto';
 export * from './file.dto';
+export * from './link-position.dto';
 export * from './url-create-short-url.dto';
 export * from './url-short-url-update.dto';

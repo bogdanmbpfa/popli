@@ -1,17 +1,20 @@
 import { UAParser } from '@ua-parser-js/pro-business';
 import { and, eq, isNull } from 'drizzle-orm';
 
+import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, profileAccessModel, profileModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
-  const { public: { errorMessages } } = useRuntimeConfig();
+  const {
+    public: { errorMessages },
+  } = useRuntimeConfig();
 
   const handle = getRouterParam(event, 'handle');
 
   if (!handle) {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.validationError,
     });
   }
@@ -22,8 +25,8 @@ export default defineEventHandler(async (event) => {
 
   if (!profile) {
     throw createError({
-      statusCode: 404,
-      statusMessage: 'Not Found',
+      statusCode: EHttpStatusCode.NOT_FOUND,
+      statusMessage: EHttpStatusMessage.NOT_FOUND,
       message: errorMessages.profileNotFound,
     });
   }

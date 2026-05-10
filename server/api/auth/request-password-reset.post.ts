@@ -1,11 +1,14 @@
 import { eq } from 'drizzle-orm';
 import { log } from 'evlog';
+import { DateTime } from 'luxon';
 import { randomBytes } from 'node:crypto';
+import { generate } from 'randomstring';
 
 import {
   AuthRequestPasswordResetYupSchema,
   type IAuthRequestPasswordResetYup,
 } from '~~/dtos';
+import { EEmailTemplate, EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, userModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
@@ -22,8 +25,8 @@ export default defineEventHandler(async (event) => {
     );
   } catch {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.validationError,
     });
   }
@@ -35,27 +38,35 @@ export default defineEventHandler(async (event) => {
 
     if (!account) {
       throw createError({
-        statusCode: 400,
-        statusMessage: 'Bad Request',
+        statusCode: EHttpStatusCode.BAD_REQUEST,
+        statusMessage: EHttpStatusMessage.BAD_REQUEST,
         message: errorMessages.invalidCredentials,
       });
     }
 
-    const code = randomBytes(3).toString('hex');
+    const code = generate({ length: 6, charset: 'numeric' });
     const jwtSecret = randomBytes(20).toString('hex').toUpperCase();
+    const now = DateTime.now();
+    const expiresAt = now.plus({ minutes: 30 });
 
     await db
       .update(userModel)
       .set({
         passwordResetCode: code,
-        passwordResetCodeExpiresAt: new Date(Date.now() + 1000 * 60 * 30),
+        passwordResetCodeExpiresAt: expiresAt.toJSDate(),
         jwtSecret,
       })
       .where(eq(userModel.id, account.id));
 
-    await sendEmail(body.email.toLowerCase(), brevo.templates.passwordReset, {
-      code,
-    });
+    await sendEmail(
+      body.email.toLowerCase(),
+      'Reset your password',
+      EEmailTemplate.PASSWORD_RESET,
+      {
+        code,
+        expiresIn: `${expiresAt.diff(now, 'minutes').minutes} minutes`,
+      },
+    );
   } catch (error) {
     log.error({
       message: `Error requesting password reset: ${
@@ -65,8 +76,8 @@ export default defineEventHandler(async (event) => {
     });
 
     throw createError({
-      statusCode: 500,
-      statusMessage: 'Internal Server Error',
+      statusCode: EHttpStatusCode.INTERNAL_SERVER_ERROR,
+      statusMessage: EHttpStatusMessage.INTERNAL_SERVER_ERROR,
       message: errorMessages.internalServerError,
     });
   }

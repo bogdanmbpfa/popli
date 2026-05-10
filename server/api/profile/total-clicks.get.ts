@@ -1,6 +1,6 @@
 import { and, count, eq, isNull } from 'drizzle-orm';
 
-import { EClickType, ELinkPlatform, ELinkType } from '~~/enums';
+import { EClickType, ELinkType, EPlanType } from '~~/enums';
 import {
   db,
   linkClickModel,
@@ -9,7 +9,7 @@ import {
 } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
-  const { id: userId } = await isAuthenticated(event);
+  const { id: userId, plan } = await isAuthenticated(event);
 
   const [
     profileAccessRows,
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
           isNull(linkClickModel.deletedAt),
         ),
       ),
-    db
+    plan === EPlanType.FREE ? [] : db
       .select({
         country: profileAccessModel.country,
         countryCode: profileAccessModel.countryCode,
@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
       .from(profileAccessModel)
       .where(eq(profileAccessModel.userId, userId))
       .groupBy(profileAccessModel.country, profileAccessModel.countryCode),
-    db
+    plan === EPlanType.FREE ? [] : db
       .select({
         country: linkClickModel.country,
         countryCode: linkClickModel.countryCode,
@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
         ),
       )
       .groupBy(linkClickModel.country, linkClickModel.countryCode),
-    db
+    plan === EPlanType.FREE ? [] : db
       .select({
         title: linkModel.title,
         type: linkModel.type,
@@ -103,7 +103,7 @@ export default defineEventHandler(async (event) => {
 
   const typeClicksMap = new Map<EClickType | string, number>();
 
-  if (profileAccessClicks > 0) {
+  if (plan !== EPlanType.FREE && profileAccessClicks > 0) {
     typeClicksMap.set(EClickType.PROFILE_ACCESS, profileAccessClicks);
   }
 
@@ -112,8 +112,8 @@ export default defineEventHandler(async (event) => {
       item.type === ELinkType.PRIMARY
         ? (item.platform as unknown as EClickType)
         : item.type === ELinkType.SECONDARY
-          ? item.title!
-          : EClickType.OTHER;
+        ? item.title!
+        : EClickType.OTHER;
 
     typeClicksMap.set(typeKey, (typeClicksMap.get(typeKey) || 0) + item.clicks);
   }

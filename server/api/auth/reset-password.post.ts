@@ -6,6 +6,7 @@ import {
   AuthResetPasswordYupSchema,
   type IAuthResetPasswordYup,
 } from '~~/dtos';
+import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, userModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
@@ -21,8 +22,8 @@ export default defineEventHandler(async (event) => {
     );
   } catch {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.validationError,
     });
   }
@@ -34,16 +35,16 @@ export default defineEventHandler(async (event) => {
 
     if (!account) {
       throw createError({
-        statusCode: 400,
-        statusMessage: 'Bad Request',
+        statusCode: EHttpStatusCode.BAD_REQUEST,
+        statusMessage: EHttpStatusMessage.BAD_REQUEST,
         message: errorMessages.invalidCredentials,
       });
     }
 
     if (account.passwordResetCode !== body.code) {
       throw createError({
-        statusCode: 400,
-        statusMessage: 'Bad Request',
+        statusCode: EHttpStatusCode.BAD_REQUEST,
+        statusMessage: EHttpStatusMessage.BAD_REQUEST,
         message: errorMessages.invalidCode,
       });
     }
@@ -53,8 +54,8 @@ export default defineEventHandler(async (event) => {
       new Date(account.passwordResetCodeExpiresAt).getTime() < Date.now()
     ) {
       throw createError({
-        statusCode: 400,
-        statusMessage: 'Bad Request',
+        statusCode: EHttpStatusCode.BAD_REQUEST,
+        statusMessage: EHttpStatusMessage.BAD_REQUEST,
         message: errorMessages.passwordResetCodeExpired,
       });
     }
@@ -78,8 +79,8 @@ export default defineEventHandler(async (event) => {
     });
 
     throw createError({
-      statusCode: 500,
-      statusMessage: 'Internal Server Error',
+      statusCode: EHttpStatusCode.INTERNAL_SERVER_ERROR,
+      statusMessage: EHttpStatusMessage.INTERNAL_SERVER_ERROR,
       message: errorMessages.internalServerError,
     });
   }

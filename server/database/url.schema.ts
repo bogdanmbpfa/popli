@@ -82,8 +82,8 @@ export const linkModel = urlManagementSchema.table(
   {
     id: uuid('id').defaultRandom().primaryKey().unique().notNull(),
     userId: uuid('user_id').notNull(),
-    type: linkType('type').notNull(),
-    platform: linkPlatform('platform'),
+    type: linkType('type').notNull().$type<ELinkType>(),
+    platform: linkPlatform('platform').$type<ELinkPlatform>(),
     url: varchar('url', { length: 255 }).notNull(),
     title: varchar('title', { length: 255 }),
     backgroundImageId: uuid('background_image_id').references(() => fileModel.id),

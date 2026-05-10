@@ -33,7 +33,7 @@ const useApiJson = async <T, U extends keyof TApiEndpoint>(
 
     return {
       error: {
-        code: errorResponse.data?.code,
+        statusCode: errorResponse.data?.statusCode,
         message: errorResponse.data?.message,
       },
     } as IApiFailure;

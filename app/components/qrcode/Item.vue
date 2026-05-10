@@ -95,9 +95,12 @@ const emit = defineEmits<{
 const uiConfirmDialog = useUiConfirmDialog();
 const uiDynamicDialog = useUiDynamicDialog();
 const uiToast = useUiToast();
+const userStore = useUserStore();
 
 const qrCodeStyling = ref<QRCodeStyling | null>(null);
 const largeQrCodeStyling = ref<QRCodeStyling | null>(null);
+
+const user = computed(() => userStore.getUser);
 
 onMounted(() => {
   qrCodeStyling.value = new QRCodeStyling({
@@ -132,6 +135,7 @@ const openAnalyticsDialog = () =>
     header: 'QR Code Analytics',
     props: {
       qrCodeId: props.qrCode.id,
+      userPlan: user.value?.plan,
     },
   });
 
@@ -152,7 +156,6 @@ const handleDeleteQrCode = async () => {
       if (error) {
         return uiToast.add({
           severity: 'error',
-          summary: 'Oops!',
           detail: error.message,
         });
       }

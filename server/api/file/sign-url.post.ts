@@ -2,7 +2,7 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v7 as uuidv7 } from 'uuid';
 
-import { EEnvironment } from '~~/enums';
+import { EHttpStatusCode, EHttpStatusMessage, EEnvironment } from '~~/enums';
 
 export default defineEventHandler(async (event) => {
   const {
@@ -42,8 +42,8 @@ export default defineEventHandler(async (event) => {
     log.error({ message: 'Error getting signed URL for file', error });
 
     throw createError({
-      statusCode: 500,
-      statusMessage: 'Error getting signed URL for file',
+      statusCode: EHttpStatusCode.INTERNAL_SERVER_ERROR,
+      statusMessage: EHttpStatusMessage.INTERNAL_SERVER_ERROR,
       message: errorMessages.internalServerError,
     });
   }

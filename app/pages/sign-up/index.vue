@@ -5,7 +5,12 @@
 
     <div class="heading">
       <nuxt-link to="/" class="default">
-        <nuxt-img src="/logo.png" alt="Popli.one logo" width="40" loading="lazy" />
+        <nuxt-img
+          src="/logo.png"
+          alt="Popli.one logo"
+          width="40"
+          loading="lazy"
+        />
         <h1>Popli</h1>
       </nuxt-link>
 
@@ -91,7 +96,7 @@
 import debounce from 'lodash/debounce';
 import * as yup from 'yup';
 
-import { EApiEndpoint, EEnvironment } from '~~/enums';
+import { EApiEndpoint, EEnvironment, EPlanType } from '~~/enums';
 import type { IAuthRegister } from '~~/interfaces';
 
 definePageMeta({
@@ -105,6 +110,11 @@ const {
 } = useRuntimeConfig();
 const uiToast = useUiToast();
 const userStore = useUserStore();
+const route = useRoute();
+
+const selectedPlan = computed<EPlanType>(() =>
+  route.query.plan === EPlanType.PRO ? EPlanType.PRO : EPlanType.FREE,
+);
 
 usePageSeo({
   title: seo.signUpTitle,
@@ -137,7 +147,10 @@ const {
       .matches(/[A-Z]/, 'Password must have at least one uppercase letter')
       .matches(/[a-z]/, 'Password must have at least one lowercase letter')
       .matches(/[0-9]/, 'Password must have at least one number')
-      .matches(/[!@#$%^&*(){}[\]=;'\:"|,.\/<>?§±`~_+-]/, 'Password must have at least one special character'),
+      .matches(
+        /[!@#$%^&*(){}[\]=;'\:"|,.\/<>?§±`~_+-]/,
+        'Password must have at least one special character',
+      ),
   }),
 });
 
@@ -168,7 +181,6 @@ const onRegisterSubmit = handleSubmit(async (values) => {
   if (error) {
     return uiToast.add({
       severity: 'error',
-      summary: 'Oops!',
       detail: error.message,
       life: 3000,
       closable: false,
@@ -185,7 +197,6 @@ const onRegisterSubmit = handleSubmit(async (values) => {
   if (userError) {
     return uiToast.add({
       severity: 'error',
-      summary: 'Oops!',
       detail: userError.message,
       life: 3000,
       closable: false,
@@ -204,7 +215,34 @@ const onRegisterSubmit = handleSubmit(async (values) => {
     closable: false,
   });
 
-  return navigateTo('/account');
+  if (selectedPlan.value === EPlanType.PRO) {
+    const { data: checkoutData, error: checkoutError } = await useApiJson(
+      EApiEndpoint.BILLING_CHECKOUT_SESSION,
+      {},
+      {},
+      {},
+    );
+
+    if (checkoutError) {
+      uiToast.add({
+        severity: 'error',
+        detail: checkoutError.message,
+        life: 3000,
+        closable: false,
+      });
+
+      return navigateTo('/account/settings');
+    }
+
+    if (checkoutData?.url) {
+      await navigateTo(checkoutData.url, {
+        external: true,
+      });
+      return;
+    }
+  }
+
+  return navigateTo('/account/settings');
 });
 </script>
 

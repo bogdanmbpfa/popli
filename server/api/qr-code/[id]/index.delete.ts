@@ -1,5 +1,6 @@
 import { and, eq, isNull } from 'drizzle-orm';
 
+import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, qrCodeModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
@@ -13,8 +14,8 @@ export default defineEventHandler(async (event) => {
 
   if (!qrCodeId) {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.validationError,
     });
   }
@@ -29,8 +30,8 @@ export default defineEventHandler(async (event) => {
 
   if (!qrCode) {
     throw createError({
-      statusCode: 404,
-      statusMessage: 'Not Found',
+      statusCode: EHttpStatusCode.NOT_FOUND,
+      statusMessage: EHttpStatusMessage.NOT_FOUND,
       message: errorMessages.qrCodeNotFound,
     });
   }

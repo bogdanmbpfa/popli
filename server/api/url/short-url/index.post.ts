@@ -1,17 +1,34 @@
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { randomBytes } from 'node:crypto';
 
 import {
   UrlCreateShortUrlYupSchema,
   type IUrlCreateShortUrlYup,
 } from '~~/dtos';
-import { db, shortUrlModel } from '~~/server/database';
+import { EHttpStatusCode, EHttpStatusMessage, EPlanType } from '~~/enums';
+import { db, shortUrlModel, usageCounterModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
   const {
-    public: { errorMessages },
+    public: { errorMessages, freePlan: { shortUrlLimit } },
   } = useRuntimeConfig();
-  const { id: userId } = await isAuthenticated(event);
+
+  const { id: userId, plan } = await isAuthenticated(event);
+
+  if (plan === EPlanType.FREE) {
+    const [result] = await db
+      .select({ total: usageCounterModel.shortUrlCount })
+      .from(usageCounterModel)
+      .where(eq(usageCounterModel.userId, userId));
+
+    if ((result?.total ?? 0) >= shortUrlLimit) {
+      throw createError({
+        statusCode: EHttpStatusCode.PAYMENT_REQUIRED,
+        statusMessage: EHttpStatusMessage.PAYMENT_REQUIRED,
+        message: errorMessages.freePlanLimitReached,
+      });
+    }
+  }
 
   let body: IUrlCreateShortUrlYup;
 
@@ -21,8 +38,8 @@ export default defineEventHandler(async (event) => {
     );
   } catch {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.validationError,
     });
   }
@@ -34,8 +51,8 @@ export default defineEventHandler(async (event) => {
 
     if (existingAlias) {
       throw createError({
-        statusCode: 400,
-        statusMessage: 'Bad Request',
+        statusCode: EHttpStatusCode.BAD_REQUEST,
+        statusMessage: EHttpStatusMessage.BAD_REQUEST,
         message: errorMessages.aliasAlreadyExists,
       });
     }
@@ -56,11 +73,27 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  await db.insert(shortUrlModel).values({
-    userId,
-    url: body.url,
-    shortCode,
-    alias: body.alias || null,
-    title: body.title,
+  await db.transaction(async (tx) => {
+    await tx.insert(shortUrlModel).values({
+      userId,
+      url: body.url,
+      shortCode,
+      alias: body.alias || null,
+      title: body.title,
+    });
+
+    await tx
+      .insert(usageCounterModel)
+      .values({
+        userId,
+        shortUrlCount: 1,
+      })
+      .onConflictDoUpdate({
+        target: [usageCounterModel.userId],
+        set: {
+          shortUrlCount: sql`${usageCounterModel.shortUrlCount} + 1`,
+          updatedAt: new Date(),
+        },
+      });
   });
 });

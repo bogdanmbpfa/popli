@@ -48,7 +48,6 @@ const signOut = async () => {
   if (error) {
     return uiToast.add({
       severity: 'error',
-      summary: 'Error',
       detail: error.message,
       life: 3000,
       closable: false,

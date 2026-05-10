@@ -5,7 +5,12 @@
 
     <div class="heading">
       <nuxt-link to="/" class="default">
-        <nuxt-img src="/logo.png" alt="Popli.one logo" width="40" loading="lazy" />
+        <nuxt-img
+          src="/logo.png"
+          alt="Popli.one logo"
+          width="40"
+          loading="lazy"
+        />
         <h1>Popli</h1>
       </nuxt-link>
 
@@ -136,7 +141,6 @@ const onLoginSubmit = handleSubmit(async (values) => {
   if (error) {
     return uiToast.add({
       severity: 'error',
-      summary: 'Oops!',
       detail: error.message,
       life: 3000,
       closable: false,
@@ -153,7 +157,6 @@ const onLoginSubmit = handleSubmit(async (values) => {
   if (userError) {
     return uiToast.add({
       severity: 'error',
-      summary: 'Oops!',
       detail: userError.message,
       life: 3000,
       closable: false,

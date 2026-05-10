@@ -4,6 +4,7 @@ import {
   UrlShortUrlUpdateYupSchema,
   type IUrlShortUrlUpdateYup,
 } from '~~/dtos';
+import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, shortUrlModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
@@ -15,11 +16,13 @@ export default defineEventHandler(async (event) => {
   let body: IUrlShortUrlUpdateYup;
 
   try {
-    body = await readValidatedBody(event, (body) => UrlShortUrlUpdateYupSchema.validate(body));
+    body = await readValidatedBody(event, (body) =>
+      UrlShortUrlUpdateYupSchema.validate(body),
+    );
   } catch {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
+      statusCode: EHttpStatusCode.BAD_REQUEST,
+      statusMessage: EHttpStatusMessage.BAD_REQUEST,
       message: errorMessages.validationError,
     });
   }
@@ -30,8 +33,8 @@ export default defineEventHandler(async (event) => {
 
   if (!shortUrl) {
     throw createError({
-      statusCode: 404,
-      statusMessage: 'Not Found',
+      statusCode: EHttpStatusCode.NOT_FOUND,
+      statusMessage: EHttpStatusMessage.NOT_FOUND,
       message: errorMessages.shortUrlNotFound,
     });
   }
@@ -43,8 +46,8 @@ export default defineEventHandler(async (event) => {
 
     if (existingAlias && existingAlias.id !== body.id) {
       throw createError({
-        statusCode: 400,
-        statusMessage: 'Bad Request',
+        statusCode: EHttpStatusCode.BAD_REQUEST,
+        statusMessage: EHttpStatusMessage.BAD_REQUEST,
         message: errorMessages.aliasAlreadyExists,
       });
     }

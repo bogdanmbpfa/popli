@@ -9,10 +9,23 @@
       <span class="title"> Global Distribution </span>
     </div>
 
-    <div v-show="!mapError" id="clicks-map" />
+    <div v-show="!mapError && isProPlan && !!props.clicks.length" id="clicks-map" />
 
     <div v-show="mapError" class="map-error">
       Error loading map. Please check your browser's graphics settings.
+    </div>
+
+    <div v-if="!isProPlan" class="free-plan-banner">
+      <span class="description">
+        Upgrade to the Pro plan to view your global distribution.
+      </span>
+
+      <UiButton
+        severity="contrast"
+        label="Upgrade to Pro"
+        aria-label="Upgrade to Pro"
+        @click="upgradeToPro"
+      />
     </div>
   </div>
 </template>
@@ -21,9 +34,12 @@
 import mapboxgl from 'mapbox-gl';
 
 import worldCountryCoordinates from '~~/constants/world-countries.json';
+import { EPlanType } from '~~/enums';
 import type { IWorldCountry } from '~~/interfaces';
 
 mapboxgl.accessToken = useRuntimeConfig().public.mapboxAccessToken;
+
+const { upgradeToPro } = useUpgradePlan();
 
 const props = defineProps({
   clicks: {
@@ -32,10 +48,16 @@ const props = defineProps({
     >,
     required: true,
   },
+  userPlan: {
+    type: String as PropType<EPlanType>,
+    required: true,
+  },
 });
 
 const map = ref<mapboxgl.Map>();
 const mapError = ref(false);
+
+const isProPlan = computed(() => props.userPlan === EPlanType.PRO);
 
 onMounted(() => {
   const mapContainer = document.getElementById('clicks-map');
@@ -46,18 +68,21 @@ onMounted(() => {
   }
 
   try {
-    map.value = new mapboxgl.Map({
-      container: 'clicks-map',
-      style: 'mapbox://styles/mapbox/dark-v10',
-      center: [20, 50],
-      zoom: 0,
-    });
+    map.value =
+      isProPlan.value && !!props.clicks.length
+        ? new mapboxgl.Map({
+            container: 'clicks-map',
+            style: 'mapbox://styles/mapbox/dark-v10',
+            center: [20, 50],
+            zoom: 0,
+          })
+        : undefined;
   } catch {
     mapError.value = true;
     return;
   }
 
-  map.value.on('load', () => {
+  map.value?.on('load', () => {
     // Add markers
     for (const click of props.clicks) {
       const root = document.createElement('div');
@@ -110,6 +135,7 @@ onUnmounted(() => {
 .map-container {
   width: 100%;
   height: 100%;
+  min-height: 20rem;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -211,6 +237,22 @@ onUnmounted(() => {
           }
         }
       }
+    }
+  }
+
+  .free-plan-banner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    
+    .description {
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--neutral-400);
+      text-align: center;
     }
   }
 }

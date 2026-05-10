@@ -1,10 +1,5 @@
 <template>
   <form @submit.prevent="onNameSubmit">
-    <div class="heading">
-      <Icon class="info" name="popli:shield-person-outline-rounded" size="1rem" />
-      <span>Name</span>
-    </div>
-
     <FormInput
       id="name"
       label=""
@@ -26,9 +21,12 @@
 
     <UiButton
       type="submit"
+      severity="contrast"
+      icon="popli:check"
+      icon-size="1.25rem"
       label="Save"
       aria-label="Save name"
-      severity="contrast"
+      fluid
       :loading="isSubmitting"
       :disabled="isSubmitting || !!errors.name"
     />
@@ -41,8 +39,11 @@ import * as yup from 'yup';
 
 import { EApiEndpoint } from '~~/enums';
 
-const userStore = useUserStore();
+const props = defineProps<{ name: string | null }>();
+
+const uiDynamicDialog = useUiDynamicDialog();
 const uiToast = useUiToast();
+const userStore = useUserStore();
 
 const { defineField, errors, handleSubmit, isSubmitting } = useForm({
   validationSchema: yup.object().shape({
@@ -58,11 +59,7 @@ const [name, nameAttributes] = defineField('name');
 const profile = computed(() => userStore.getProfile!);
 
 onMounted(() => {
-  name.value = profile.value?.name || '';
-});
-
-watch(profile, () => {
-  name.value = profile.value?.name || '';
+  name.value = props.name || '';
 });
 
 const onNameChange = debounce((value?: string) => {
@@ -83,7 +80,6 @@ const onNameSubmit = handleSubmit(async (values) => {
   if (error) {
     return uiToast.add({
       severity: 'error',
-      summary: 'Error',
       detail: error.message,
       life: 3000,
     });
@@ -94,6 +90,8 @@ const onNameSubmit = handleSubmit(async (values) => {
     name: values.name,
   });
 
+  uiDynamicDialog.close();
+
   return uiToast.add({
     severity: 'success',
     summary: 'Success',
@@ -102,30 +100,3 @@ const onNameSubmit = handleSubmit(async (values) => {
   });
 });
 </script>
-
-<style lang="scss" scoped>
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  .heading {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 0.5rem;
-
-    span {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--neutral-100);
-    }
-  }
-
-  .ui-button {
-    align-self: flex-start;
-  }
-}
-</style>

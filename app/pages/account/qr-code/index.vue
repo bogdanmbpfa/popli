@@ -14,31 +14,58 @@
       ]"
     >
       <template #panel-generate>
-        <QrcodeGenerate @refresh="refreshQrCodes" />
+        <LazyQrcodeGenerate :count="qrCodeCount" @refresh="refresh" />
       </template>
 
       <template #panel-manage>
-        <QrcodeManage ref="qrCodeManage" />
+        <LazyQrcodeManage :qr-codes="qrCodes" @refresh="refresh" />
       </template>
     </UiTabs>
   </div>
 </template>
 
 <script setup lang="ts">
-import type QrCodeManage from '~/components/qrcode/Manage.vue';
+import { EApiEndpoint } from '~~/enums';
 
 definePageMeta({
   layout: 'account',
   middleware: 'is-logged-in',
 });
 
-const tab = ref<'generate' | 'manage'>('generate');
-const qrCodeManage = ref<InstanceType<typeof QrCodeManage> | null>(null);
+const {
+  public: { errorMessages },
+} = useRuntimeConfig();
+const userStore = useUserStore();
+const uiToast = useUiToast();
 
-const refreshQrCodes = async () => {
-  if (qrCodeManage.value) {
-    await qrCodeManage.value.getQrCodes();
+const tab = ref<'generate' | 'manage'>('generate');
+
+const { data: qrCodes, refresh: refreshQrCodes } = await useAsyncData(
+  'qr-codes',
+  () => useApiJson(EApiEndpoint.QR_CODE_GET),
+  { default: () => [], transform: (data) => data.data ?? [] },
+);
+const { data: qrCodeCount, refresh: refreshQrCodeCount } = await useAsyncData(
+  'qr-code-count',
+  () => useApiJson(EApiEndpoint.ACCOUNT_COUNTERS),
+  { default: () => 0, transform: (data) => data.data?.qrCodeCount ?? 0 },
+);
+
+const user = computed(() => userStore.getUser);
+
+onMounted(async () => {
+  if (user.value && !user.value.emailConfirmedAt) {
+    uiToast.add({
+      severity: 'info',
+      detail: errorMessages.emailNotConfirmed,
+      life: 3000,
+    });
   }
+});
+
+const refresh = async () => {
+  await refreshQrCodes();
+  await refreshQrCodeCount();
 };
 </script>
 
