@@ -5,14 +5,9 @@
         class="danger"
         name="popli:globe-showing-europe-africa"
         size="1rem"
+        aria-hidden="true"
       />
       <span class="title"> Global Distribution </span>
-    </div>
-
-    <div v-show="!mapError && isProPlan && !!props.clicks.length" id="clicks-map" />
-
-    <div v-show="mapError" class="map-error">
-      Error loading map. Please check your browser's graphics settings.
     </div>
 
     <div v-if="!isProPlan" class="free-plan-banner">
@@ -27,6 +22,21 @@
         @click="upgradeToPro"
       />
     </div>
+
+    <div v-else-if="!props.clicks.length" class="no-clicks">
+      <span>There are no clicks to display.</span>
+    </div>
+
+    <div v-else-if="mapError" class="map-error">
+      Error loading map. Please check your browser's graphics settings.
+    </div>
+
+    <div
+      v-else
+      id="clicks-map"
+      role="region"
+      aria-label="Map of click distribution by country"
+    />
   </div>
 </template>
 
@@ -36,6 +46,15 @@ import mapboxgl from 'mapbox-gl';
 import worldCountryCoordinates from '~~/constants/world-countries.json';
 import { EPlanType } from '~~/enums';
 import type { IWorldCountry } from '~~/interfaces';
+
+useHead({
+  link: [
+    {
+      rel: 'stylesheet',
+      href: 'https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css',
+    },
+  ],
+});
 
 mapboxgl.accessToken = useRuntimeConfig().public.mapboxAccessToken;
 
@@ -165,6 +184,21 @@ onUnmounted(() => {
     text-align: center;
   }
 
+  .no-clicks {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    span {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--neutral-400);
+      text-align: center;
+    }
+  }
+
   :deep(.mapboxgl-map) {
     .mapboxgl-popup {
       position: absolute;
@@ -247,7 +281,7 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
     gap: 2rem;
-    
+
     .description {
       font-size: 0.875rem;
       font-weight: 400;

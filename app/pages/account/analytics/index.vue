@@ -257,8 +257,6 @@ onMounted(async () => {
       display: flex;
       width: calc(60% - 0.5rem);
       height: fit-content;
-      background-color: var(--background-secondary);
-      padding: 1rem;
       border-radius: 0.5rem;
     }
 
@@ -286,7 +284,6 @@ onMounted(async () => {
     .traffic-distribution {
       width: calc(40% - 0.5rem);
       display: flex;
-      padding: 1rem;
       border-radius: 0.5rem;
       background-color: var(--background-secondary);
 

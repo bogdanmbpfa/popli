@@ -1,6 +1,6 @@
 <template>
   <div class="ui-tabs" v-bind="$attrs">
-    <div class="tabs-list" role="tablist">
+    <div class="tabs-list" role="tablist" :aria-label="tablistLabel">
       <button
         v-for="tab in tabs"
         :key="tab.value"
@@ -8,6 +8,10 @@
         class="tab-trigger"
         :class="{ active: tab.value === selected, disabled: tab.disabled }"
         role="tab"
+        :id="tabTriggerId(tab.value)"
+        :aria-selected="tab.value === selected"
+        :aria-controls="tabPanelId(tab.value)"
+        :tabindex="tab.value === selected ? 0 : -1"
         :disabled="tab.disabled"
         @click="select(tab.value)"
       >
@@ -15,7 +19,13 @@
       </button>
     </div>
 
-    <div class="tabs-panel" role="tabpanel">
+    <div
+      class="tabs-panel"
+      role="tabpanel"
+      :id="tabPanelId(selected)"
+      :aria-labelledby="tabTriggerId(selected)"
+      tabindex="0"
+    >
       <slot :name="`panel-${selected}`" :value="selected">
         <slot />
       </slot>
@@ -24,14 +34,22 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, useId } from 'vue';
 
 type TabItem = { value: string; label: string; disabled?: boolean };
-const props = withDefaults(defineProps<{ value?: string; tabs?: TabItem[] }>(), {
-  value: '',
-  tabs: () => []
-});
+const props = withDefaults(
+  defineProps<{ value?: string; tabs?: TabItem[]; tablistLabel?: string }>(),
+  {
+    value: '',
+    tabs: () => [],
+    tablistLabel: 'Tabs',
+  },
+);
 const emit = defineEmits<{ 'update:value': [string] }>();
+
+const baseId = useId();
+const tabTriggerId = (value: string) => `${baseId}-tab-${value}`;
+const tabPanelId = (value: string) => `${baseId}-panel-${value}`;
 
 const selected = computed(() => props.value || props.tabs[0]?.value || '');
 const select = (value: string) => emit('update:value', value);

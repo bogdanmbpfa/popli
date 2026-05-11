@@ -20,13 +20,23 @@
   }
 
   &.secondary {
-    filter: brightness(0) saturate(100%) invert(73%) sepia(4%) saturate(265%)
-      hue-rotate(218deg) brightness(95%) contrast(88%);
+    filter: brightness(0) saturate(100%) invert(53%) sepia(42%) saturate(967%)
+      hue-rotate(174deg) brightness(101%) contrast(102%);
+  }
+
+  &.tertiary {
+    filter: brightness(0) saturate(100%) invert(64%) sepia(32%) saturate(890%)
+      hue-rotate(207deg) brightness(100%) contrast(105%);
   }
 
   &.contrast {
     filter: brightness(0) saturate(100%) invert(10%) sepia(36%) saturate(3867%)
       hue-rotate(307deg) brightness(94%) contrast(127%);
+  }
+
+  &.pink {
+    filter: brightness(0) saturate(100%) invert(64%) sepia(56%) saturate(1909%)
+      hue-rotate(307deg) brightness(118%) contrast(101%);
   }
 
   &.clickable {

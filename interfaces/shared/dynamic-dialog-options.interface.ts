@@ -7,4 +7,5 @@ export interface IDynamicDialogOptions {
   onClose?: () => void;
   widthFit?: boolean;
   hideCloseButton?: boolean;
+  hideOverflow?: boolean;
 }

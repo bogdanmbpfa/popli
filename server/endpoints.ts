@@ -127,6 +127,12 @@ export const apiEndpoints: Record<keyof typeof EApiEndpoint, IApiEndpoint> = {
 		contentType: 'json',
 		auth: true,
 	},
+	[EApiEndpoint.ACCOUNT_CONTACT]: {
+		path: '/api/account/contact',
+		method: 'POST',
+		contentType: 'json',
+		auth: false,
+	},
 	[EApiEndpoint.BILLING_CHECKOUT_SESSION]: {
 		path: '/api/billing/checkout-session',
 		method: 'POST',
@@ -314,6 +320,7 @@ export type TApiEndpoint = {
 	[EApiEndpoint.ACCOUNT_CHANGE_PASSWORD]: undefined;
 	[EApiEndpoint.ACCOUNT_DELETE]: undefined;
 	[EApiEndpoint.ACCOUNT_COUNTERS]: IAccountCounters;
+	[EApiEndpoint.ACCOUNT_CONTACT]: undefined;
 	[EApiEndpoint.BILLING_CHECKOUT_SESSION]: { url: string };
 	[EApiEndpoint.BILLING_TRANSACTIONS]: IAccountBillingTransaction[];
 	[EApiEndpoint.BILLING_PORTAL]: { url: string };

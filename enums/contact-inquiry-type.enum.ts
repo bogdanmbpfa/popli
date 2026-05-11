@@ -1,0 +1,9 @@
+export enum EContactInquiryType {
+  GENERAL = 'GENERAL',
+  BILLING = 'BILLING',
+  TECHNICAL = 'TECHNICAL',
+  PARTNERSHIP = 'PARTNERSHIP',
+  ABUSE = 'ABUSE',
+  PRIVACY = 'PRIVACY',
+  OTHER = 'OTHER',
+}

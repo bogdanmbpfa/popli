@@ -95,7 +95,7 @@
 <script setup lang="ts">
 import * as yup from 'yup';
 
-import { EApiEndpoint, EEnvironment } from '~~/enums';
+import { EApiEndpoint } from '~~/enums';
 import type { IAuthLogin } from '~~/interfaces';
 
 definePageMeta({
@@ -104,9 +104,6 @@ definePageMeta({
 });
 
 const { seo } = useAppConfig();
-const {
-  public: { nodeEnv },
-} = useRuntimeConfig();
 const uiToast = useUiToast();
 const userStore = useUserStore();
 
@@ -134,8 +131,6 @@ const [email, emailAttributes] = defineField('email');
 const [password, passwordAttributes] = defineField('password');
 
 const onLoginSubmit = handleSubmit(async (values) => {
-  if (nodeEnv === EEnvironment.PRODUCTION) return;
-
   const { error } = await useApiJson(EApiEndpoint.AUTH_LOGIN, values);
 
   if (error) {

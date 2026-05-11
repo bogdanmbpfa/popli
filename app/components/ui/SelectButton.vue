@@ -1,10 +1,18 @@
 <template>
-  <div class="ui-select-button" :class="{ fluid }" v-bind="$attrs">
+  <div
+    class="ui-select-button"
+    :class="{ fluid }"
+    role="radiogroup"
+    :aria-label="groupLabel"
+    v-bind="$attrs"
+  >
     <button
       v-for="option in options"
       :key="getOptionValue(option).toString()"
       type="button"
       class="option"
+      role="radio"
+      :aria-checked="isSelected(option)"
       :class="{ active: isSelected(option), disabled: option.disabled }"
       :disabled="Boolean(option.disabled)"
       @click="select(option)"
@@ -26,6 +34,7 @@ const props = withDefaults(
     optionLabel?: string;
     optionValue?: string;
     fluid?: boolean;
+    groupLabel?: string;
   }>(),
   {
     modelValue: undefined,
@@ -33,6 +42,7 @@ const props = withDefaults(
     optionLabel: 'label',
     optionValue: 'value',
     fluid: false,
+    groupLabel: 'Options',
   },
 );
 const emit = defineEmits<{ 'update:modelValue': [unknown] }>();

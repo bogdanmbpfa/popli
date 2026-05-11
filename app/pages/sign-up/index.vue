@@ -96,7 +96,7 @@
 import debounce from 'lodash/debounce';
 import * as yup from 'yup';
 
-import { EApiEndpoint, EEnvironment, EPlanType } from '~~/enums';
+import { EApiEndpoint, EPlanType } from '~~/enums';
 import type { IAuthRegister } from '~~/interfaces';
 
 definePageMeta({
@@ -105,9 +105,6 @@ definePageMeta({
 });
 
 const { seo } = useAppConfig();
-const {
-  public: { nodeEnv },
-} = useRuntimeConfig();
 const uiToast = useUiToast();
 const userStore = useUserStore();
 const route = useRoute();
@@ -174,8 +171,6 @@ const onEmailChange = debounce(async (value?: string) => {
 }, 500);
 
 const onRegisterSubmit = handleSubmit(async (values) => {
-  if (nodeEnv === EEnvironment.PRODUCTION) return;
-
   const { error } = await useApiJson(EApiEndpoint.AUTH_REGISTER, values);
 
   if (error) {

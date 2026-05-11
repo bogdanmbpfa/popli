@@ -5,6 +5,9 @@
       class="ui-select-trigger"
       :class="{ invalid }"
       :disabled="isDisabled"
+      aria-haspopup="listbox"
+      :aria-expanded="isOpen"
+      :aria-controls="listboxId"
       @click="toggleDropdown"
     >
       <span v-if="!hasValue" class="placeholder">{{ placeholder }}</span>
@@ -13,14 +16,28 @@
         {{ displayValue }}
       </slot>
 
-      <Icon name="popli:arrow-down" class="select-icon default" size="1.5rem" />
+      <Icon
+        name="popli:arrow-down"
+        class="select-icon default"
+        size="1.5rem"
+        aria-hidden="true"
+      />
     </button>
 
-    <div class="ui-select-dropdown-list">
+    <div
+      :id="listboxId"
+      class="ui-select-dropdown-list"
+      role="listbox"
+      :aria-activedescendant="activeOptionId"
+    >
       <div
         v-for="(option, index) in normalizedOptions"
+        :id="optionId(index)"
         :key="`${getOptionValue(option)}-${index}`"
         class="ui-select-dropdown-list-item"
+        role="option"
+        :aria-selected="index === selectedIndex"
+        :aria-disabled="isOptionDisabled(option) ? true : undefined"
         @click="selectOption(index)"
       >
         <slot name="option" :option="option">
@@ -32,7 +49,13 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, useAttrs } from 'vue';
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  useAttrs,
+  useId,
+} from 'vue';
 
 type Primitive = string | number | boolean;
 type SelectOption = Primitive | Record<string, unknown>;
@@ -61,6 +84,13 @@ const emit = defineEmits<{ 'update:modelValue': [unknown] }>();
 const attrs = useAttrs();
 const containerRef = ref<HTMLElement | null>(null);
 const isOpen = ref(false);
+const listboxId = useId();
+const optionId = (index: number) => `${listboxId}-opt-${index}`;
+const activeOptionId = computed(() =>
+  isOpen.value && selectedIndex.value >= 0
+    ? optionId(selectedIndex.value)
+    : undefined,
+);
 
 const normalizedOptions = computed(() => props.options ?? []);
 const isDisabled = computed(
@@ -104,9 +134,7 @@ const selectedIndex = computed(() =>
 
 const hasValue = computed(() => selectedIndex.value >= 0);
 const displayValue = computed(() => {
-  if (!hasValue.value) {
-    return props.placeholder || '';
-  }
+  if (!hasValue.value) return '';
 
   return getOptionLabel(
     normalizedOptions.value[selectedIndex.value] as SelectOption,
@@ -148,6 +176,13 @@ const onClickOutside = (event: MouseEvent) => {
 };
 
 const onKeyDown = (event: KeyboardEvent) => {
+  if (
+    !containerRef.value ||
+    !containerRef.value.contains(event.target as Node)
+  ) {
+    return;
+  }
+
   if (event.key === 'Escape') {
     isOpen.value = false;
   }
@@ -238,7 +273,7 @@ watch(isDisabled, (value) => {
     max-height: 10rem;
     display: none;
     overflow-y: auto;
-    background: var(--input-background);
+    background: oklch(26.7% 0.0111 285.63);
     border-radius: 0.25rem;
     border: 1px solid var(--neutral-400);
     z-index: 1000;

@@ -25,7 +25,16 @@ defineEmits<{ 'update:modelValue': [boolean] }>();
   cursor: pointer;
 
   input {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+    opacity: 0;
   }
 
   .track {
@@ -34,7 +43,7 @@ defineEmits<{ 'update:modelValue': [boolean] }>();
     align-items: center;
     justify-content: flex-start;
     border: none;
-    background: var(--background-secondary);
+    background: var(--neutral-600);
     box-shadow: none;
     outline: none;
     padding: 0.125rem;
@@ -53,7 +62,7 @@ defineEmits<{ 'update:modelValue': [boolean] }>();
       width: 1rem;
       height: 1rem;
       border-radius: 50%;
-      background: var(--background-1);
+      background: var(--background-primary);
       transform: translateX(0);
       transition: transform 0.2s ease-in-out;
     }
@@ -61,10 +70,10 @@ defineEmits<{ 'update:modelValue': [boolean] }>();
 
   &.checked {
     .track {
-      background: var(--background-4);
+      background: var(--neutral-400);
 
       &::after {
-        transform: translateX(1.125rem);
+        transform: translateX(1.25rem);
       }
     }
   }

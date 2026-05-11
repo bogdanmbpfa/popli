@@ -5,11 +5,12 @@
         class="success"
         name="popli:location-on-outline"
         size="1rem"
+        aria-hidden="true"
       />
       <span class="title"> Top Countries </span>
     </div>
 
-    <div v-if="isProPlan" class="countries">
+    <div v-if="isProPlan && !!countries.length" class="countries">
       <div
         v-for="country in countries"
         :key="country.countryCode"
@@ -35,6 +36,10 @@
           />
         </div>
       </div>
+    </div>
+
+    <div v-if="!countries.length" class="no-clicks">
+      <span>There are no top countries to display.</span>
     </div>
 
     <div v-else class="free-plan-banner">
@@ -177,6 +182,21 @@ const toggleExpanded = () => {
     }
   }
 
+  .no-clicks {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    span {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--neutral-400);
+      text-align: center;
+    }
+  }
+
   .free-plan-banner {
     height: 100%;
     display: flex;
@@ -184,7 +204,7 @@ const toggleExpanded = () => {
     align-items: center;
     justify-content: center;
     gap: 2rem;
-    
+
     .description {
       font-size: 0.875rem;
       font-weight: 400;

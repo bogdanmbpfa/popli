@@ -1,5 +1,10 @@
 <template>
-  <div class="ui-input-otp" v-bind="$attrs">
+  <div
+    class="ui-input-otp"
+    role="group"
+    aria-label="One-time code"
+    v-bind="$attrs"
+  >
     <input
       v-for="(_, index) in slotsCount"
       :key="index"

@@ -1,20 +1,33 @@
 <template>
-  <div class="navigation-overlay" :class="{ visible: isNavigationVisible }">
-    <div class="navigation-content">
-      <nuxt-link to="/account/link-in-bio" class="default">
+  <div
+    id="account-navigation-overlay"
+    class="navigation-overlay"
+    :class="{ visible: isNavigationVisible }"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Account navigation"
+  >
+    <nav class="navigation-content" aria-label="Account pages">
+      <nuxt-link class="default" to="/account/link-in-bio" @click="closeOverlay">
         Link in Bio
       </nuxt-link>
 
-      <nuxt-link to="/account/analytics" class="default"> Analytics </nuxt-link>
+      <nuxt-link class="default" to="/account/analytics" @click="closeOverlay">
+        Analytics
+      </nuxt-link>
 
-      <nuxt-link to="/account/url-shortener" class="default">
+      <nuxt-link class="default" to="/account/url-shortener" @click="closeOverlay">
         URL Shortener
       </nuxt-link>
 
-      <nuxt-link to="/account/qr-code" class="default"> QR Code </nuxt-link>
+      <nuxt-link class="default" to="/account/qr-code" @click="closeOverlay">
+        QR Code
+      </nuxt-link>
 
-      <nuxt-link to="/account/settings" class="default"> Settings </nuxt-link>
-    </div>
+      <nuxt-link class="default" to="/account/settings" @click="closeOverlay">
+        Settings
+      </nuxt-link>
+    </nav>
 
     <div class="navigation-footer">
       <UiButton
@@ -41,6 +54,7 @@ const emit = defineEmits(['toggle-navigation-overlay']);
 const uiToast = useUiToast();
 const userStore = useUserStore();
 
+const closeOverlay = () => emit('toggle-navigation-overlay');
 
 const signOut = async () => {
   const { error } = await useApiJson(EApiEndpoint.AUTH_LOGOUT);
@@ -77,7 +91,11 @@ const signOut = async () => {
   top: -100lvh;
   left: 0;
   width: 100lvw;
-  background-color: color-mix(in oklab, var(--background-primary) 90%, transparent);
+  background-color: color-mix(
+    in oklab,
+    var(--background-primary) 90%,
+    transparent
+  );
   backdrop-filter: blur(0.75rem);
   z-index: 45;
   display: flex;

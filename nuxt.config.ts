@@ -9,14 +9,6 @@ export default defineNuxtConfig({
       ],
       link: [
         {
-          rel: 'preload',
-          href: 'https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css',
-          as: 'style',
-          crossorigin: 'anonymous',
-          fetchpriority: 'low',
-          onload: 'this.onload = null; this.rel = "stylesheet";',
-        },
-        {
           rel: 'icon',
           type: 'image/x-icon',
           href: '/favicon.ico',
@@ -130,7 +122,18 @@ export default defineNuxtConfig({
   },
 
   robots: {
-    allow: ['/', '/about', '/forgot-password', '/sign-in', '/sign-up', '/*$'],
+    allow: [
+      '/',
+      '/about',
+      '/contact',
+      '/terms-of-service',
+      '/privacy-policy',
+      '/cookie-policy',
+      '/forgot-password',
+      '/sign-in',
+      '/sign-up',
+      '/*$',
+    ],
     disallow: ['/account', '/account/', '/s', '/s/'],
     blockAiBots: false,
     sitemap: ['/sitemap.xml'],
@@ -225,7 +228,17 @@ export default defineNuxtConfig({
 
   sitemap: {
     sources: ['/api/__sitemap__/urls'],
-    urls: ['/', '/about', '/forgot-password', '/sign-in', '/sign-up'],
+    urls: [
+      '/',
+      '/about',
+      '/contact',
+      '/terms-of-service',
+      '/privacy-policy',
+      '/cookie-policy',
+      '/forgot-password',
+      '/sign-in',
+      '/sign-up',
+    ],
   },
 
   ssr: true,
@@ -267,6 +280,7 @@ export default defineNuxtConfig({
       hmr: {
         overlay: false,
       },
+      allowedHosts:  ['host.docker.internal', 'localhost', '127.0.0.1'],
     },
     optimizeDeps: {
       include: [

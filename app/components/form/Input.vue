@@ -10,7 +10,7 @@
 
     <span v-if="caption" class="caption">{{ caption }}</span>
 
-    <div v-if="error" class="error">
+    <div v-if="error" class="error" role="alert">
       <Icon class="danger" name="popli:alert-circle-outline" size="0.75rem" />
 
       <span>{{ error }}</span>

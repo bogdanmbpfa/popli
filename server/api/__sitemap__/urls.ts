@@ -40,7 +40,7 @@ export default defineSitemapEventHandler(async () => {
       (!cloudRunIdToken ||
         Date.now() - cloudRunIdTokenRetrievedAt! > CACHE_DURATION)
     ) {
-      cloudRunIdToken = await getCloudRunIdToken(apiBaseUrl);
+      cloudRunIdToken = await getCloudRunIdToken(apiBaseUrl as string);
 
       if (cloudRunIdToken) {
         cloudRunIdTokenRetrievedAt = Date.now();
@@ -48,7 +48,7 @@ export default defineSitemapEventHandler(async () => {
     }
 
     const response = await $fetch<string[]>('/profile/handles', {
-      baseURL: apiBaseUrl,
+      baseURL: apiBaseUrl as string,
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

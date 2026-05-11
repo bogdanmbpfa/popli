@@ -11,13 +11,20 @@
       "
     />
 
-    <Icon
+    <button
       v-if="toggleMask"
-      :name="showPassword ? 'popli:eye-outline' : 'popli:eye-off-outline'"
-      class="default toggle"
-      size="1.25rem"
+      type="button"
+      class="toggle"
+      :aria-label="showPassword ? 'Hide password' : 'Show password'"
       @click="showPassword = !showPassword"
-    />
+    >
+      <Icon
+        :name="showPassword ? 'popli:eye-outline' : 'popli:eye-off-outline'"
+        class="default"
+        size="1.25rem"
+        aria-hidden="true"
+      />
+    </button>
   </div>
 </template>
 
@@ -98,7 +105,13 @@ const showPassword = ref(false);
     right: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
     border: none;
+    background: transparent;
+    color: inherit;
     cursor: pointer;
   }
 }

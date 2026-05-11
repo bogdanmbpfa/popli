@@ -4,7 +4,13 @@
     :class="{ visible, 'is-mobile': isMobile }"
     @click.self="$emit('update:visible', false)"
   >
-    <aside class="ui-drawer" v-bind="$attrs">
+    <aside
+      class="ui-drawer"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="drawerLabel"
+      v-bind="$attrs"
+    >
       <div class="header">
         <slot name="header" />
       </div>
@@ -21,10 +27,14 @@
 </template>
 
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ visible?: boolean; isMobile?: boolean }>(), {
-  visible: false,
-  isMobile: false,
-});
+withDefaults(
+  defineProps<{ visible?: boolean; isMobile?: boolean; drawerLabel?: string }>(),
+  {
+    visible: false,
+    isMobile: false,
+    drawerLabel: 'Side panel',
+  },
+);
 
 defineEmits<{ 'update:visible': [boolean] }>();
 </script>

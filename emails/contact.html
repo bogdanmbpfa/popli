@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>New contact inquiry</title>
+  </head>
+  <body>
+    <p>You received a new message from the Popli.one contact form.</p>
+
+    <p><strong>From:</strong> {{ params.name }} &lt;{{ params.email }}&gt;</p>
+
+    <p><strong>Type of inquiry:</strong> {{ params.inquiryType }}</p>
+
+    <p><strong>Message:</strong></p>
+    <p>{{ params.message }}</p>
+  </body>
+</html>

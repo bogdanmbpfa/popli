@@ -137,6 +137,7 @@ const openAnalyticsDialog = () =>
       qrCodeId: props.qrCode.id,
       userPlan: user.value?.plan,
     },
+    hideOverflow: true,
   });
 
 const handleDeleteQrCode = async () => {

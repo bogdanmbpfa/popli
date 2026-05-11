@@ -8,7 +8,9 @@
       <table>
         <thead v-if="columns.length">
           <tr>
-            <th v-for="column in columns" :key="column.field">{{ column.header }}</th>
+            <th v-for="column in columns" :key="column.field" scope="col">
+              {{ column.header }}
+            </th>
           </tr>
         </thead>
         <tbody v-if="rows.length">
@@ -28,9 +30,23 @@
     </div>
 
     <div v-if="paginator" class="pager">
-      <button type="button" :disabled="page <= 1" @click="page -= 1">Prev</button>
-      <span>{{ page }} / {{ totalPages }}</span>
-      <button type="button" :disabled="page >= totalPages" @click="page += 1">Next</button>
+      <button
+        type="button"
+        :disabled="page <= 1"
+        aria-label="Previous page"
+        @click="page -= 1"
+      >
+        Prev
+      </button>
+      <span aria-live="polite">{{ page }} / {{ totalPages }}</span>
+      <button
+        type="button"
+        :disabled="page >= totalPages"
+        aria-label="Next page"
+        @click="page += 1"
+      >
+        Next
+      </button>
     </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <nav>
+  <nav aria-label="Primary">
     <div class="container">
       <div class="left">
         <nuxt-link to="/">
@@ -28,9 +28,13 @@
       </div>
 
       <div v-else class="center">
-        <nuxt-link to="/#features" class="default no-highlight"> Features </nuxt-link>
+        <nuxt-link to="/#features" class="default no-highlight">
+          Features
+        </nuxt-link>
 
-        <nuxt-link to="/#pricing" class="default no-highlight"> Pricing </nuxt-link>
+        <nuxt-link to="/#pricing" class="default no-highlight">
+          Pricing
+        </nuxt-link>
 
         <nuxt-link to="/about" class="default"> About </nuxt-link>
       </div>
@@ -38,10 +42,12 @@
       <div v-if="isAccountPage" class="right">
         <UiButton
           class="naked navigation-toggle"
-          severity="secondary"
+          severity="help"
           icon="popli:bars"
           icon-size="1.5rem"
           aria-label="Toggle navigation"
+          :aria-expanded="navigationOverlayOpen"
+          aria-controls="account-navigation-overlay"
           @click="toggleNavigationOverlay"
         />
 
@@ -74,6 +80,15 @@
 
 <script setup lang="ts">
 import { EApiEndpoint } from '~~/enums';
+
+withDefaults(
+  defineProps<{
+    navigationOverlayOpen?: boolean;
+  }>(),
+  {
+    navigationOverlayOpen: false,
+  },
+);
 
 const emit = defineEmits(['toggle-navigation-overlay']);
 

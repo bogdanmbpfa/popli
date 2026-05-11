@@ -1,8 +1,17 @@
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="ui-dialog-overlay">
-      <div class="ui-dialog" v-bind="$attrs">
-        <h3 v-if="resolvedHeader">{{ resolvedHeader }}</h3>
+      <div
+        class="ui-dialog"
+        role="dialog"
+        aria-modal="true"
+        :aria-labelledby="resolvedHeader?.trim() ? dialogHeadingId : undefined"
+        :aria-label="resolvedHeader?.trim() ? undefined : 'Confirmation'"
+        v-bind="$attrs"
+      >
+        <h3 v-if="resolvedHeader?.trim()" :id="dialogHeadingId">
+          {{ resolvedHeader }}
+        </h3>
 
         <p v-if="resolvedMessage">{{ resolvedMessage }}</p>
 
@@ -29,7 +38,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, useId } from 'vue';
+
+const dialogHeadingId = useId();
 
 const props = withDefaults(
   defineProps<{

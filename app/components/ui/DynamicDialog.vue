@@ -3,11 +3,21 @@
     <div
       v-if="isVisible"
       class="ui-dynamic-dialog-overlay"
-      :class="{ 'width-fit': options?.widthFit, 'hide-close-button': options?.hideCloseButton }"
-      @click.self="onClose"
+      :class="{
+        'width-fit': options?.widthFit,
+        'hide-close-button': options?.hideCloseButton,
+        'hide-overflow': options?.hideOverflow,
+      }"
     >
-      <div class="ui-dynamic-dialog" v-bind="$attrs">
-        <h1 v-if="options?.header" class="title">
+      <div
+        class="ui-dynamic-dialog"
+        role="dialog"
+        aria-modal="true"
+        :aria-labelledby="options?.header?.trim() ? dialogTitleId : undefined"
+        :aria-label="options?.header?.trim() ? undefined : 'Dialog'"
+        v-bind="$attrs"
+      >
+        <h1 v-if="options?.header?.trim()" :id="dialogTitleId" class="title">
           {{ options.header }}
         </h1>
 
@@ -33,7 +43,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, useId } from 'vue';
+
+const dialogTitleId = useId();
 
 const globalStore = useGlobalStore();
 const uiDynamicDialog = useUiDynamicDialog();
@@ -59,6 +71,9 @@ const onClose = () => {
 
   .ui-dynamic-dialog {
     width: min(40rem, 95vw);
+    max-height: calc(100lvh - 1rem);
+    scrollbar-width: thin;
+    pointer-events: all;
     border: 1px solid color-mix(in oklab, var(--neutral-400) 20%, transparent);
     border-radius: 0.75rem;
     background: var(--background-primary);
@@ -80,6 +95,13 @@ const onClose = () => {
       position: absolute;
       top: 0.5rem;
       right: 0.5rem;
+    }
+  }
+
+  &.hide-overflow {
+    .ui-dynamic-dialog {
+      pointer-events: all;
+      overflow-y: auto;
     }
   }
 

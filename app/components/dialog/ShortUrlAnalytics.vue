@@ -36,7 +36,9 @@
 
     <div class="global-distribution">
       <LazyAnalyticsClicksMap :clicks="countryClicks" :user-plan="userPlan" />
+    </div>
 
+    <div class="top-countries">
       <LazyAnalyticsTopCountries
         :total-clicks="shortUrl.totalClicks"
         :countries="
@@ -106,7 +108,7 @@ onMounted(async () => {
     display: flex;
     flex-direction: row;
     gap: 1rem;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 
     .stat {
@@ -124,6 +126,7 @@ onMounted(async () => {
         font-size: 0.75rem;
         font-weight: 400;
         color: var(--neutral-400);
+        text-wrap: nowrap;
       }
 
       .value {
@@ -134,12 +137,40 @@ onMounted(async () => {
     }
   }
 
+  .chart {
+    display: flex;
+    width: 100%;
+    height: fit-content;
+    border-radius: 0.5rem;
+  }
+
   .global-distribution {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     justify-content: center;
     align-items: center;
+    background-color: var(--background-secondary);
+    border-radius: 0.5rem;
+
+    :deep(.map-container) {
+      background-color: transparent;
+    }
+  }
+
+  .top-countries {
+    min-height: 20rem;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: center;
+    background-color: var(--background-secondary);
+    border-radius: 0.5rem;
+
+    :deep(.top-countries) {
+      background-color: transparent;
+    }
   }
 }
 

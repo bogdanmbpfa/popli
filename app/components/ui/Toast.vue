@@ -1,6 +1,14 @@
 <template>
   <Teleport to="body">
-    <div class="ui-toast" :class="positionClass" v-bind="$attrs">
+    <div
+      class="ui-toast"
+      :class="positionClass"
+      role="region"
+      aria-live="polite"
+      aria-relevant="additions text"
+      aria-label="Notifications"
+      v-bind="$attrs"
+    >
       <slot />
 
       <div

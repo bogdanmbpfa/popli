@@ -120,20 +120,24 @@
 
       <template #cell-shortCodeUrl="{ row }">
         <div class="content column">
-          <span
+          <button
             v-if="row.aliasUrl"
+            type="button"
             class="caption contrast clickable"
+            :aria-label="`Copy custom short URL for ${row.title}`"
             @click="copyToClipboard(row.aliasUrl)"
           >
             {{ row.aliasUrl }}
-          </span>
+          </button>
 
-          <span
+          <button
+            type="button"
             class="caption clickable"
+            :aria-label="`Copy short URL for ${row.title}`"
             @click="copyToClipboard(row.shortCodeUrl)"
           >
             {{ row.shortCodeUrl }}
-          </span>
+          </button>
         </div>
       </template>
 
@@ -142,6 +146,7 @@
           <UiToggleSwitch
             :model-value="row.isActive"
             :disabled="actionInProgress"
+            :aria-label="`Toggle active state for short link: ${row.title}`"
             @update:model-value="handleToggleShortenedUrl(row.id)"
           />
         </div>
@@ -158,11 +163,13 @@
             }).format(row.totalClicks)
           }}</span>
 
-          <Icon
-            name="popli:bar-chart"
-            class="success clickable"
-            size="1.25rem"
+          <UiButton
+            class="naked"
+            severity="success"
+            icon="popli:bar-chart"
+            icon-size="1.25rem"
             title="Total clicks"
+            :aria-label="`Open analytics for ${row.title}`"
             @click="openAnalyticsDialog(row as IUrlShortUrl)"
           />
         </div>
@@ -410,6 +417,7 @@ const openAnalyticsDialog = (shortUrl: IUrlShortUrl) =>
       shortUrl,
       userPlan: user.value?.plan,
     },
+    hideOverflow: true,
   });
 </script>
 
@@ -477,6 +485,14 @@ const openAnalyticsDialog = (shortUrl: IUrlShortUrl) =>
                   font-size: 1rem;
                   font-weight: 500;
                   color: var(--neutral-100);
+                }
+
+                button.caption {
+                  font: inherit;
+                  text-align: left;
+                  border: none;
+                  background: none;
+                  padding: 0;
                 }
 
                 .caption {

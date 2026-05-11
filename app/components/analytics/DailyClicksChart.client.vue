@@ -172,7 +172,7 @@ const options = computed<ChartOptions<ChartType>>(() => {
   gap: 0.5rem;
   width: 100%;
   min-height: 20rem;
-  background-color: var(--background-primary);
+  background-color: var(--background-secondary);
   padding: 1rem;
   border-radius: 0.5rem;
 

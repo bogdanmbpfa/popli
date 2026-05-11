@@ -1,5 +1,6 @@
 export * from './api-endpoint.enum';
 export * from './click-type.enum';
+export * from './contact-inquiry-type.enum';
 export * from './environment.enum';
 export * from './email-template.enum';
 export * from './http-status-code.enum';

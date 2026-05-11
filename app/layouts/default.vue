@@ -1,6 +1,9 @@
 <template>
   <div class="layout">
-    <AppNavbar @toggle-navigation-overlay="toggleNavigationOverlay" />
+    <AppNavbar
+      :navigation-overlay-open="isNavigationVisible"
+      @toggle-navigation-overlay="toggleNavigationOverlay"
+    />
 
     <OverlayNavbar
       :is-navigation-visible="isNavigationVisible"
@@ -33,6 +36,7 @@ const toggleNavigationOverlay = () => {
   padding-top: 4rem;
 
   main {
+    display: flex;
     flex: 1;
     width: 100%;
     margin: 0 auto;

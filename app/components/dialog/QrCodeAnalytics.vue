@@ -46,7 +46,9 @@
         "
         :user-plan="userPlan"
       />
-      
+    </div>
+
+    <div class="top-countries">
       <LazyAnalyticsTopCountries
         :total-clicks="qrCodeAnalytics.totalScans"
         :countries="
@@ -55,7 +57,7 @@
             clicks: country.totalScans,
             color: (worldCountryCoordinates as Record<string, IWorldCountry>)[country.countryCode]!.color,
           }))
-        "
+          "
         :user-plan="userPlan"
       />
     </div>
@@ -128,12 +130,38 @@ onMounted(async () => {
     }
   }
 
+  .chart {
+    display: flex;
+    width: 100%;
+    height: fit-content;
+    border-radius: 0.5rem;
+  }
+
   .global-distribution {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     justify-content: center;
     align-items: center;
+    background-color: var(--background-secondary);
+    border-radius: 0.5rem;
+
+    :deep(.map-container) {
+      background-color: transparent;
+    }
+  }
+
+  .top-countries {
+    min-height: 20rem;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    background-color: var(--background-secondary);
+    border-radius: 0.5rem;
+
+    :deep(.top-countries) {
+      background-color: transparent;
+    }
   }
 }
 

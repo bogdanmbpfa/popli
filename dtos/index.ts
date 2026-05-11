@@ -1,6 +1,7 @@
 export * from './account-change-password.dto';
 export * from './account-check-email.dto';
 export * from './account-check-handle.dto';
+export * from './account-contact.dto';
 export * from './account-request-email-update.dto';
 export * from './account-update-email.dto';
 export * from './account-update-profile.dto';
