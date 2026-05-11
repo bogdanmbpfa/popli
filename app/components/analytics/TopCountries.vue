@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <div v-if="!countries.length" class="no-clicks">
+    <div v-else-if="isProPlan && !countries.length" class="no-clicks">
       <span>There are no top countries to display.</span>
     </div>
 

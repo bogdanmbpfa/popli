@@ -10,9 +10,9 @@ ENV PATH=$PNPM_HOME/bin:$PATH
 
 RUN pnpm add -g typescript
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 COPY . .
 
