@@ -91,18 +91,42 @@ export default defineNuxtConfig({
     '@nuxtjs/device',
     '@nuxtjs/sitemap',
     'nuxt-schema-org',
-    [
-      '@nuxtjs/google-adsense',
-      {
-        id: 'ca-pub-4244824823711590',
-        onPageLoad: true,
-        pageLevelAds: false,
-        test: process.env.NUXT_PUBLIC_NODE_ENV !== 'production',
-      },
-    ],
     '@vueuse/nuxt',
     '@nuxtjs/i18n',
+    '@dargmuesli/nuxt-cookie-control',
   ],
+
+  cookieControl: {
+    barPosition: 'bottom-full',
+    closeModalOnClickOutside: true,
+    cookieExpiryOffsetMs: 1000 * 60 * 60 * 24 * 365, // 1 year
+    isControlButtonEnabled: true,
+    isAcceptNecessaryButtonEnabled: false,
+    declineAllAcceptsNecessary: true,
+    isCookieIdVisible: false,
+    cookies: {
+      necessary: [],
+      optional: [
+        {
+          id: 'google-adsense',
+          name: { en: 'Google AdSense' },
+          description: {
+            en: 'Enable advertising provided by Google AdSense.',
+          },
+        },
+      ],
+    },
+    cookieOptions: {
+      path: '/',
+      sameSite: 'strict',
+    },
+    locales: ['en'],
+    localeTexts: {
+      en: {
+        save: 'Remember',
+      },
+    },
+  },
 
   nitro: {
     preset: 'node-server',
@@ -174,6 +198,11 @@ export default defineNuxtConfig({
           expires: 60 * 60 * 2, // 2 hours
           httpOnly: true,
         },
+      },
+      googleAdsense: {
+        id: '',
+        test: '',
+        adSlot: '',
       },
       freePlan: {
         qrCodeLimit: 3,
@@ -254,6 +283,8 @@ export default defineNuxtConfig({
 
   vite: {
     build: {
+      // Skips nuxt:module-preload-polyfill (Vite 7 sourcemap warning); fine for Baseline browser targets.
+      modulePreload: { polyfill: false },
       chunkSizeWarningLimit: 2000,
       rollupOptions: {
         output: {

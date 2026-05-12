@@ -15,6 +15,9 @@ primary_region = 'fra'
   NUXT_STORAGE_BUCKET = 'popli-production'
   NUXT_STORAGE_ENDPOINT = 'https://f4c24b382c8fadd87adc4e62bfb442ee.r2.cloudflarestorage.com'
   NUXT_STORAGE_REGION = 'auto'
+  NUXT_PUBLIC_GOOGLE_ADSENSE_TEST = 'off'
+  NUXT_PUBLIC_GOOGLE_ADSENSE_ID = 'ca-pub-4244824823711590'
+  NUXT_PUBLIC_GOOGLE_ADSENSE_AD_SLOT = '1698276428'
 
 [[services]]
   protocol = 'tcp'
