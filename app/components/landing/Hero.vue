@@ -5,8 +5,10 @@
 
     <div class="container">
       <div class="heading">
-        <h1 class="large">Pop Your Links.</h1>
-        <h1 class="large">Amplify Your <span class="contrast">Reach.</span></h1>
+        <h1 class="large">
+          Pop Your Links.<br />
+          Amplify Your <span class="contrast">Reach.</span>
+        </h1>
       </div>
 
       <span class="subheading">

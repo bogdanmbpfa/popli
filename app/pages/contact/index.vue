@@ -117,8 +117,6 @@ usePageSeo({
   title: seo.contactTitle,
   description: seo.contactDescription,
   path: '/contact',
-  keywords:
-    'Popli.one contact, creator support, billing inquiry, technical support, abuse report',
   ogImage: seo.defaultOgImagePath,
   robots: 'index, follow',
 });

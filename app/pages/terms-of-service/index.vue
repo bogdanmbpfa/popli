@@ -364,8 +364,6 @@ usePageSeo({
   title: seo.termsTitle,
   description: seo.termsDescription,
   path: '/terms-of-service',
-  keywords:
-    'Popli.one terms, terms of service, user agreement, acceptable use, Romanian law, creator platform',
   ogImage: seo.defaultOgImagePath,
   robots: 'index, follow',
 });

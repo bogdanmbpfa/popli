@@ -117,10 +117,8 @@ usePageSeo({
   title: seo.signUpTitle,
   description: seo.signUpDescription,
   path: '/sign-up',
-  keywords:
-    'sign up Popli, create account, free link in bio, URL shortener signup, QR code generator',
   ogImage: seo.defaultOgImagePath,
-  robots: 'index, follow',
+  robots: 'noindex, nofollow',
 });
 
 const {

@@ -134,7 +134,7 @@ usePageSeo({
   description: seo.forgotPasswordDescription,
   path: '/forgot-password',
   ogImage: seo.defaultOgImagePath,
-  robots: 'index, follow',
+  robots: 'noindex, nofollow',
 });
 
 const passwordResetRequested = ref(false);

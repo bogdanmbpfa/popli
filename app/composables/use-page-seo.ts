@@ -2,7 +2,6 @@ interface IPageSeoOptions {
   title: string;
   description: string;
   path: string;
-  keywords?: string;
   ogImage?: string;
   ogType?: 'website' | 'article' | 'profile';
   robots?: string;
@@ -24,15 +23,19 @@ export default function (options: IPageSeoOptions) {
 
   const pageUrl = `${origin}${normalizedPath}`;
 
+  const defaultOgAbs = toAbsoluteUrl(origin, seo.defaultOgImagePath);
   const ogImage = options.ogImage
     ? toAbsoluteUrl(origin, options.ogImage)
-    : toAbsoluteUrl(origin, seo.defaultOgImagePath);
+    : defaultOgAbs;
+
+  const twitterHandle = seo.twitterSite?.trim();
+  const useDefaultOgDimensions =
+    ogImage === defaultOgAbs &&
+    typeof seo.defaultOgImageWidth === 'number' &&
+    typeof seo.defaultOgImageHeight === 'number';
 
   useHead({
     title: options.title,
-    meta: options.keywords
-      ? [{ name: 'keywords', content: options.keywords }]
-      : [],
     link: [
       {
         rel: 'canonical',
@@ -44,19 +47,25 @@ export default function (options: IPageSeoOptions) {
   useSeoMeta({
     title: options.title,
     description: options.description,
-    keywords: options.keywords,
     applicationName: seo.siteName,
     ogTitle: options.title,
     ogDescription: options.description,
     ogUrl: pageUrl,
     ogType: options.ogType ?? 'website',
     ogImage,
+    ...(useDefaultOgDimensions
+      ? {
+          ogImageWidth: seo.defaultOgImageWidth,
+          ogImageHeight: seo.defaultOgImageHeight,
+        }
+      : {}),
     ogSiteName: seo.siteName,
     ogLocale: 'en_US',
     twitterCard: 'summary_large_image',
     twitterTitle: options.title,
     twitterDescription: options.description,
     twitterImage: ogImage,
+    ...(twitterHandle ? { twitterSite: twitterHandle } : {}),
     robots: options.robots,
   });
 }

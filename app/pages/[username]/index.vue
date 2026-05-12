@@ -34,16 +34,26 @@
 
       <div class="profile-body">
         <div class="heading">
-          <h1 v-if="profile.name" class="name">{{ profile.name }}</h1>
+          <h1
+            class="name"
+            :style="
+              !profile.name && profile.handle
+                ? { color: profile.handleColor || 'var(--neutral-100)' }
+                : undefined
+            "
+          >
+            <template v-if="profile.name">{{ profile.name }}</template>
+            <template v-else>@{{ profile.handle || handle }}</template>
+          </h1>
 
           <h2
-            v-if="profile.handle"
+            v-if="profile.name && (profile.handle || handle)"
             :style="{
               color: profile.handleColor || 'var(--neutral-100)',
             }"
             class="handle"
           >
-            @{{ profile.handle }}
+            @{{ profile.handle || handle }}
           </h2>
 
           <p
@@ -68,43 +78,6 @@
               @click="clickLink(link.id, link.url)"
             >
               <NuxtImg :src="`/${link.platform}.svg`" :alt="link.platform" />
-            </UiButton>
-          </div>
-
-          <div class="secondary-links">
-            <UiButton
-              v-for="link in profile.secondaryLinks"
-              :key="link.id"
-              :class="{
-                'has-background':
-                  link.backgroundImage ||
-                  (link.backgroundColors && !!link.backgroundColors.length),
-              }"
-              :style="{
-                backgroundColor: getCssColor(
-                  link.backgroundColors,
-                  false,
-                  'transparent',
-                ),
-              }"
-              :aria-label="`Visit ${link.title} link`"
-              :title="`Visit ${link.title} link`"
-              @click="clickLink(link.id, link.url)"
-            >
-              <NuxtImg
-                v-if="link.backgroundImage"
-                :src="link.backgroundImage"
-                :alt="link.title"
-              />
-
-              <span
-                :style="
-                  getCssColor(link.titleColors, true, 'var(--neutral-100)')
-                "
-                class="title"
-              >
-                {{ link.title }}
-              </span>
             </UiButton>
           </div>
 
@@ -192,22 +165,44 @@ const { seo } = useAppConfig();
 const requestUrl = useRequestURL();
 const route = useRoute();
 const {
-  public: { googleAdsense },
+  public: { googleAdsense, siteUrl },
 } = useRuntimeConfig();
 
-const { username } = route.params;
+const usernameParam = route.params.username;
+const handle =
+  typeof usernameParam === 'string'
+    ? usernameParam
+    : usernameParam?.[0] ?? '';
 
-const { data: profile } = await useApiJson(
+const profileResponse = await useApiJson(
   EApiEndpoint.PROFILE_GET,
   {},
   {},
-  { handle: username },
+  { handle },
 );
 
+if ('error' in profileResponse && profileResponse.error) {
+  const status = profileResponse.error.statusCode;
+  throw createError({
+    statusCode: status === 404 ? 404 : 502,
+    statusMessage: 'Profile not found',
+  });
+}
+
+const profile = profileResponse.data;
+if (!profile) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Profile not found',
+  });
+}
+
+const canonicalProfilePath = route.path.split('?')[0] ?? '/';
+
 const currentTime = computed(() => DateTime.now().toFormat('HH:mm'));
-const profileName = computed(() => profile?.name || `@${username}`);
-const profileHandle = computed(() => profile?.handle || String(username));
-const profileBio = computed(() => profile?.bio || '');
+const profileName = computed(() => profile.name || `@${handle}`);
+const profileHandle = computed(() => profile.handle || handle);
+const profileBio = computed(() => profile.bio || '');
 const pageTitle = computed(
   () => `${profileName.value} (@${profileHandle.value})`,
 );
@@ -217,12 +212,12 @@ const pageDescription = computed(() =>
     : `Discover ${profileName.value}'s links and social profiles on Popli.one.`,
 );
 const previewImageSource = computed(
-  () => profile?.coverImage || profile?.profileImage || seo.defaultOgImagePath,
+  () => profile.coverImage || profile.profileImage || seo.defaultOgImagePath,
 );
 const absoluteOgImage = computed(() =>
   toAbsoluteUrl(requestUrl.origin, previewImageSource.value),
 );
-const showAd = computed(() => !profile?.isPro);
+const showAd = computed(() => !profile.isPro);
 
 const cookieControl = useCookieControl();
 const canShowAds = computed(
@@ -256,20 +251,31 @@ useHead(() => {
 usePageSeo({
   title: pageTitle.value,
   description: pageDescription.value,
-  path: route.fullPath,
-  keywords:
-    'Popli.one, profile, link in bio, URL shortener, QR codes, creator platform',
+  path: canonicalProfilePath,
   ogImage: absoluteOgImage.value,
   ogType: 'profile',
   robots: 'index, follow',
 });
 
-onMounted(() => {
-  if (!profile) {
-    return navigateTo('/');
-  }
+const siteOrigin = String(siteUrl || requestUrl.origin || 'https://popli.one').replace(
+  /\/$/,
+  '',
+);
+const profilePageUrl = `${siteOrigin}${canonicalProfilePath}`;
 
-  useApiJson(EApiEndpoint.PROFILE_ACCESS, {}, {}, { handle: username });
+useSchemaOrg([
+  definePerson({
+    name: profile.name?.trim() || `@${profileHandle.value}`,
+    url: profilePageUrl,
+    ...(profile.profileImage
+      ? { image: toAbsoluteUrl(siteOrigin, profile.profileImage) }
+      : {}),
+    ...(profile.bio?.trim() ? { description: profile.bio } : {}),
+  }),
+]);
+
+onMounted(() => {
+  useApiJson(EApiEndpoint.PROFILE_ACCESS, {}, {}, { handle });
 });
 
 const getCssColor = (

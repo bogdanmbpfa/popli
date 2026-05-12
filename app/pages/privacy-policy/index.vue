@@ -349,8 +349,6 @@ usePageSeo({
   title: seo.privacyTitle,
   description: seo.privacyDescription,
   path: '/privacy-policy',
-  keywords:
-    'Popli.one privacy policy, GDPR, data controller, Romanian DPA ANSPDCP, creator analytics, personal data',
   ogImage: seo.defaultOgImagePath,
   robots: 'index, follow',
 });

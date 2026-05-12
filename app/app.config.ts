@@ -2,12 +2,15 @@ export default defineAppConfig({
   seo: {
     siteName: 'Popli.one',
     defaultOgImagePath: '/logo.png',
+    /** Pixel size of default OG image (`/logo.png`); match deployed asset (source: `app/assets/images/logo.png`). */
+    defaultOgImageWidth: 100,
+    defaultOgImageHeight: 120,
+    /** Official X/Twitter @handle for `twitter:site` (empty = omit meta). */
+    twitterSite: '',
     /** Homepage & global fallback description (~155 chars for SERP snippets). */
     homeDescription:
       'Shorten URLs with analytics, build custom QR codes, and create a polished link-in-bio — the creator toolkit to share one link and grow your audience. Start free on Popli.one.',
     homeTitle: 'Popli.one — Link-in-bio, URL shortener & QR codes for creators',
-    homeKeywords:
-      'link in bio, linktree alternative, bio link, URL shortener, short link, QR code generator, custom QR code, creator tools, social media links, branded links',
     aboutTitle: 'About Popli | Redefining connectivity for the creator economy',
     aboutDescription:
       "Learn how Popli turns static links into dynamic bridges of engagement. Our origin story, core values — precision analytics, seamless connectivity, creative freedom — and vision for portable, measurable digital identity.",

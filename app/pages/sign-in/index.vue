@@ -111,9 +111,8 @@ usePageSeo({
   title: seo.signInTitle,
   description: seo.signInDescription,
   path: '/sign-in',
-  keywords: 'Popli login, sign in, account access',
   ogImage: seo.defaultOgImagePath,
-  robots: 'index, follow',
+  robots: 'noindex, nofollow',
 });
 
 const { defineField, errors, handleSubmit, isSubmitting, resetForm } =

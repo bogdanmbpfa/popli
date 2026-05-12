@@ -154,8 +154,6 @@ usePageSeo({
   title: seo.aboutTitle,
   description: seo.aboutDescription,
   path: '/about',
-  keywords:
-    'Popli, about Popli, creator economy, link management, digital identity, link analytics, connectivity, URL shortener, link in bio, social media tools',
   ogImage: seo.defaultOgImagePath,
   robots: 'index, follow',
 });

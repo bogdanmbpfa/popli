@@ -186,8 +186,6 @@ usePageSeo({
   title: seo.cookieTitle,
   description: seo.cookieDescription,
   path: '/cookie-policy',
-  keywords:
-    'Popli.one cookies, ePrivacy, consent, AdSense cookies, authentication cookies, GDPR',
   ogImage: seo.defaultOgImagePath,
   robots: 'index, follow',
 });

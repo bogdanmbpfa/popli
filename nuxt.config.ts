@@ -26,6 +26,20 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2026-02-01',
 
+  site: {
+    url: process.env.NUXT_PUBLIC_SITE_URL || 'https://popli.one',
+    name: 'Popli.one',
+    description:
+      'Shorten URLs with analytics, build custom QR codes, and create a polished link-in-bio — the creator toolkit to share one link and grow your audience.',
+    defaultLocale: 'en',
+    currentLocale: 'en',
+    identity: {
+      type: 'Organization',
+      name: 'Popli.one',
+      logo: '/logo.png',
+    },
+  },
+
   css: ['~/assets/main.scss'],
 
   devtools: { enabled: true },
@@ -153,9 +167,6 @@ export default defineNuxtConfig({
       '/terms-of-service',
       '/privacy-policy',
       '/cookie-policy',
-      '/forgot-password',
-      '/sign-in',
-      '/sign-up',
       '/*$',
     ],
     disallow: ['/account', '/account/', '/s', '/s/'],
@@ -264,9 +275,6 @@ export default defineNuxtConfig({
       '/terms-of-service',
       '/privacy-policy',
       '/cookie-policy',
-      '/forgot-password',
-      '/sign-in',
-      '/sign-up',
     ],
   },
 

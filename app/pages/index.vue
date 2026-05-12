@@ -75,7 +75,6 @@ usePageSeo({
   title: seo.homeTitle,
   description: seo.homeDescription,
   path: '/',
-  keywords: seo.homeKeywords,
   ogImage: seo.defaultOgImagePath,
   robots: 'index, follow',
 });
