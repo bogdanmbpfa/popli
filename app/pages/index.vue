@@ -49,7 +49,9 @@ const canShowAds = computed(
 
 useHead(() => {
   return {
-    script: canShowAds.value
+    // script: canShowAds.value
+    // TODO: Remove this after Google AdSense is enabled
+    script: true
       ? [
           {
             key: 'popli-adsense-loader',
