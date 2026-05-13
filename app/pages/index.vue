@@ -6,11 +6,14 @@
 
     <LandingPricing />
 
-    <div v-if="canShowAds" class="ad-section">
+    <!-- TODO: Remove this after Google AdSense is enabled -->
+    <div class="ad-section">
       <ins
         class="adsbygoogle"
-        style="display: block; width: 100%; height: 100%"
-        :data-ad-client="googleAdsense.test === 'on' ? 'ca-google-test' : googleAdsense.id"
+        :style="{ display: 'block', width: '100%', height: '100%' }"
+        :data-ad-client="
+          googleAdsense.test === 'on' ? 'ca-google-test' : googleAdsense.id
+        "
         :data-ad-slot="googleAdsense.adSlot"
         :data-adtest="googleAdsense.test === 'on' ? 'on' : undefined"
         data-ad-format="auto"

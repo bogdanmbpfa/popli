@@ -1,12 +1,6 @@
 export default defineNuxtConfig({
   app: {
     head: {
-      noscript: [
-        {
-          innerHTML:
-            '<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" />',
-        },
-      ],
       link: [
         {
           rel: 'icon',
