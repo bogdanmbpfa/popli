@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 
 import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, shortUrlClickModel, shortUrlModel } from '~~/server/database';
@@ -24,6 +24,7 @@ export default defineEventHandler(async (event) => {
     where: and(
       eq(shortUrlModel.id, shortUrlId),
       eq(shortUrlModel.userId, userId),
+      isNull(shortUrlModel.deletedAt),
     ),
   });
 
@@ -37,9 +38,13 @@ export default defineEventHandler(async (event) => {
 
   await db.transaction(async (tx) => {
     await tx
-      .delete(shortUrlClickModel)
+      .update(shortUrlClickModel)
+      .set({ deletedAt: new Date() })
       .where(eq(shortUrlClickModel.shortUrlId, shortUrl.id));
 
-    await tx.delete(shortUrlModel).where(eq(shortUrlModel.id, shortUrlId));
+    await tx
+      .update(shortUrlModel)
+      .set({ deletedAt: new Date() })
+      .where(eq(shortUrlModel.id, shortUrlId));
   });
 });

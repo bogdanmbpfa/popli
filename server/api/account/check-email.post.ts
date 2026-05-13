@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 
 import {
   AccountCheckEmailYupSchema,
@@ -27,7 +27,10 @@ export default defineEventHandler(async (event) => {
   }
 
   const account = await db.query.userModel.findFirst({
-    where: eq(userModel.email, body.email.toLowerCase()),
+    where: and(
+      eq(userModel.email, body.email.toLowerCase()),
+      isNull(userModel.deletedAt),
+    ),
   });
 
   if (account) {

@@ -1,4 +1,4 @@
-import { and, count, eq } from 'drizzle-orm';
+import { and, count, eq, isNull } from 'drizzle-orm';
 
 import { EHttpStatusCode, EHttpStatusMessage, EPlanType } from '~~/enums';
 import { db, shortUrlClickModel, shortUrlModel } from '~~/server/database';
@@ -28,6 +28,7 @@ export default defineEventHandler(async (event) => {
     where: and(
       eq(shortUrlModel.id, shortUrlId),
       eq(shortUrlModel.userId, userId),
+      isNull(shortUrlModel.deletedAt),
     ),
   });
 
@@ -46,7 +47,12 @@ export default defineEventHandler(async (event) => {
       clicks: count(shortUrlClickModel.id),
     })
     .from(shortUrlClickModel)
-    .where(eq(shortUrlClickModel.shortUrlId, shortUrl.id))
+    .where(
+      and(
+        eq(shortUrlClickModel.shortUrlId, shortUrl.id),
+        isNull(shortUrlClickModel.deletedAt),
+      ),
+    )
     .groupBy(shortUrlClickModel.country, shortUrlClickModel.countryCode);
 
   return countryClicks;

@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 
 import { type ILinkPositionYup, LinkPositionYupSchema } from '~~/dtos';
 import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
@@ -29,7 +29,11 @@ export default defineEventHandler(async (event) => {
     await db.transaction(async (tx) => {
       for (const link of links) {
         const existingLink = await tx.query.linkModel.findFirst({
-          where: and(eq(linkModel.id, link.id), eq(linkModel.userId, userId)),
+          where: and(
+            eq(linkModel.id, link.id),
+            eq(linkModel.userId, userId),
+            isNull(linkModel.deletedAt),
+          ),
         });
 
         if (!existingLink) {

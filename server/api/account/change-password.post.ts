@@ -1,5 +1,5 @@
 import { hash, verify } from 'argon2';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 
 import {
   AccountChangePasswordYupSchema,
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const account = await db.query.userModel.findFirst({
-    where: eq(userModel.id, id),
+    where: and(eq(userModel.id, id), isNull(userModel.deletedAt)),
   });
 
   if (!account) {

@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { log } from 'evlog';
 import { DateTime } from 'luxon';
 import { randomBytes } from 'node:crypto';
@@ -33,7 +33,10 @@ export default defineEventHandler(async (event) => {
 
   try {
     const account = await db.query.userModel.findFirst({
-      where: eq(userModel.email, body.email.toLowerCase()),
+      where: and(
+        eq(userModel.email, body.email.toLowerCase()),
+        isNull(userModel.deletedAt),
+      ),
     });
 
     if (!account) {

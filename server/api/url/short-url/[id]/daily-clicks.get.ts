@@ -1,4 +1,4 @@
-import { and, asc, count, eq, sql, type SQL } from 'drizzle-orm';
+import { and, asc, count, eq, isNull, sql, type SQL } from 'drizzle-orm';
 import { DateTime } from 'luxon';
 
 import { EHttpStatusCode, EHttpStatusMessage, EPlanType } from '~~/enums';
@@ -29,6 +29,7 @@ export default defineEventHandler(async (event) => {
     where: and(
       eq(shortUrlModel.id, shortUrlId),
       eq(shortUrlModel.userId, userId),
+      isNull(shortUrlModel.deletedAt),
     ),
   });
 
@@ -49,6 +50,7 @@ export default defineEventHandler(async (event) => {
     .where(
       and(
         eq(shortUrlClickModel.shortUrlId, shortUrl.id),
+        isNull(shortUrlClickModel.deletedAt),
         sql`to_char(clicked_at, 'YYYY-MM-DD') >= ${DateTime.now()
           .minus({ days: 30 })
           .toFormat('yyyy-MM-dd')}`,

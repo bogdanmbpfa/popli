@@ -29,9 +29,12 @@ export default defineEventHandler(async (event) => {
           })
           .from(qrCodeScanModel)
           .where(
-            inArray(
-              qrCodeScanModel.qrCodeId,
-              qrCodes.map((q) => q.id),
+            and(
+              inArray(
+                qrCodeScanModel.qrCodeId,
+                qrCodes.map((q) => q.id),
+              ),
+              isNull(qrCodeScanModel.deletedAt),
             ),
           )
           .groupBy(qrCodeScanModel.qrCodeId);

@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 
 import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, userModel } from '~~/server/database';
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   const { id } = await isAuthenticated(event);
 
   const account = await db.query.userModel.findFirst({
-    where: eq(userModel.id, id),
+    where: and(eq(userModel.id, id), isNull(userModel.deletedAt)),
   });
 
   if (!account) {

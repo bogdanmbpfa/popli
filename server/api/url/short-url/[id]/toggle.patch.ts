@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 
 import { EHttpStatusCode, EHttpStatusMessage } from '~~/enums';
 import { db, shortUrlModel } from '~~/server/database';
@@ -24,6 +24,7 @@ export default defineEventHandler(async (event) => {
     where: and(
       eq(shortUrlModel.id, shortUrlId),
       eq(shortUrlModel.userId, userId),
+      isNull(shortUrlModel.deletedAt),
     ),
   });
 

@@ -1,4 +1,4 @@
-import { and, eq, gte, sql } from 'drizzle-orm';
+import { and, eq, gte, isNull, sql } from 'drizzle-orm';
 
 import { EHttpStatusCode, EHttpStatusMessage, ELinkType } from '~~/enums';
 import { db, linkModel, usageCounterModel } from '~~/server/database';
@@ -23,7 +23,11 @@ export default defineEventHandler(async (event) => {
   try {
     await db.transaction(async (tx) => {
       const link = await tx.query.linkModel.findFirst({
-        where: and(eq(linkModel.id, linkId), eq(linkModel.userId, userId)),
+        where: and(
+          eq(linkModel.id, linkId),
+          eq(linkModel.userId, userId),
+          isNull(linkModel.deletedAt),
+        ),
       });
 
       if (!link) return;
@@ -41,7 +45,10 @@ export default defineEventHandler(async (event) => {
           ),
         );
 
-      await tx.delete(linkModel).where(eq(linkModel.id, linkId));
+      await tx
+        .update(linkModel)
+        .set({ deletedAt: new Date() })
+        .where(eq(linkModel.id, linkId));
 
       await tx
         .insert(usageCounterModel)

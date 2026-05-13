@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 
 import {
   AccountCheckHandleYupSchema,
@@ -27,7 +27,10 @@ export default defineEventHandler(async (event) => {
   }
 
   const profile = await db.query.profileModel.findFirst({
-    where: eq(profileModel.handle, body.handle.toLowerCase()),
+    where: and(
+      eq(profileModel.handle, body.handle.toLowerCase()),
+      isNull(profileModel.deletedAt),
+    ),
   });
 
   if (profile) {

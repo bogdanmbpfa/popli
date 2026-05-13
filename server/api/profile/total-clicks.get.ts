@@ -33,48 +33,54 @@ export default defineEventHandler(async (event) => {
           isNull(linkClickModel.deletedAt),
         ),
       ),
-    plan === EPlanType.FREE ? [] : db
-      .select({
-        country: profileAccessModel.country,
-        countryCode: profileAccessModel.countryCode,
-        clicks: count(profileAccessModel.id),
-      })
-      .from(profileAccessModel)
-      .where(eq(profileAccessModel.userId, userId))
-      .groupBy(profileAccessModel.country, profileAccessModel.countryCode),
-    plan === EPlanType.FREE ? [] : db
-      .select({
-        country: linkClickModel.country,
-        countryCode: linkClickModel.countryCode,
-        clicks: count(linkClickModel.id),
-      })
-      .from(linkClickModel)
-      .innerJoin(linkModel, eq(linkClickModel.linkId, linkModel.id))
-      .where(
-        and(
-          eq(linkModel.userId, userId),
-          isNull(linkModel.deletedAt),
-          isNull(linkClickModel.deletedAt),
-        ),
-      )
-      .groupBy(linkClickModel.country, linkClickModel.countryCode),
-    plan === EPlanType.FREE ? [] : db
-      .select({
-        title: linkModel.title,
-        type: linkModel.type,
-        platform: linkModel.platform,
-        clicks: count(linkClickModel.id),
-      })
-      .from(linkClickModel)
-      .innerJoin(linkModel, eq(linkClickModel.linkId, linkModel.id))
-      .where(
-        and(
-          eq(linkModel.userId, userId),
-          isNull(linkModel.deletedAt),
-          isNull(linkClickModel.deletedAt),
-        ),
-      )
-      .groupBy(linkModel.type, linkModel.platform, linkModel.title),
+    plan === EPlanType.FREE
+      ? []
+      : db
+          .select({
+            country: profileAccessModel.country,
+            countryCode: profileAccessModel.countryCode,
+            clicks: count(profileAccessModel.id),
+          })
+          .from(profileAccessModel)
+          .where(eq(profileAccessModel.userId, userId))
+          .groupBy(profileAccessModel.country, profileAccessModel.countryCode),
+    plan === EPlanType.FREE
+      ? []
+      : db
+          .select({
+            country: linkClickModel.country,
+            countryCode: linkClickModel.countryCode,
+            clicks: count(linkClickModel.id),
+          })
+          .from(linkClickModel)
+          .innerJoin(linkModel, eq(linkClickModel.linkId, linkModel.id))
+          .where(
+            and(
+              eq(linkModel.userId, userId),
+              isNull(linkModel.deletedAt),
+              isNull(linkClickModel.deletedAt),
+            ),
+          )
+          .groupBy(linkClickModel.country, linkClickModel.countryCode),
+    plan === EPlanType.FREE
+      ? []
+      : db
+          .select({
+            title: linkModel.title,
+            type: linkModel.type,
+            platform: linkModel.platform,
+            clicks: count(linkClickModel.id),
+          })
+          .from(linkClickModel)
+          .innerJoin(linkModel, eq(linkClickModel.linkId, linkModel.id))
+          .where(
+            and(
+              eq(linkModel.userId, userId),
+              isNull(linkModel.deletedAt),
+              isNull(linkClickModel.deletedAt),
+            ),
+          )
+          .groupBy(linkModel.type, linkModel.platform, linkModel.title),
   ]);
 
   const profileAccessClicks = profileAccessRows[0]?.clicks ?? 0;

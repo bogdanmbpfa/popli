@@ -1,4 +1,4 @@
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq, isNull, sql } from 'drizzle-orm';
 
 import { CreateLinkYupSchema, type ICreateLinkYup } from '~~/dtos';
 import { EHttpStatusCode, EHttpStatusMessage, ELinkType } from '~~/enums';
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const links = await db.query.linkModel.findMany({
-    where: eq(linkModel.userId, userId),
+    where: and(eq(linkModel.userId, userId), isNull(linkModel.deletedAt)),
   });
   const primaryLinksCount = links.filter(
     (link) => link.type === ELinkType.PRIMARY,
@@ -58,7 +58,11 @@ export default defineEventHandler(async (event) => {
     await db.transaction(async (tx) => {
       if (body.id) {
         const existingLink = await tx.query.linkModel.findFirst({
-          where: and(eq(linkModel.userId, userId), eq(linkModel.id, body.id)),
+          where: and(
+            eq(linkModel.userId, userId),
+            eq(linkModel.id, body.id),
+            isNull(linkModel.deletedAt),
+          ),
         });
 
         if (existingLink) {

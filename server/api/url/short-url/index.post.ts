@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, isNull, sql } from 'drizzle-orm';
 import { randomBytes } from 'node:crypto';
 
 import {
@@ -10,7 +10,10 @@ import { db, shortUrlModel, usageCounterModel } from '~~/server/database';
 
 export default defineEventHandler(async (event) => {
   const {
-    public: { errorMessages, freePlan: { shortUrlLimit } },
+    public: {
+      errorMessages,
+      freePlan: { shortUrlLimit },
+    },
   } = useRuntimeConfig();
 
   const { id: userId, plan } = await isAuthenticated(event);
@@ -46,7 +49,10 @@ export default defineEventHandler(async (event) => {
 
   if (body.alias) {
     const existingAlias = await db.query.shortUrlModel.findFirst({
-      where: eq(shortUrlModel.alias, body.alias),
+      where: and(
+        eq(shortUrlModel.alias, body.alias),
+        isNull(shortUrlModel.deletedAt),
+      ),
     });
 
     if (existingAlias) {
@@ -63,7 +69,10 @@ export default defineEventHandler(async (event) => {
 
   while (!shortCodeUnique) {
     const existingShortCode = await db.query.shortUrlModel.findFirst({
-      where: eq(shortUrlModel.shortCode, shortCode),
+      where: and(
+        eq(shortUrlModel.shortCode, shortCode),
+        isNull(shortUrlModel.deletedAt),
+      ),
     });
 
     if (!existingShortCode) {

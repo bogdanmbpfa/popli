@@ -1,5 +1,5 @@
 import { hash, verify } from 'argon2';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import type { H3Event } from 'h3';
 import { decodeJwt } from 'jose';
 
@@ -48,7 +48,10 @@ export default async function isAuthenticated(
     if (refreshTokenPayload && refreshTokenPayload.id) {
       user =
         (await db.query.userModel.findFirst({
-          where: eq(userModel.id, refreshTokenPayload.id as string),
+          where: and(
+            eq(userModel.id, refreshTokenPayload.id as string),
+            isNull(userModel.deletedAt),
+          ),
         })) ?? null;
 
       if (!user) {
@@ -150,7 +153,10 @@ export default async function isAuthenticated(
 
   user =
     (await db.query.userModel.findFirst({
-      where: eq(userModel.id, tokenPayload.id as string),
+      where: and(
+        eq(userModel.id, tokenPayload.id as string),
+        isNull(userModel.deletedAt),
+      ),
     })) ?? null;
 
   if (!user || user.deletedAt) {

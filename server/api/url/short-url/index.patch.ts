@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 
 import {
   UrlShortUrlUpdateYupSchema,
@@ -28,7 +28,11 @@ export default defineEventHandler(async (event) => {
   }
 
   const shortUrl = await db.query.shortUrlModel.findFirst({
-    where: and(eq(shortUrlModel.id, body.id), eq(shortUrlModel.userId, userId)),
+    where: and(
+      eq(shortUrlModel.id, body.id),
+      eq(shortUrlModel.userId, userId),
+      isNull(shortUrlModel.deletedAt),
+    ),
   });
 
   if (!shortUrl) {
@@ -41,7 +45,10 @@ export default defineEventHandler(async (event) => {
 
   if (body.alias) {
     const existingAlias = await db.query.shortUrlModel.findFirst({
-      where: eq(shortUrlModel.alias, body.alias),
+      where: and(
+        eq(shortUrlModel.alias, body.alias),
+        isNull(shortUrlModel.deletedAt),
+      ),
     });
 
     if (existingAlias && existingAlias.id !== body.id) {

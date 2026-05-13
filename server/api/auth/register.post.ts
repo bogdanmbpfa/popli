@@ -1,5 +1,5 @@
 import { hash } from 'argon2';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { log } from 'evlog';
 import { randomBytes } from 'node:crypto';
 
@@ -38,7 +38,10 @@ export default defineEventHandler(async (event) => {
   try {
     await db.transaction(async (tx) => {
       const existingUser = await tx.query.userModel.findFirst({
-        where: eq(userModel.email, body.email.toLowerCase()),
+        where: and(
+          eq(userModel.email, body.email.toLowerCase()),
+          isNull(userModel.deletedAt),
+        ),
       });
 
       if (existingUser) {

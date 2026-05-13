@@ -1,5 +1,5 @@
 import { hash } from 'argon2';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { log } from 'evlog';
 
 import {
@@ -30,7 +30,10 @@ export default defineEventHandler(async (event) => {
 
   try {
     const account = await db.query.userModel.findFirst({
-      where: eq(userModel.email, body.email.toLowerCase()),
+      where: and(
+        eq(userModel.email, body.email.toLowerCase()),
+        isNull(userModel.deletedAt),
+      ),
     });
 
     if (!account) {

@@ -48,7 +48,12 @@ export default defineEventHandler(async (event) => {
         totalScans: count(qrCodeScanModel.id),
       })
       .from(qrCodeScanModel)
-      .where(eq(qrCodeScanModel.qrCodeId, qrCodeId)),
+      .where(
+        and(
+          eq(qrCodeScanModel.qrCodeId, qrCodeId),
+          isNull(qrCodeScanModel.deletedAt),
+        ),
+      ),
     plan === EPlanType.FREE
       ? []
       : db
@@ -56,7 +61,12 @@ export default defineEventHandler(async (event) => {
             totalCountries: sql<number>`COUNT(DISTINCT ${qrCodeScanModel.countryCode})`,
           })
           .from(qrCodeScanModel)
-          .where(eq(qrCodeScanModel.qrCodeId, qrCodeId)),
+          .where(
+            and(
+              eq(qrCodeScanModel.qrCodeId, qrCodeId),
+              isNull(qrCodeScanModel.deletedAt),
+            ),
+          ),
     plan === EPlanType.FREE
       ? []
       : db
@@ -66,7 +76,12 @@ export default defineEventHandler(async (event) => {
             totalScans: count(qrCodeScanModel.id),
           })
           .from(qrCodeScanModel)
-          .where(eq(qrCodeScanModel.qrCodeId, qrCodeId))
+          .where(
+            and(
+              eq(qrCodeScanModel.qrCodeId, qrCodeId),
+              isNull(qrCodeScanModel.deletedAt),
+            ),
+          )
           .groupBy(qrCodeScanModel.country, qrCodeScanModel.countryCode),
     plan === EPlanType.FREE
       ? []
@@ -79,6 +94,7 @@ export default defineEventHandler(async (event) => {
           .where(
             and(
               eq(qrCodeScanModel.qrCodeId, qrCodeId),
+              isNull(qrCodeScanModel.deletedAt),
               gte(
                 qrCodeScanModel.scannedAt,
                 DateTime.now().minus({ days: 30 }).toJSDate(),

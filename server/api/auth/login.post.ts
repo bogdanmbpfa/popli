@@ -1,5 +1,5 @@
 import { hash, verify } from 'argon2';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { log } from 'evlog';
 
 import { AuthLoginYupSchema, type IAuthLoginYup } from '~~/dtos';
@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
   const email = body.email.toLowerCase();
 
   const account = await db.query.userModel.findFirst({
-    where: eq(userModel.email, email),
+    where: and(eq(userModel.email, email), isNull(userModel.deletedAt)),
   });
 
   if (!account) {

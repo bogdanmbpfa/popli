@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import type Stripe from 'stripe';
 
 import { EHttpStatusCode, EHttpStatusMessage, EPlanType } from '~~/enums';

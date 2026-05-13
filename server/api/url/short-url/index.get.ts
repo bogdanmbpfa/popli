@@ -1,4 +1,4 @@
-import { and, count, desc, eq, sql, type SQL } from 'drizzle-orm';
+import { and, count, desc, eq, isNull, sql, type SQL } from 'drizzle-orm';
 
 import { db, shortUrlClickModel, shortUrlModel } from '~~/server/database';
 
@@ -10,7 +10,10 @@ export default defineEventHandler(async (event) => {
   const { id: userId } = await isAuthenticated(event);
 
   const shortUrls = await db.query.shortUrlModel.findMany({
-    where: eq(shortUrlModel.userId, userId),
+    where: and(
+      eq(shortUrlModel.userId, userId),
+      isNull(shortUrlModel.deletedAt),
+    ),
     orderBy: [desc(shortUrlModel.createdAt)],
   });
 
@@ -24,6 +27,7 @@ export default defineEventHandler(async (event) => {
         .where(
           and(
             eq(shortUrlClickModel.shortUrlId, shortUrl.id),
+            isNull(shortUrlClickModel.deletedAt),
             sql`to_char(clicked_at, 'YYYY-MM-DD') = ${
               new Date().toISOString().split('T')[0]
             }`,
@@ -37,7 +41,12 @@ export default defineEventHandler(async (event) => {
           visitors: count(sql`DISTINCT ${shortUrlClickModel.ipAddress}`),
         })
         .from(shortUrlClickModel)
-        .where(eq(shortUrlClickModel.shortUrlId, shortUrl.id))
+        .where(
+          and(
+            eq(shortUrlClickModel.shortUrlId, shortUrl.id),
+            isNull(shortUrlClickModel.deletedAt),
+          ),
+        )
         .groupBy(sql`to_char(clicked_at, 'YYYY-MM-DD')`);
 
       const todayUniqueVisitors = dailyUniqueVisitors.find(
@@ -47,7 +56,12 @@ export default defineEventHandler(async (event) => {
       const totalClicksRows = await db
         .select({ clicks: count(shortUrlClickModel.id) })
         .from(shortUrlClickModel)
-        .where(eq(shortUrlClickModel.shortUrlId, shortUrl.id));
+        .where(
+          and(
+            eq(shortUrlClickModel.shortUrlId, shortUrl.id),
+            isNull(shortUrlClickModel.deletedAt),
+          ),
+        );
       const totalClicks = totalClicksRows[0]?.clicks ?? 0;
 
       const totalUniqueRows = await db
@@ -55,7 +69,12 @@ export default defineEventHandler(async (event) => {
           visitors: count(sql`DISTINCT ${shortUrlClickModel.ipAddress}`),
         })
         .from(shortUrlClickModel)
-        .where(eq(shortUrlClickModel.shortUrlId, shortUrl.id));
+        .where(
+          and(
+            eq(shortUrlClickModel.shortUrlId, shortUrl.id),
+            isNull(shortUrlClickModel.deletedAt),
+          ),
+        );
       const totalUniqueVisitors = totalUniqueRows[0]?.visitors ?? 0;
 
       return {

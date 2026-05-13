@@ -1,5 +1,5 @@
 import { UAParser } from '@ua-parser-js/pro-business';
-import { eq, or } from 'drizzle-orm';
+import { and, eq, isNull, or } from 'drizzle-orm';
 
 import { db, shortUrlClickModel, shortUrlModel } from '~~/server/database';
 
@@ -19,9 +19,12 @@ export default defineEventHandler(async (event) => {
   }
 
   const shortUrl = await db.query.shortUrlModel.findFirst({
-    where: or(
-      eq(shortUrlModel.shortCode, shortUrlCode),
-      eq(shortUrlModel.alias, shortUrlCode),
+    where: and(
+      or(
+        eq(shortUrlModel.shortCode, shortUrlCode),
+        eq(shortUrlModel.alias, shortUrlCode),
+      ),
+      isNull(shortUrlModel.deletedAt),
     ),
   });
 
