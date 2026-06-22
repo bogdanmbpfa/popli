@@ -338,7 +338,7 @@ const showProfileQrCode = () => {
     header: '',
     props: { handle: profile.value.handle },
     widthFit: true,
-    hideCloseButton: true,
+    hideCloseButton: false,
   });
 };
 
@@ -604,12 +604,8 @@ const getCssColor = (
           color: var(--neutral-100);
           border-radius: 1.5rem;
           padding: 0.5rem 2rem;
-          opacity: 0;
+          opacity: 1;
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-
-          &:hover {
-            opacity: 1;
-          }
         }
       }
     }
@@ -651,12 +647,8 @@ const getCssColor = (
           bottom: 0;
           left: 0;
           margin: auto;
-          opacity: 0;
+          opacity: 1;
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-
-          &:hover {
-            opacity: 1;
-          }
         }
       }
     }

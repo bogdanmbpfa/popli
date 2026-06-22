@@ -541,12 +541,14 @@ const clickLink = async (id: string, url: string) => {
               height: 100%;
               object-fit: cover;
               object-position: center;
+              z-index: 1;
             }
 
             .title {
               font-size: 1rem;
               font-weight: 500;
               color: var(--neutral-100);
+              z-index: 2;
             }
           }
         }
