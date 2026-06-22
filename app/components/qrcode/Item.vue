@@ -8,7 +8,7 @@
           {{ qrCode.title }}
         </span>
 
-        <span class="data">
+        <span class="data" :title="qrCode.options.data">
           {{ qrCode.options.data }}
         </span>
 
@@ -182,7 +182,8 @@ const handleDeleteQrCode = async () => {
   background-color: var(--background-secondary);
   border: 1px solid color-mix(in oklab, var(--neutral-400) 20%, transparent);
   padding: 1rem;
-  width: fit-content;
+  width: 100%;
+  max-width: 38rem;
 
   .content {
     flex: 1;
@@ -212,6 +213,11 @@ const handleDeleteQrCode = async () => {
         font-size: 0.875rem;
         font-weight: 400;
         color: var(--neutral-400);
+      }
+
+      .data {
+        max-width: 22rem;
+        overflow: hidden;
       }
 
       .scans-date {
